@@ -1,5 +1,7 @@
 package com.stats.lolgg.bot;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.stats.lolgg.command.UserManager;
 
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -56,33 +59,33 @@ public class ReadyListener extends ListenerAdapter {
             MessageChannel channel = event.getChannel();
             channel.sendMessage("Users: \n" + userManager.sendUserList()).queue();
         }
+
+
+        String[] message = event.getMessage().getContentRaw().split("\\s+");
+        // "!ㅁㅅ1" 명령어를 받았을 때
+        if (message[0].equalsIgnoreCase("!ㅁㅅ1")) {
+            if (message.length < 2) {
+                event.getChannel().sendMessage("메시지를 입력하세요.").queue();
+                return;
+            }
+
+            String welcomeMessage = String.join(" ", message).substring(5); // 메시지에서 !ㅁㅅ1을 제외한 부분을 가져옴
+            List<String> memberList = userManager.getUserList();
+
+            if (memberList.isEmpty()) {
+                event.getChannel().sendMessage("멤버 리스트가 비어있습니다.").queue();
+                return;
+            }
+
+            // 리스트에서 첫 번째 멤버를 얻어옵니다.
+            Member firstMember = event.getMember();
+            log.info(firstMember.getAvatarId());
+            firstMember.getId();
+
+            // 해당 멤버에게 멘션을 보냅니다.
+            event.getChannel().sendMessage(firstMember.getAsMention() + " " + welcomeMessage).queue();
+        }
+
+
     }
-
-    // @Override
-    // public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-    //     String[] message = event.getMessage().getContentRaw().split("\\s+"); // 메시지를 공백으로 분할
-
-    //     // "!ㅁㅅ1" 명령어를 받았을 때
-    //     if (message[0].equalsIgnoreCase("!ㅁㅅ1")) {
-    //         if (message.length < 2) {
-    //             event.getChannel().sendMessage("메시지를 입력하세요.").queue();
-    //             return;
-    //         }
-
-    //         String welcomeMessage = String.join(" ", message).substring(5); // 메시지에서 !ㅁㅅ1을 제외한 부분을 가져옴
-    //         List<String> memberList = userManager.getUserList();
-
-    //         if (memberList.isEmpty()) {
-    //             event.getChannel().sendMessage("멤버 리스트가 비어있습니다.").queue();
-    //             return;
-    //         }
-
-    //         // 리스트에서 첫 번째 멤버를 얻어옵니다.
-    //         Member firstMember = memberList.get(0);
-
-    //         // 해당 멤버에게 멘션을 보냅니다.
-    //         event.getChannel().sendMessage(firstMember.getAsMention() + " " + welcomeMessage).queue();
-    //     }
-    // }
-
 }

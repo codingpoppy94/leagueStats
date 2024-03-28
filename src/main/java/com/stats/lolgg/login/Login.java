@@ -15,7 +15,6 @@ public class Login implements CommandLineRunner {
 
     private final ReadyListener readyListener;
 
-    @Autowired
     public Login(ReadyListener readyListener) {
         this.readyListener = readyListener;
     }
