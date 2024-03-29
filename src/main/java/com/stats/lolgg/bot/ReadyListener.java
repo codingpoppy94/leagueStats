@@ -1,6 +1,8 @@
 package com.stats.lolgg.bot;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,7 +11,10 @@ import org.springframework.stereotype.Component;
 
 import com.stats.lolgg.command.UserManager;
 
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.Member;
+
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -33,23 +38,23 @@ public class ReadyListener extends ListenerAdapter {
         // 목록 추가
         if(event.getMessage().getContentRaw().equals("!ㅊㅋ")){
             log.info("목록 추가");
-            userManager.addUser(event.getAuthor().getName());
+            userManager.addUser(event.getMember());
             MessageChannel channel = event.getChannel();
 
-            channel.sendMessage("Users: \n" + userManager.sendUserList()).queue();            
+            channel.sendMessage("Users: \n" + userManager.sendUserList() ).queue();            
         }
 
         // 목록 삭제
         if (event.getMessage().getContentRaw().equals("!ㅊㅅ")) {
             log.info("목록 삭제");
-            String username = event.getAuthor().getName();
-            boolean removed = userManager.removeUser(username);
+            Member user = event.getMember();
+            boolean removed = userManager.removeUser(user);
             MessageChannel channel = event.getChannel();
 
             if (removed) {
-                channel.sendMessage("User " + username + " removed.\nUsers: \n" + userManager.sendUserList()).queue();
+                channel.sendMessage("User " + user.getNickname() + " removed.\nUsers: \n" + userManager.sendUserList() ).queue();
             } else {
-                channel.sendMessage("User " + username + " not found in the list.").queue();
+                channel.sendMessage("User " + user.getNickname() + " not found in the list.").queue();
             }
         }
 
@@ -62,28 +67,55 @@ public class ReadyListener extends ListenerAdapter {
 
 
         String[] message = event.getMessage().getContentRaw().split("\\s+");
+        // 메시지 예시 !ㅁㅅ {1~4} {메시지}
         // "!ㅁㅅ1" 명령어를 받았을 때
-        if (message[0].equalsIgnoreCase("!ㅁㅅ1")) {
+        if (message[0].equalsIgnoreCase("!ㅁㅅ")) {
             if (message.length < 2) {
                 event.getChannel().sendMessage("메시지를 입력하세요.").queue();
                 return;
             }
 
-            String welcomeMessage = String.join(" ", message).substring(5); // 메시지에서 !ㅁㅅ1을 제외한 부분을 가져옴
-            List<String> memberList = userManager.getUserList();
+            Pattern pattern = Pattern.compile("!ㅁㅅ\\s+(\\d{1,2})~(\\d{1,2})\\s+(.+)");
+            Matcher matcher = pattern.matcher(event.getMessage().getContentRaw());
 
-            if (memberList.isEmpty()) {
+            int minMentionCount = Integer.parseInt(matcher.group(1)); // 최소 멘션할 사용자 수
+            int maxMentionCount = Integer.parseInt(matcher.group(2)); // 최대 멘션할 사용자 수
+            String welcomeMessage = matcher.group(3); // 환영 메시지
+
+            List<Member> userList = userManager.getUserList();
+
+            if (userList.isEmpty()) {
                 event.getChannel().sendMessage("멤버 리스트가 비어있습니다.").queue();
                 return;
             }
 
-            // 리스트에서 첫 번째 멤버를 얻어옵니다.
-            Member firstMember = event.getMember();
-            log.info(firstMember.getAvatarId());
-            firstMember.getId();
+            if (maxMentionCount > userList.size()) {
+                event.getChannel().sendMessage("대기 인원을 확인하세요.").queue();
+                return;
+            }
+
+            // // 리스트에서 첫 번째 멤버를 얻어옵니다.
+            // Member firstMember = event.getMember();
+            // log.info(firstMember.getAvatarId());
+
+            for(int i=minMentionCount; i<maxMentionCount; i++){  
+                Member mentionMember = userList.get(i);
+                event.getChannel().sendMessage(mentionMember.getAsMention());
+            }
 
             // 해당 멤버에게 멘션을 보냅니다.
-            event.getChannel().sendMessage(firstMember.getAsMention() + " " + welcomeMessage).queue();
+            // {메시지 부분 삽입}
+            event.getChannel().sendMessage(welcomeMessage).queue();
+        }
+
+        if (event.getMessage().getContentRaw().equals("!서버")) {
+            // JDA jda = event.getJDA();
+            Guild guild = event.getGuild();
+            String servierId = guild.getId();
+            log.info("serverId " + servierId);
+
+            MessageChannel channel = event.getChannel();
+            channel.sendMessage("서버 ID: " + servierId).queue();
         }
 
 
