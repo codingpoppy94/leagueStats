@@ -28,33 +28,41 @@ public class ReadyListener extends ListenerAdapter {
     
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        
-        String message = event.getMessage().getContentRaw();
 
-        if(message.chatAt(0) == '!'){
+        MessageChannel channel = event.getChannel();
+        
+        // String message = event.getMessage().getContentRaw();
+        String originMessage = event.getMessage().getContentRaw();
+        String[] message = originMessage.split("\\s");
+
+        if(message[0].charAt(0) == '!'){
             
             // 테스트1
-            if(message.equals("!ping")){
+            if(message[0].equals("!ping")){
                 log.info("message get");
                 event.getChannel().sendMessage("pong!").queue();
                 return;
             }
     
-            // 목록 추가
-            if(message.equals("!ㅊㅋ")){
+            /* 
+             * 체크
+             */
+            if(message[0].equals("!ㅊㅋ")){
                 log.info("목록 추가");
                 userManager.addUser(event.getMember());
-                MessageChannel channel = event.getChannel();
+                
     
                 channel.sendMessage("Users: \n" + userManager.sendUserList() ).queue();            
             }
     
-            // 목록 삭제
-            if (message.equals("!ㅊㅅ")) {
+            /* 
+             * 취소
+             */
+            if (message[0].equals("!ㅊㅅ")) {
                 log.info("목록 삭제");
                 Member user = event.getMember();
                 boolean removed = userManager.removeUser(user);
-                MessageChannel channel = event.getChannel();
+                
     
                 if (removed) {
                     channel.sendMessage("User " + user.getNickname() + " removed.\nUsers: \n" + userManager.sendUserList() ).queue();
@@ -63,85 +71,106 @@ public class ReadyListener extends ListenerAdapter {
                 }
             }
     
-            // 목록 보기
-            if (message.equals("!ㄷㄱ")) {
+            /* 
+             * 목록 
+             */
+            if (message[0].equals("!ㄷㄱ")) {
                 log.info("목록 보기");
-                MessageChannel channel = event.getChannel();
+                
                 channel.sendMessage("Users: \n" + userManager.sendUserList()).queue();
             }
     
     
-            String[] message = event.getMessage().getContentRaw().split("\\s+");
-            // 메시지 예시 !ㅁㅅ {1~4} {메시지}
-            // "!ㅁㅅ1" 명령어를 받았을 때
+            /* 
+             * mention
+             */
+        
             if (message[0].equalsIgnoreCase("!ㅁㅅ")) {
                 if (message.length < 2) {
-                    event.getChannel().sendMessage("메시지를 입력하세요.").queue();
-                    return;
+                    // event.getChannel().sendMessage("메시지를 입력하세요.").queue();
+                    // return;
                 }
-    
-                Pattern pattern = Pattern.compile("!ㅁㅅ\\s+(\\d{1,2})~(\\d{1,2})\\s+(.+)");
-                Matcher matcher = pattern.matcher(event.getMessage().getContentRaw());
-    
-                int minMentionCount = Integer.parseInt(matcher.group(1)); // 최소 멘션할 사용자 수
-                int maxMentionCount = Integer.parseInt(matcher.group(2)); // 최대 멘션할 사용자 수
-                String welcomeMessage = matcher.group(3); // 환영 메시지
-    
-                List<Member> userList = userManager.getUserList();
-    
-                if (userList.isEmpty()) {
-                    event.getChannel().sendMessage("멤버 리스트가 비어있습니다.").queue();
-                    return;
+
+                String mention = message[1];
+                Pattern numberPattern = Pattern.compile("\\d");
+                Matcher numberMatcher = numberPattern.matcher(mention);
+
+                // Pattern spacePattern = Pattern.compile("\s");
+                // Matcher spaceMacher = spacePattern.matcher(originMessage);
+                String mentionMessage = "";
+                if(message.length > 2) {
+                    mentionMessage = originMessage.substring(originMessage.indexOf(message[2]));
+                } 
+
+                if(mention.length() > 1){
+                    // 다중 선택 
+                    if(numberMatcher.find()){
+                        int min = Integer.parseInt(numberMatcher.group(0)) - 1;
+                        int max = Integer.parseInt(mention.substring(2)) -1;
+
+                        log.info(mentionMessage);
+                        List<Member> userList = userManager.getUserList();
+
+                        if (userList.isEmpty()) {
+                            event.getChannel().sendMessage("멤버 리스트가 비어있습니다.").queue();
+                            return;
+                        }
+            
+                        if (max+1 > userList.size()) {
+                            event.getChannel().sendMessage("대기 인원을 확인하세요.").queue();
+                            return;
+                        }
+
+                        StringBuilder messageBuilder = new StringBuilder();
+
+                        for(int i=min; i<= max; i++){  
+                            Member mentionMember = userList.get(i);
+                            messageBuilder.append(mentionMember.getAsMention()).append(" ");
+
+                        }
+                        messageBuilder.append(mentionMessage);
+                        sendMessage(channel, messageBuilder.toString());
+                    } else {
+                        sendErrorMessage(channel);
+                    }
+
+                } else {
+                    // 한명 선택
+                    if(numberMatcher.find()){
+                        int mentionNumber = Integer.parseInt(mention) - 1;
+                        List<Member> userList = userManager.getUserList();
+                        Member mentionMember = userList.get(mentionNumber);
+                        sendMessage(channel, mentionMember.getAsMention() + mentionMessage);
+                    }
                 }
-    
-                if (maxMentionCount > userList.size()) {
-                    event.getChannel().sendMessage("대기 인원을 확인하세요.").queue();
-                    return;
-                }
-    
-                // // 리스트에서 첫 번째 멤버를 얻어옵니다.
-                // Member firstMember = event.getMember();
-                // log.info(firstMember.getAvatarId());
-    
-                for(int i=minMentionCount; i<maxMentionCount; i++){  
-                    Member mentionMember = userList.get(i);
-                    event.getChannel().sendMessage(mentionMember.getAsMention());
-                }
-    
-                // 해당 멤버에게 멘션을 보냅니다.
-                // {메시지 부분 삽입}
-                event.getChannel().sendMessage(welcomeMessage).queue();
             }
     
+            /* 
+             * get server Id
+             * 
+             */
             if (event.getMessage().getContentRaw().equals("!서버")) {
                 // JDA jda = event.getJDA();
                 Guild guild = event.getGuild();
                 String servierId = guild.getId();
                 log.info("serverId " + servierId);
     
-                MessageChannel channel = event.getChannel();
+                
                 channel.sendMessage("서버 ID: " + servierId).queue();
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         }
 
 
     }
+
+    private void sendMessage(MessageChannel channel,String message){
+        channel.sendMessage(message).queue();
+    }
+
+    private void sendErrorMessage(MessageChannel channel) {
+        channel.sendMessage("잘못된 명령어 사용").queue();
+    }
+
 }
