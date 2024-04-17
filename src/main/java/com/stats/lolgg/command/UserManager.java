@@ -34,15 +34,28 @@ public class UserManager {
         return user.getNickname();
     }
 
+    public void compareMembers(List<Member> targetMembers){
+        List<Member> memberToRemove = new ArrayList<>();
+
+        for(Member member : targetMembers) {
+            if(userList.contains(member)){
+                memberToRemove.add(member);
+            }
+        }
+        userList.removeAll(memberToRemove);
+    }
+
     public void userMention(){
         
     }
 
     public String sendUserList() {
         StringBuilder userListString = new StringBuilder();
+        userListString.append("```대기자: ");
         for (int i = 0; i < userList.size(); i++) {
-            userListString.append((i + 1) + " " + userList.get(i).getNickname() + " ");
+            userListString.append((i + 1) + "." + userList.get(i).getNickname() + " ");
         }
+        userListString.append("```");
         return userListString.toString();
     }
 }

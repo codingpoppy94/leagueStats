@@ -12,9 +12,8 @@ import org.springframework.stereotype.Component;
 import com.stats.lolgg.command.UserManager;
 
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.Member;
-
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -50,7 +49,7 @@ public class ReadyListener extends ListenerAdapter {
             if(message[0].equals("!ㅊㅋ") || message[0].equals("!.")){
                 // log.info("목록 추가");
                 userManager.addUser(event.getMember());
-                sendMessage(channel, "대기: " + userManager.sendUserList());
+                sendMessage(channel, userManager.sendUserList());
             }
     
             /* 
@@ -61,32 +60,68 @@ public class ReadyListener extends ListenerAdapter {
 
                 if(message.length > 1){
                     // 범위취소
+                    String memberIndex = message[1];
+                    int[] selectMember = memberIndexparsing(memberIndex, channel);
 
+                    if(memberIndex.length() > 1) {
+                        // 다중
+                        int start = selectMember[0];
+                        int end = selectMember[1];
+                        int count = end - start;
+
+                        List<Member> userList = userManager.getUserList();
+
+                        if(end +1 > userList.size()) {
+                            sendErrorMessage(channel);
+                            return;
+                        }
+
+                        for(int i=0; i<= count; i++){  
+                            Member deleteMember = userList.get(start);
+                            userManager.removeUser(deleteMember);
+                        }
+                        sendMessage(channel, userManager.sendUserList());
+                        
+                    } else {
+                        int min = selectMember[0];
+                        List<Member> userList = userManager.getUserList();
+                        Member deleteMember = userList.get(min);
+                        userManager.removeUser(deleteMember);
+                        sendMessage(channel, userManager.sendUserList());
+                    }
                     
-                } else if(message.length == 1) {
-                    // 단독
-                } else {
+                }  else {
+                    Member user = event.getMember();
+                    boolean removed = userManager.removeUser(user);
+                    
+                    if (removed) {
+                        sendMessage(channel, userManager.sendUserList());
+                        // channel.sendMessage("User " + user.getNickname() + " removed.\nUsers: \n" + userManager.sendUserList() ).queue();
+                    } else {
+                        sendMessage(channel, "not found in the list");
+                        // channel.sendMessage("User " + user.getNickname() + " not found in the list.").queue();
+                    }
+                }
+            }
 
-                }
-                Member user = event.getMember();
-                boolean removed = userManager.removeUser(user);
-                
-                if (removed) {
-                    sendMessage(channel, "대기: "+ userManager.sendUserList());
-                    // channel.sendMessage("User " + user.getNickname() + " removed.\nUsers: \n" + userManager.sendUserList() ).queue();
-                } else {
-                    sendMessage(channel, "not found in the list");
-                    // channel.sendMessage("User " + user.getNickname() + " not found in the list.").queue();
-                }
+            /* 
+             * 팀 취소
+             */
+
+            if (message[0].equals("!ㅌㅊㅅ")) {
+                VoiceChannel targetChannel = event.getGuild().getVoiceChannelById("347303677289037836");
+
+                List<Member> targetMembers = targetChannel.getMembers();
+                userManager.compareMembers(targetMembers);
+
+                sendMessage(channel, userManager.sendUserList());
             }
     
             /* 
              * 목록 
              */
-            if (message[0].equals("!ㄷㄱ")) {
-                log.info("목록 보기");
-                
-                channel.sendMessage("Users: \n" + userManager.sendUserList()).queue();
+            if (message[0].equals("!ㄷㄱ") || message[0].equals("!대기")) {
+                channel.sendMessage(userManager.sendUserList()).queue();
             }
     
     
@@ -95,57 +130,49 @@ public class ReadyListener extends ListenerAdapter {
              */
         
             if (message[0].equalsIgnoreCase("!ㅁㅅ")) {
-                String mention = message[1];
-                Pattern numberPattern = Pattern.compile("\\d");
-                Matcher numberMatcher = numberPattern.matcher(mention);
 
-                // Pattern spacePattern = Pattern.compile("\s");
-                // Matcher spaceMacher = spacePattern.matcher(originMessage);
+                String memberIndex = message[1];
+
+                int[] selectMember = memberIndexparsing(memberIndex,channel);
+
+                // mentionMessage
                 String mentionMessage = "";
                 if(message.length > 2) {
                     mentionMessage = originMessage.substring(originMessage.indexOf(message[2]));
                 } 
 
-                if(mention.length() > 1){
+                if(memberIndex.length() > 1){
                     // 다중 선택 
-                    if(numberMatcher.find()){
-                        int min = Integer.parseInt(numberMatcher.group(0)) - 1;
-                        int max = Integer.parseInt(mention.substring(2)) -1;
+                    int min = selectMember[0];
+                    int max = selectMember[1];
 
-                        log.info(mentionMessage);
-                        List<Member> userList = userManager.getUserList();
+                    List<Member> userList = userManager.getUserList();
 
-                        if (userList.isEmpty()) {
-                            event.getChannel().sendMessage("멤버 리스트가 비어있습니다.").queue();
-                            return;
-                        }
-            
-                        if (max+1 > userList.size()) {
-                            event.getChannel().sendMessage("대기 인원을 확인하세요.").queue();
-                            return;
-                        }
-
-                        StringBuilder messageBuilder = new StringBuilder();
-
-                        for(int i=min; i<= max; i++){  
-                            Member mentionMember = userList.get(i);
-                            messageBuilder.append(mentionMember.getAsMention()).append(" ");
-
-                        }
-                        messageBuilder.append(mentionMessage);
-                        sendMessage(channel, messageBuilder.toString());
-                    } else {
-                        sendErrorMessage(channel);
+                    if (userList.isEmpty()) {
+                        sendMessage(channel, "대기자 확인");
+                        return;
+                    }
+        
+                    if (max+1 > userList.size()) {
+                        sendMessage(channel, "대기 인원을 확인하세요.");
+                        return;
                     }
 
+                    StringBuilder messageBuilder = new StringBuilder();
+
+                    for(int i=min; i<= max; i++){  
+                        Member mentionMember = userList.get(i);
+                        messageBuilder.append(mentionMember.getAsMention()).append(" ");
+
+                    }
+                    messageBuilder.append(mentionMessage);
+                    sendMessage(channel, messageBuilder.toString());
+              
                 } else {
                     // 한명 선택
-                    if(numberMatcher.find()){
-                        int mentionNumber = Integer.parseInt(mention) - 1;
-                        List<Member> userList = userManager.getUserList();
-                        Member mentionMember = userList.get(mentionNumber);
-                        sendMessage(channel, mentionMember.getAsMention() + mentionMessage);
-                    }
+                    List<Member> userList = userManager.getUserList();
+                    Member mentionMember = userList.get(selectMember[0]);
+                    sendMessage(channel, mentionMember.getAsMention() + mentionMessage);
                 }
             }
     
@@ -158,15 +185,10 @@ public class ReadyListener extends ListenerAdapter {
                 Guild guild = event.getGuild();
                 String servierId = guild.getId();
                 log.info("serverId " + servierId);
-    
                 
                 channel.sendMessage("서버 ID: " + servierId).queue();
             }
-
-
         }
-
-
     }
 
 
@@ -180,9 +202,27 @@ public class ReadyListener extends ListenerAdapter {
         channel.sendMessage("잘못된 명령어 사용").queue();
     }
 
-    // 다중 기능 처리
-    private int multiCheck(String[] messge){
-        return 0;
+    // 다중 memberIndex 처리
+    private int[] memberIndexparsing(String memberIndex, MessageChannel channel){
+        int[] result = new int[2];
+
+        Pattern numberPattern = Pattern.compile("\\d");
+        Matcher numberMatcher = numberPattern.matcher(memberIndex);
+        if(numberMatcher.find()){
+            if(memberIndex.length() > 1) {
+                int min = Integer.parseInt(numberMatcher.group(0)) - 1;
+                int max = Integer.parseInt(memberIndex.substring(2)) -1;
+
+                result[0] = min;
+                result[1] = max;
+            
+            } else {
+                result[0] = Integer.parseInt(memberIndex) - 1;
+            }
+        } else {
+            sendErrorMessage(channel);
+        }
+        return result;
     }
 
 }
