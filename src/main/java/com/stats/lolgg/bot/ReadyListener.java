@@ -39,7 +39,7 @@ public class ReadyListener extends ListenerAdapter {
             
             // 테스트1
             if(message[0].equals("!ping")){
-                log.info("message get");
+                // log.info("message get");
                 event.getChannel().sendMessage("pong!").queue();
                 return;
             }
@@ -47,27 +47,36 @@ public class ReadyListener extends ListenerAdapter {
             /* 
              * 체크
              */
-            if(message[0].equals("!ㅊㅋ")){
-                log.info("목록 추가");
+            if(message[0].equals("!ㅊㅋ") || message[0].equals("!.")){
+                // log.info("목록 추가");
                 userManager.addUser(event.getMember());
-                
-    
-                channel.sendMessage("Users: \n" + userManager.sendUserList() ).queue();            
+                sendMessage(channel, "대기: " + userManager.sendUserList());
             }
     
             /* 
              * 취소
              */
-            if (message[0].equals("!ㅊㅅ")) {
-                log.info("목록 삭제");
+            if (message[0].equals("!ㅊㅅ") || message[0].equals("!취소")) {
+                // log.info("목록 삭제");
+
+                if(message.length > 1){
+                    // 범위취소
+
+                    
+                } else if(message.length == 1) {
+                    // 단독
+                } else {
+
+                }
                 Member user = event.getMember();
                 boolean removed = userManager.removeUser(user);
                 
-    
                 if (removed) {
-                    channel.sendMessage("User " + user.getNickname() + " removed.\nUsers: \n" + userManager.sendUserList() ).queue();
+                    sendMessage(channel, "대기: "+ userManager.sendUserList());
+                    // channel.sendMessage("User " + user.getNickname() + " removed.\nUsers: \n" + userManager.sendUserList() ).queue();
                 } else {
-                    channel.sendMessage("User " + user.getNickname() + " not found in the list.").queue();
+                    sendMessage(channel, "not found in the list");
+                    // channel.sendMessage("User " + user.getNickname() + " not found in the list.").queue();
                 }
             }
     
@@ -86,11 +95,6 @@ public class ReadyListener extends ListenerAdapter {
              */
         
             if (message[0].equalsIgnoreCase("!ㅁㅅ")) {
-                if (message.length < 2) {
-                    // event.getChannel().sendMessage("메시지를 입력하세요.").queue();
-                    // return;
-                }
-
                 String mention = message[1];
                 Pattern numberPattern = Pattern.compile("\\d");
                 Matcher numberMatcher = numberPattern.matcher(mention);
@@ -165,12 +169,20 @@ public class ReadyListener extends ListenerAdapter {
 
     }
 
+
+    // 채널 메시지 보내기
     private void sendMessage(MessageChannel channel,String message){
         channel.sendMessage(message).queue();
     }
 
+    // 공통 에러 메시지
     private void sendErrorMessage(MessageChannel channel) {
         channel.sendMessage("잘못된 명령어 사용").queue();
+    }
+
+    // 다중 기능 처리
+    private int multiCheck(String[] messge){
+        return 0;
     }
 
 }

@@ -41,7 +41,7 @@ public class UserManager {
     public String sendUserList() {
         StringBuilder userListString = new StringBuilder();
         for (int i = 0; i < userList.size(); i++) {
-            userListString.append((i + 1) + ". " + userList.get(i).getNickname() + "\t");
+            userListString.append((i + 1) + " " + userList.get(i).getNickname() + " ");
         }
         return userListString.toString();
     }
