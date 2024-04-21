@@ -25,8 +25,7 @@ public class ReadReplay {
             int data;
             while ((data = inputStream.read()) != -1) {
                 // 각 바이트를 16진수로 변환하여 문자열에 추가
-                // hexData.append(String.format("%02X", data));
-                hexData.append(data);
+                hexData.append(String.format("%02X", data));
 
                 // 000099C800
                 // "4C 65" 패턴 찾기
