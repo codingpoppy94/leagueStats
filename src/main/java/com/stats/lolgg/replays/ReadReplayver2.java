@@ -3,10 +3,10 @@ package com.stats.lolgg.replays;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stats.lolgg.model.ReplaysModel;
 
 public class ReadReplayver2 {
     public static void main(String[] args) {
@@ -14,70 +14,42 @@ public class ReadReplayver2 {
         String filePath = "src/main/resources/replays/KR-7037267518.rofl";
 
         String textData = "";
-        String startIndex = "{\"gameLength\":";
-        String endIndex = "\\\"}]\"}";
 
         try {
             // 파일 열기
             FileInputStream inputStream = new FileInputStream(filePath);
 
-
             // 데이터 읽기
             StringBuilder hexData = new StringBuilder();
             boolean patternFound = false;
             int data;
-
-            
             while ((data = inputStream.read()) != -1) {
-                
-                byte[] byteArray = new byte[] {(byte)data};
-                String dataString = new String(byteArray);
-                // System.out.println(dataString);
+                // 각 바이트를 16진수로 변환하여 문자열에 추가
+                hexData.append(String.format("%02X", data));
 
-                hexData.append(dataString);
-
-                if(hexData.toString().endsWith(startIndex)){
-                    hexData.setLength(0);
-                    hexData.append(startIndex);
+                // 000099C800
+                // "4C 65" 패턴 찾기
+                if (!patternFound && hexData.toString().endsWith("4C65")) {
+                    patternFound = true;
+                    hexData.setLength(0); // 이전 데이터를 지우고 다시 시작
                 }
-                if(hexData.toString().endsWith(endIndex)){
+
+                // "45 01 00 00 00" 패턴 찾기
+                if (patternFound && hexData.toString().endsWith("5D227D")) {
                     break;
                 }
             }
-            inputStream.close();
 
-            String result = hexData.toString();
-            System.out.println(result);
+            // 읽은 16진수 데이터 출력
+            // System.out.println("16진수 데이터:");
+            // System.out.println(hexData);
 
-            String StringData = hexData.toString().replace("\\"+"\"", "\"");
-            StringData = StringData.replace("\"[", "[").replace("]\"", "]");
-            // System.out.println(StringData);
+            textData = hexToText(hexData.toString());
+            // System.out.println(textData);
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(StringData);
-            JsonNode statsArray = rootNode.get("statsJson");
 
-            for (JsonNode statsNode : statsArray) {
-                // 원하는 프로퍼티 추출
-                String assists = statsNode.get("ASSISTS").asText();
-                String numDeaths = statsNode.get("NUM_DEATHS").asText();
-                String championsKilled = statsNode.get("CHAMPIONS_KILLED").asText();
-                String teamPostion = statsNode.get("TEAM_POSITION").asText();
-                String name = statsNode.get("NAME").asText();
-                String win = statsNode.get("WIN").asText();
-                String skin = statsNode.get("SKIN").asText();
-                
-                // 추출한 프로퍼티 출력
-                System.out.println("ASSISTS: " + assists);
-                System.out.println("NUM_DEATHS: " + numDeaths);
-                System.out.println("CHAMPIONS_KILLED: " + championsKilled);
-                System.out.println("TEAM_POSITION: " + teamPostion);
-                System.out.println("NAME: " + name);
-                System.out.println("WIN: " + win);
-                System.out.println("SKIN: " + skin);
-            }
-        
             // 파일 닫기
+            inputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -87,7 +59,7 @@ public class ReadReplayver2 {
             // ObjectMapper 생성
             ObjectMapper objectMapper = new ObjectMapper();
 
-            // textData = "{" + "\"" + textData;
+            textData = "{" + "\"" + textData;
 
             String fixedJsonData = textData.replace("\\"+"\"", "\"");
             fixedJsonData = fixedJsonData.replace("\"[", "[");
@@ -123,6 +95,9 @@ public class ReadReplayver2 {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+       
+        
     }
 
     
