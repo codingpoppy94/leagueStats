@@ -24,6 +24,11 @@ public class ReadReplay {
 
         for(String filePath : fileList) {
 
+            if(!filePath.toLowerCase().endsWith(".rofl")){
+                System.out.println("잘못된 파일 선택");
+                return;
+            }
+
             String[] gameDate = filePath.split("_");
             String team = gameDate[0].toUpperCase();
             String date = gameDate[1] + gameDate[2];
@@ -105,12 +110,12 @@ public class ReadReplay {
     public static void outFile(JsonNode statsArray, String fileName){
         // String fileName = "output.csv";
         // String csvFilePath = "src/main/resources/csv/"+fileName;
-        String csvFilePath = fileName + ".csv";
+        String csvFilePath = "csv/" + fileName + ".csv";
 
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFilePath))) {
             // 헤더 작성
-            writer.write("날짜,팀,포지션,챔피언,K,D,A,승/패\n");
+            writer.write("날짜,팀,포지션,소환사닉네임,챔피언,K,D,A,승/패\n");
 
             // 데이터 작성
             for (JsonNode statsNode : statsArray) {
@@ -124,7 +129,7 @@ public class ReadReplay {
                 String skin = statsNode.get("SKIN").asText();
                 String Camp = statsNode.get("TEAM").asText().replace("100", "Blue").replace("200", "RED");
     
-                writer.write(String.join(",", "",Camp , teamPostion, name, skin, championsKilled, numDeaths, assists, win) + "\n");
+                writer.write(String.join(",",fileName,Camp , teamPostion, name, skin, championsKilled, numDeaths, assists, win) + "\n");
             }
 
             System.out.println("CSV 파일이 생성되었습니다: " + csvFilePath);

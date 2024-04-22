@@ -36,6 +36,16 @@ dependencies {
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
 }
 
+
+// jar {
+//     manifest {
+//         attributes 'Main-Class': 'package com.stats.lolgg.replays.ReadReplay;'
+//     }
+//     from {
+//         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+//     }
+// }
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
