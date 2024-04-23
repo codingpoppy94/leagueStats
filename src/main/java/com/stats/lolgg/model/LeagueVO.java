@@ -11,27 +11,29 @@ public class LeagueVO {
     private String game_id;
     private String riot_name;
     private String champ_name;
-    private String game_line;
+    private String position;
     private String kda;
     private boolean game_result;
     private String game_team;
     private LocalDateTime game_date;
     private LocalDateTime create_date;
+    private char delete_yn;
 
     public LeagueVO() {}
 
-    public LeagueVO(String id, String game_id, String riot_name, String champ_name, String game_line,
-                  String kda, boolean game_result, String game_team, LocalDateTime game_date, LocalDateTime create_date) {
+    public LeagueVO(String id, String game_id, String riot_name, String champ_name, String position,
+                  String kda, boolean game_result, String game_team, LocalDateTime game_date, LocalDateTime create_date, char delete_yn) {
         this.id = id;
         this.game_id = game_id;
         this.riot_name = riot_name;
         this.champ_name = champ_name;
-        this.game_line = game_line;
+        this.position = position;
         this.kda = kda;
         this.game_result = game_result;
         this.game_team = game_team;
         this.game_date = game_date;
         this.create_date = create_date;
+        this.delete_yn = delete_yn;
     }
 
     @Override
@@ -41,12 +43,13 @@ public class LeagueVO {
                 ", game_id='" + game_id + '\'' +
                 ", riot_name='" + riot_name + '\'' +
                 ", champ_name='" + champ_name + '\'' +
-                ", game_line='" + game_line + '\'' +
+                ", position='" + position + '\'' +
                 ", kda='" + kda + '\'' +
                 ", game_result=" + game_result +
                 ", game_team='" + game_team + '\'' +
                 ", game_date=" + game_date +
                 ", create_date=" + create_date +
+                ", delete_yn=" + delete_yn +
                 '}';
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ReadReplay {
+public class ReadReplayTest {
     public static void main(String[] args) {
 
         List<String> fileList = Arrays.asList(args);

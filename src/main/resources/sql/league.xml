@@ -8,13 +8,43 @@
             GAME_ID, 
             RIOT_NAME, 
             CHAMP_NAME, 
-            GAME_LINE, 
+            POSITION, 
             KDA, 
             GAME_RESULT, 
             GAME_TEAM, 
             GAME_DATE, 
-            CREATE_DATE
+            CREATE_DATE,
+            DELETE_YN
         FROM LEAGUE;
 
     </select>
+
+    <insert id="insertLeague">
+        INSERT INTO
+            (
+                id,
+                game_id,
+                riot_name,
+                champ_name,
+                position,
+                kda,
+                game_result,
+                game_date,
+                create_date,
+                delete_yn
+            )
+            VALUES
+            (
+                nextval('league_id_seq'),
+                #{game_id},
+                #{riot_name},
+                #{champ_name},
+                #{position},
+                #{kda},
+                #{game_result},
+                #{game_date},
+                CURRENT_TIMESTAMP,
+                #{delete_yn}
+            )
+    </insert>
 </mapper>

@@ -6,105 +6,103 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stats.lolgg.mapper.LeagueMapper;
+import com.stats.lolgg.model.LeagueVO;
+import com.stats.lolgg.service.LeagueService;
 
 public class ReadReplay {
+
+    @Autowired
+    private static LeagueService leagueService;
+
     public static void main(String[] args) {
+        
+        // 파일 경로 설정
+        String filePath = "src/main/resources/replays/1t_0422_0730.rofl";
+        Path path = Paths.get(filePath);
+        String fileName = path.getFileName().toString();
 
-        List<String> fileList = Arrays.asList(args);
+        // String[] gameDate = filePath.split("_");
+        // String team = gameDate[0].toUpperCase();
+        // String date = gameDate[1] + gameDate[2];
 
-        if (fileList.isEmpty()) {
-            System.out.println("파일 리스트가 비어 있습니다.");
-            return; // 종료
-        }
+        String startIndex = "{\"gameLength\":";
+        String endIndex = "\\\"}]\"}";
 
-        for(String filePath : fileList) {
-
-            if(!filePath.toLowerCase().endsWith(".rofl")){
-                System.out.println("잘못된 파일 선택");
-                return;
-            }
-
-            String[] gameDate = filePath.split("_");
-            String team = gameDate[0].toUpperCase();
-            String date = gameDate[1] + gameDate[2];
-
-            // 파일 경로 설정
-            // String filePath = "src/main/resources/replays/KR-7037267518.rofl";
-    
-            String startIndex = "{\"gameLength\":";
-            String endIndex = "\\\"}]\"}";
-    
-            try {
-                // 파일 열기
-                FileInputStream inputStream = new FileInputStream(filePath);
-                InputStreamReader isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-                
-                // 데이터 읽기
-                StringBuilder hexData = new StringBuilder();
-                // boolean patternFound = false;
-                int data;
-                
-                while ((data = isr.read()) != -1) {
-                    hexData.append((char) data);
-    
-                    // byte[] byteArray = new byte[] {(byte)data};
-                    // String dataString = new String(byteArray,"UTF-8");
-                    // System.out.println(dataString);
-    
-                    // hexData.append(dataString);
-    
-                    if(hexData.toString().endsWith(startIndex)){
-                        hexData.setLength(0);
-                        hexData.append(startIndex);
-                    }
-                    if(hexData.toString().endsWith(endIndex)){
-                        break;
-                    }
-                }
-                inputStream.close();
-    
-                String StringData = hexData.toString().replace("\\"+"\"", "\"");
-                StringData = StringData.replace("\"[", "[").replace("]\"", "]");
-    
-                ObjectMapper objectMapper = new ObjectMapper();
-                JsonNode rootNode = objectMapper.readTree(StringData);
-                JsonNode statsArray = rootNode.get("statsJson");
-    
-                for (JsonNode statsNode : statsArray) {
-                    // 원하는 프로퍼티 추출
-                    String assists = statsNode.get("ASSISTS").asText();
-                    String numDeaths = statsNode.get("NUM_DEATHS").asText();
-                    String championsKilled = statsNode.get("CHAMPIONS_KILLED").asText();
-                    String teamPostion = statsNode.get("TEAM_POSITION").asText().replace("JUNGLE", "JUG").replace("BOTTOM", "ADC").replace("UTILITY", "SUP").replace("MIDDLE", "MID");
-                    String name = statsNode.get("NAME").asText();
-                    String win = statsNode.get("WIN").asText().replace("WIN", "승").replace("FAIL","패");
-                    String skin = statsNode.get("SKIN").asText();
-                    String Camp = statsNode.get("TEAM").asText().replace("100", "Blue").replace("200", "RED");
-                    
-                    // 추출한 프로퍼티 출력
-                    System.out.println("ASSISTS: " + assists);
-                    System.out.println("NUM_DEATHS: " + numDeaths);
-                    System.out.println("CHAMPIONS_KILLED: " + championsKilled);
-                    System.out.println("TEAM_POSITION: " + teamPostion);
-                    System.out.println("NAME: " + name);
-                    System.out.println("WIN: " + win);
-                    System.out.println("SKIN: " + skin);
-                }
-    
-                outFile(statsArray,team+date);
+        try {
+            // 파일 열기
+            FileInputStream inputStream = new FileInputStream(filePath);
+            InputStreamReader isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             
-                // 파일 닫기
-            } catch (IOException e) {
-                e.printStackTrace();
+            // 데이터 읽기
+            StringBuilder hexData = new StringBuilder();
+            // boolean patternFound = false;
+            int data;
+            
+            while ((data = isr.read()) != -1) {
+                hexData.append((char) data);
+
+                // byte[] byteArray = new byte[] {(byte)data};
+                // String dataString = new String(byteArray,"UTF-8");
+                // System.out.println(dataString);
+
+                // hexData.append(dataString);
+
+                if(hexData.toString().endsWith(startIndex)){
+                    hexData.setLength(0);
+                    hexData.append(startIndex);
+                }
+                if(hexData.toString().endsWith(endIndex)){
+                    break;
+                }
+            }
+            String StringData = hexData.toString().replace("\\"+"\"", "\"");
+            StringData = StringData.replace("\"[", "[").replace("]\"", "]");
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode rootNode = objectMapper.readTree(StringData);
+            JsonNode statsArray = rootNode.get("statsJson");
+
+            for (JsonNode statsNode : statsArray) {
+                // 원하는 프로퍼티 추출
+                String assists = statsNode.get("ASSISTS").asText();
+                String numDeaths = statsNode.get("NUM_DEATHS").asText();
+                String championsKilled = statsNode.get("CHAMPIONS_KILLED").asText();
+                String teamPostion = statsNode.get("TEAM_POSITION").asText().replace("JUNGLE", "JUG").replace("BOTTOM", "ADC").replace("UTILITY", "SUP").replace("MIDDLE", "MID");
+                String name = statsNode.get("NAME").asText();
+                String win = statsNode.get("WIN").asText().replace("WIN", "승").replace("FAIL","패");
+                String skin = statsNode.get("SKIN").asText();
+                String Camp = statsNode.get("TEAM").asText().replace("100", "Blue").replace("200", "RED");
+                
+                // 추출한 프로퍼티 출력
+                System.out.println("ASSISTS: " + assists);
+                System.out.println("NUM_DEATHS: " + numDeaths);
+                System.out.println("CHAMPIONS_KILLED: " + championsKilled);
+                System.out.println("TEAM_POSITION: " + teamPostion);
+                System.out.println("NAME: " + name);
+                System.out.println("WIN: " + win);
+                System.out.println("SKIN: " + skin);
             }
 
-        }
+            // outFile(statsArray,team+date);
+            saveAll(statsArray, fileName);
 
+            System.out.println("저장완료");
+            // 파일 닫기
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void outFile(JsonNode statsArray, String fileName){
@@ -139,6 +137,51 @@ public class ReadReplay {
 
     }
 
+    public static void saveAll(JsonNode statsArray, String fileName){
+        String resource = "mybatis-config.xml";
+
+        
+        // LeagueService leagueService = new LeagueService();
+        List<LeagueVO> dataList = new ArrayList<>();
+        
+        int currentYear = LocalDateTime.now().getYear();
+        String[] monthDay = fileName.split("_");
+        
+        int month = Integer.parseInt(monthDay[1].substring(0, 2));
+        int day = Integer.parseInt(monthDay[1].substring(2));
+
+        // 현재 년도와 추출한 월, 일을 사용하여 LocalDateTime 생성
+        LocalDateTime gameDate = LocalDateTime.of(currentYear, month, day, 0, 0);
+
+        for (JsonNode statsNode : statsArray) {
+            LeagueVO leagueVO = new LeagueVO();
+            // 원하는 프로퍼티 추출
+            String assists = statsNode.get("ASSISTS").asText();
+            String numDeaths = statsNode.get("NUM_DEATHS").asText();
+            String championsKilled = statsNode.get("CHAMPIONS_KILLED").asText();
+            String teamPostion = statsNode.get("TEAM_POSITION").asText().replace("JUNGLE", "JUG").replace("BOTTOM", "ADC").replace("UTILITY", "SUP").replace("MIDDLE", "MID");
+            String name = statsNode.get("NAME").asText();
+            String win = statsNode.get("WIN").asText().replace("Win", "승").replace("Fail","패");
+            boolean gameResult = win.equals("승");
+            String skin = statsNode.get("SKIN").asText();
+            String Camp = statsNode.get("TEAM").asText().replace("100", "Blue").replace("200", "RED");
+
+            String kda = championsKilled + "/" + numDeaths + "/" + assists;
+
+            leagueVO.setGame_id(fileName);
+            leagueVO.setGame_team(Camp);
+            leagueVO.setPosition(teamPostion);
+            leagueVO.setRiot_name(name);
+            leagueVO.setChamp_name(skin);
+            leagueVO.setKda(kda);
+            leagueVO.setGame_result(gameResult);
+            leagueVO.setGame_date(gameDate);
+            leagueVO.setDelete_yn('N');
+
+            dataList.add(leagueVO);
+        }
+        leagueService.saveAll(dataList);
+    }
     
     // // 16진수 데이터를 UTF-8 텍스트로 변환하는 메서드
     // public static String hexToText(String hexData) {
