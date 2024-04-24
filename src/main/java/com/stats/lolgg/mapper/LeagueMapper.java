@@ -10,6 +10,6 @@ import com.stats.lolgg.model.LeagueVO;
 public interface LeagueMapper {
     List<LeagueVO> findAll();
     LeagueVO findByRiotName(String riotName);
-    List<LeagueVO> insertLeague(List<LeagueVO> leagueVO);
+    void insertLeague(List<LeagueVO> leagueVO);
     
 }

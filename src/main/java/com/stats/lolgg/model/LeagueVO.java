@@ -13,7 +13,7 @@ public class LeagueVO {
     private String champ_name;
     private String position;
     private String kda;
-    private boolean game_result;
+    private String game_result;
     private String game_team;
     private LocalDateTime game_date;
     private LocalDateTime create_date;
@@ -22,7 +22,7 @@ public class LeagueVO {
     public LeagueVO() {}
 
     public LeagueVO(String id, String game_id, String riot_name, String champ_name, String position,
-                  String kda, boolean game_result, String game_team, LocalDateTime game_date, LocalDateTime create_date, char delete_yn) {
+                  String kda, String game_result, String game_team, LocalDateTime game_date, LocalDateTime create_date, char delete_yn) {
         this.id = id;
         this.game_id = game_id;
         this.riot_name = riot_name;

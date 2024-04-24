@@ -22,9 +22,6 @@ import com.stats.lolgg.service.LeagueService;
 
 public class ReadReplay {
 
-    @Autowired
-    private static LeagueService leagueService;
-
     public static void main(String[] args) {
         
         // 파일 경로 설정
@@ -138,8 +135,6 @@ public class ReadReplay {
     }
 
     public static void saveAll(JsonNode statsArray, String fileName){
-        String resource = "mybatis-config.xml";
-
         
         // LeagueService leagueService = new LeagueService();
         List<LeagueVO> dataList = new ArrayList<>();
@@ -162,7 +157,7 @@ public class ReadReplay {
             String teamPostion = statsNode.get("TEAM_POSITION").asText().replace("JUNGLE", "JUG").replace("BOTTOM", "ADC").replace("UTILITY", "SUP").replace("MIDDLE", "MID");
             String name = statsNode.get("NAME").asText();
             String win = statsNode.get("WIN").asText().replace("Win", "승").replace("Fail","패");
-            boolean gameResult = win.equals("승");
+            // boolean gameResult = win.equals("승");
             String skin = statsNode.get("SKIN").asText();
             String Camp = statsNode.get("TEAM").asText().replace("100", "Blue").replace("200", "RED");
 
@@ -174,13 +169,13 @@ public class ReadReplay {
             leagueVO.setRiot_name(name);
             leagueVO.setChamp_name(skin);
             leagueVO.setKda(kda);
-            leagueVO.setGame_result(gameResult);
+            leagueVO.setGame_result(win);
             leagueVO.setGame_date(gameDate);
             leagueVO.setDelete_yn('N');
 
             dataList.add(leagueVO);
         }
-        leagueService.saveAll(dataList);
+        // leagueService.saveAll(dataList);
     }
     
     // // 16진수 데이터를 UTF-8 텍스트로 변환하는 메서드

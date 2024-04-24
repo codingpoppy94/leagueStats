@@ -19,8 +19,8 @@
 
     </select>
 
-    <insert id="insertLeague">
-        INSERT INTO
+    <insert id="insertLeague" parameterType="java.util.List">
+        INSERT INTO LEAGUE
             (
                 id,
                 game_id,
@@ -29,22 +29,26 @@
                 position,
                 kda,
                 game_result,
+                game_team,
                 game_date,
                 create_date,
                 delete_yn
             )
             VALUES
-            (
-                nextval('league_id_seq'),
-                #{game_id},
-                #{riot_name},
-                #{champ_name},
-                #{position},
-                #{kda},
-                #{game_result},
-                #{game_date},
-                CURRENT_TIMESTAMP,
-                #{delete_yn}
-            )
+            <foreach collection="list" item="item" separator=",">
+                (
+                    nextval('league_id_seq'),
+                    #{item.game_id},
+                    #{item.riot_name},
+                    #{item.champ_name},
+                    #{item.position},
+                    #{item.kda},
+                    #{item.game_result},
+                    #{item.game_team},
+                    #{item.game_date},
+                    CURRENT_TIMESTAMP,
+                    #{item.delete_yn}
+                )
+            </foreach>
     </insert>
 </mapper>
