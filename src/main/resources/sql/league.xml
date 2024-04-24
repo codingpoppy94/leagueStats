@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.stats.lolgg.mapper.LeagueMapper">
+
+    <!-- SELECT -->
+
+    <!-- 전체 조회 (조건 없음) -->
     <select id="findAll" resultType="com.stats.lolgg.model.LeagueVO">
         SELECT 
             ID, 
@@ -15,10 +19,65 @@
             GAME_DATE, 
             CREATE_DATE,
             DELETE_YN
-        FROM LEAGUE;
+        FROM LEAGUE
 
     </select>
 
+    <!-- 최근 TOP 10 조회 (riot_name) -->
+    <select id="findTop10" parameterType="com.stats.lolgg.model.LeagueVO" resultType="com.stats.lolgg.model.LeagueVO">
+        SELECT 
+            ID, 
+            GAME_ID, 
+            RIOT_NAME, 
+            CHAMP_NAME, 
+            POSITION, 
+            KDA, 
+            GAME_RESULT, 
+            GAME_TEAM, 
+            GAME_DATE, 
+            CREATE_DATE,
+            DELETE_YN
+        FROM LEAGUE
+        WHERE RIOT_NAME = #{riot_name}
+        AND DELETE_YN = 'N'
+        AND GAME_DATE <![CDATA[ < ]]> CURRENT_TIMESTAMP 
+        ORDER BY ABS(EXTRACT(EPOCH FROM CURRENT_TIMESTAMP - #{game_date}))
+        LIMIT 10
+
+    </select>
+
+    <!-- 전체 전적 조회 (riot_name) -->
+    <select id="findRecord" parameterType="String" resultType="java.util.hashmap">
+        SELECT 
+            POSITION ,
+            COUNT(*) AS TOTAL_COUNT,
+            COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
+            COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE
+        FROM LEAGUE
+        WHERE RIOT_NAME = #{riot_name}
+        AND DELETE_YN = 'N'
+        GROUP BY POSITION
+    </select>
+
+    <!-- 최근 전적 한달 조회 (riot_name) -->
+    <select id="findRecordOneMonth" parameterType="com.stats.lolgg.model.LeagueVO" resultType="com.stats.lolgg.model.LeagueVO">
+        SELECT 
+            COUNT(*) AS TOTAL_COUNT,
+            COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
+            COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE
+        FROM LEAGUE
+        WHERE RIOT_NAME = #{riot_name}
+        AND DELETE_YN = 'N'
+        <![CDATA[
+        AND GAME_DATE >= DATE_TRUNC('month', CURRENT_TIMESTAMP)
+        AND GAME_DATE < DATE_TRUNC('month', CURRENT_TIMESTAMP) + INTERVAL '1 month'
+        ]]>
+    </select>
+
+
+    <!-- INSERT  -->
+
+    <!-- 리플 데이터 저장 -->
     <insert id="insertLeague" parameterType="java.util.List">
         INSERT INTO LEAGUE
             (
