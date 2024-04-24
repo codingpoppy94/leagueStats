@@ -24,7 +24,7 @@
     </select>
 
     <!-- 최근 TOP 10 조회 (riot_name) -->
-    <select id="findTop10" parameterType="com.stats.lolgg.model.LeagueVO" resultType="com.stats.lolgg.model.LeagueVO">
+    <select id="findTop10" parameterType="String" resultType="com.stats.lolgg.model.LeagueVO">
         SELECT 
             ID, 
             GAME_ID, 
@@ -34,22 +34,20 @@
             KDA, 
             GAME_RESULT, 
             GAME_TEAM, 
-            GAME_DATE, 
-            CREATE_DATE,
-            DELETE_YN
+            GAME_DATE
         FROM LEAGUE
         WHERE RIOT_NAME = #{riot_name}
         AND DELETE_YN = 'N'
         AND GAME_DATE <![CDATA[ < ]]> CURRENT_TIMESTAMP 
-        ORDER BY ABS(EXTRACT(EPOCH FROM CURRENT_TIMESTAMP - #{game_date}))
+        ORDER BY ABS(EXTRACT(EPOCH FROM CURRENT_TIMESTAMP - GAME_DATE))
         LIMIT 10
 
     </select>
 
     <!-- 전체 전적 조회 (riot_name) -->
-    <select id="findRecord" parameterType="String" resultType="java.util.hashmap">
+    <select id="findRecord" parameterType="String" resultType="java.util.hashMap">
         SELECT 
-            POSITION ,
+            POSITION,
             COUNT(*) AS TOTAL_COUNT,
             COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
             COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE
@@ -60,7 +58,7 @@
     </select>
 
     <!-- 최근 전적 한달 조회 (riot_name) -->
-    <select id="findRecordOneMonth" parameterType="com.stats.lolgg.model.LeagueVO" resultType="com.stats.lolgg.model.LeagueVO">
+    <select id="findRecordOneMonth" parameterType="String" resultType="java.util.hashMap">
         SELECT 
             COUNT(*) AS TOTAL_COUNT,
             COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
@@ -74,6 +72,20 @@
         ]]>
     </select>
 
+    <!-- 모스트 픽 (riot_name) -->
+    <select id="findMostPick" parameterType="String" resultType="java.util.hashMap">
+        SELECT 
+            CHAMP_NAME,
+            COUNT(CHAMP_NAME) AS TOTAL_COUNT,
+            COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
+            COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE
+        FROM LEAGUE
+        WHERE RIOT_NAME = #{riot_name}
+        AND DELETE_YN = 'N'
+        GROUP BY CHAMPAME, GAME_RESULT
+        LIMIT 10
+
+    </select>
 
     <!-- INSERT  -->
 
@@ -110,4 +122,10 @@
                 )
             </foreach>
     </insert>
+
+    <!-- UPDATE -->
+
+    <!-- 탈퇴회원처리 -->
+
+
 </mapper>
