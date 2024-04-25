@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.stats.lolgg.command.LeagueManager;
 import com.stats.lolgg.command.UserManager;
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
@@ -29,8 +30,8 @@ public class ReadyListener extends ListenerAdapter {
     private UserManager userManager;
 
     @Autowired
-    private LeagueService leagueService;
-    
+    private LeagueManager leagueManager;
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
 
@@ -198,33 +199,30 @@ public class ReadyListener extends ListenerAdapter {
             /**
              * !전적
              */
-            if (event.getMessage().getContentRaw().equals("!전적")) {
-                // JDA jda = event.getJDA();
-
+            if (message[0].equalsIgnoreCase("!전적")) {
+                
+                String riotName = "";
+                String templateMessage = "";
                 // 남의꺼 호출
                 if(message.length > 1) {
-                    
+                    riotName = message[1];
+                    templateMessage = leagueManager.getRecord(riotName);
                 } else {
                     // 자기꺼 호출
                     String nickName = event.getMember().getNickname();
                     int index = nickName.lastIndexOf("/");
-                    nickName = nickName.substring(0, index);
+                    riotName = nickName.substring(0, index);
 
-                    List<LeagueStatsVO> allRecord = leagueService.findRecord(nickName);
-                    List<LeagueVO> recentMatch = leagueService.findTopTen(nickName);
-                    List<LeagueStatsVO> mostPick = leagueService.findMostPick(nickName);
-                    List<LeagueStatsVO> monthRecord = leagueService.findRecordMonth(nickName);
+                    templateMessage = leagueManager.getRecord(riotName);
                 }
-
-                sendMessage(channel, "ㅈㅈ");
-                
-                
-                // channel.sendMessage("서버 ID: " + servierId).queue();
+                if("".equals(templateMessage)) {
+                    sendMessage(channel, "not found data");
+                } else {
+                    sendMessage(channel, templateMessage);
+                }
             }
-
         }
     }
-
 
     // 채널 메시지 보내기
     private void sendMessage(MessageChannel channel,String message){

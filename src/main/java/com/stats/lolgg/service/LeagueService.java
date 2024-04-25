@@ -44,7 +44,7 @@ public class LeagueService {
         return leagueMapper.findRecord(riot_name);
     }
 
-    public List<LeagueStatsVO> findRecordMonth(String riot_name){
+    public LeagueStatsVO findRecordMonth(String riot_name){
         return leagueMapper.findRecordMonth(riot_name);
     }
 
@@ -76,7 +76,7 @@ public class LeagueService {
 
         int index = fileNameWithExt.lastIndexOf('.');
         String fileName = fileNameWithExt.substring(0, index).toLowerCase();
-        // System.out.println("fileName: "+fileName);
+        System.out.println("fileName: "+fileName);
 
         List<LeagueVO> leagueVOList = new ArrayList<>();
     

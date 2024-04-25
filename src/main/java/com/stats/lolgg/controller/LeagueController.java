@@ -45,7 +45,7 @@ public class LeagueController {
     }
 
     @GetMapping("/getRecordMonth")
-    public List<LeagueStatsVO> getRecordMonth(@RequestParam String riot_name){
+    public LeagueStatsVO getRecordMonth(@RequestParam String riot_name){
         return leagueService.findRecordMonth(riot_name);
     }
 

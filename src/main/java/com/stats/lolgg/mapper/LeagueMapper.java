@@ -13,7 +13,7 @@ public interface LeagueMapper {
     List<LeagueVO> findAll();
     List<LeagueVO> findTopTen(String riot_name);
     List<LeagueStatsVO> findRecord(String riot_name);
-    List<LeagueStatsVO> findRecordMonth(String riot_name);
+    LeagueStatsVO findRecordMonth(String riot_name);
     List<LeagueStatsVO> findMostPick(String riot_name);
     List<LeagueStatsVO> findChampMaster(String champ_name);
     List<LeagueStatsVO> findChampHighRate();
