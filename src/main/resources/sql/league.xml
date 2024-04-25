@@ -5,6 +5,21 @@
 
     <!-- SELECT -->
 
+    <!-- 한달 조회 -->
+    <sql id="where_month">
+        <![CDATA[
+        AND GAME_DATE >= DATE_TRUNC('month', CURRENT_TIMESTAMP)
+        AND GAME_DATE < DATE_TRUNC('month', CURRENT_TIMESTAMP) + INTERVAL '1 month'
+        ]]>
+    </sql>
+
+    <!-- TOP 10  -->
+    <sql id="where_top_ten">
+        AND GAME_DATE <![CDATA[ < ]]> CURRENT_TIMESTAMP 
+        ORDER BY ABS(EXTRACT(EPOCH FROM CURRENT_TIMESTAMP - GAME_DATE))
+        LIMIT 10
+    </sql>
+
     <!-- 전체 조회 (조건 없음) -->
     <select id="findAll" resultType="com.stats.lolgg.model.LeagueVO">
         SELECT 
@@ -24,10 +39,9 @@
     </select>
 
     <!-- 최근 TOP 10 조회 (riot_name) -->
-    <select id="findTop10" parameterType="String" resultType="com.stats.lolgg.model.LeagueVO">
+    <select id="findTopTen" parameterType="String" resultType="com.stats.lolgg.model.LeagueVO">
         SELECT 
-            ID, 
-            GAME_ID, 
+            GAME_ID
             RIOT_NAME, 
             CHAMP_NAME, 
             POSITION, 
@@ -38,55 +52,84 @@
         FROM LEAGUE
         WHERE RIOT_NAME = #{riot_name}
         AND DELETE_YN = 'N'
-        AND GAME_DATE <![CDATA[ < ]]> CURRENT_TIMESTAMP 
-        ORDER BY ABS(EXTRACT(EPOCH FROM CURRENT_TIMESTAMP - GAME_DATE))
-        LIMIT 10
+        <include refid="where_top_ten"></include>
 
     </select>
 
     <!-- 전체 전적 조회 (riot_name) -->
-    <select id="findRecord" parameterType="String" resultType="java.util.hashMap">
+    <select id="findRecord" parameterType="String" resultType="com.stats.lolgg.model.LeagueStatsVO">
         SELECT 
             POSITION,
             COUNT(*) AS TOTAL_COUNT,
             COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
-            COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE
+            COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE,
+            ROUND(COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END)::numeric / COUNT(*) * 100 ,2) AS WIN_RATE
         FROM LEAGUE
         WHERE RIOT_NAME = #{riot_name}
         AND DELETE_YN = 'N'
         GROUP BY POSITION
     </select>
 
-    <!-- 최근 전적 한달 조회 (riot_name) -->
-    <select id="findRecordOneMonth" parameterType="String" resultType="java.util.hashMap">
+    <!-- 최근 한달 전적 조회 (riot_name) -->
+    <select id="findRecordMonth" parameterType="String" resultType="com.stats.lolgg.model.LeagueStatsVO">
         SELECT 
             COUNT(*) AS TOTAL_COUNT,
             COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
-            COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE
+            COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE,
+            ROUND(COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END)::numeric / COUNT(*) * 100 ,2) AS WIN_RATE
         FROM LEAGUE
         WHERE RIOT_NAME = #{riot_name}
         AND DELETE_YN = 'N'
-        <![CDATA[
-        AND GAME_DATE >= DATE_TRUNC('month', CURRENT_TIMESTAMP)
-        AND GAME_DATE < DATE_TRUNC('month', CURRENT_TIMESTAMP) + INTERVAL '1 month'
-        ]]>
+        <include refid="where_month"></include>
     </select>
 
     <!-- 모스트 픽 (riot_name) -->
-    <select id="findMostPick" parameterType="String" resultType="java.util.hashMap">
+    <select id="findMostPick" parameterType="String" resultType="com.stats.lolgg.model.LeagueStatsVO">
         SELECT 
             CHAMP_NAME,
             COUNT(CHAMP_NAME) AS TOTAL_COUNT,
             COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
-            COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE
+            COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE,
+            ROUND(COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END)::numeric / COUNT(*) * 100 ,2) AS WIN_RATE
         FROM LEAGUE
         WHERE RIOT_NAME = #{riot_name}
         AND DELETE_YN = 'N'
-        GROUP BY CHAMPAME, GAME_RESULT
+        GROUP BY CHAMP_NAME
+        ORDER BY TOTAL_COUNT DESC 
         LIMIT 10
 
     </select>
 
+    <!-- 장인 -->
+    <select id="findChampMaster" parameterType="String" resultType="com.stats.lolgg.model.LeagueStatsVO">
+        SELECT 
+            RIOT_NAME, 
+            COUNT(RIOT_NAME) AS TOTAL_COUNT,
+            COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
+            COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE,
+            ROUND(COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END)::NUMERIC / COUNT(*) * 100 ,2) AS WIN_RATE
+        FROM LEAGUE 
+        WHERE CHAMP_NAME = #{champ_name}
+        AND DELETE_YN = 'N'
+        GROUP BY RIOT_NAME 
+        ORDER BY TOTAL_COUNT DESC, WIN_RATE DESC
+    </select>
+
+    <!-- 이번달 승률 좋은 챔프 -->
+    <select id="findChampHighRate" resultType="com.stats.lolgg.model.LeagueStatsVO">
+        SELECT 
+            CHAMP_NAME,
+            COUNT(CHAMP_NAME) AS TOTAL_COUNT,
+            COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
+            COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
+            ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
+        FROM LEAGUE 
+        WHERE DELETE_YN  = 'N'
+        <include refid="where_month"></include>
+        GROUP BY CHAMP_NAME
+        ORDER BY TOTAL_COUNT DESC, WIN_RATE DESC 
+    </select>
+        
     <!-- INSERT  -->
 
     <!-- 리플 데이터 저장 -->
@@ -126,6 +169,20 @@
     <!-- UPDATE -->
 
     <!-- 탈퇴회원처리 -->
+    <update id="changeDeleteYN" parameterType="String">
+        UPDATE LEAGUE
+            SET DELETE_YN = 'Y'
+        WHERE 
+            RIOT_NAME = #{riot_name}
+
+    </update>
+
+    <!-- 닉네임 변경 -->
+    <update id="changeRiotName" parameterType="com.stats.lolgg.model.LeagueStatsVO" >
+        UPDATE LEAGUE
+            SET RIOT_NAME = #{changed_riot_name} 
+        WHERE RIOT_NAME = #{origin_riot_name}
+    </update>
 
 
 </mapper>

@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stats.lolgg.mapper.LeagueMapper;
+import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 
 
@@ -23,6 +25,8 @@ public class LeagueService {
 
     @Autowired
     private LeagueMapper leagueMapper;
+
+    /* select */
     
     /**
      * 전체 조회
@@ -32,6 +36,31 @@ public class LeagueService {
         return leagueMapper.findAll();
     }
 
+    public List<LeagueVO> findTopTen(String riot_name){
+        return leagueMapper.findTopTen(riot_name);
+    }
+
+    public List<LeagueVO> findRecord(String riot_name){
+        return leagueMapper.findRecord(riot_name);
+    }
+
+    public List<LeagueStatsVO> findRecordMonth(String riot_name){
+        return leagueMapper.findRecordMonth(riot_name);
+    }
+
+    public List<LeagueStatsVO> findMostPick(String riot_name){
+        return leagueMapper.findMostPick(riot_name);
+    }
+
+    public List<LeagueStatsVO> findChampMaster(String champ_name){
+        return leagueMapper.findChampMaster(champ_name);
+    }
+
+    public List<LeagueStatsVO> findChampHighRate(){
+        return leagueMapper.findChampHighRate();
+    }
+
+    /* insert */
 
     /**
      * Replay 데이터 파싱>저장
@@ -46,20 +75,27 @@ public class LeagueService {
         String fileNameWithExt = file.getOriginalFilename();
 
         int index = fileNameWithExt.lastIndexOf('.');
-        String fileName = fileNameWithExt.substring(0, index);
+        String fileName = fileNameWithExt.substring(0, index).toLowerCase();
         // System.out.println("fileName: "+fileName);
 
         List<LeagueVO> leagueVOList = new ArrayList<>();
     
         // 날짜
         int currentYear = LocalDateTime.now().getYear();
-        String[] monthDay = fileName.split("_");
+        String[] dateTime = fileName.split("_");
         
-        int month = Integer.parseInt(monthDay[1].substring(0, 2));
-        int day = Integer.parseInt(monthDay[1].substring(2));
+        int month = Integer.parseInt(dateTime[1].substring(0, 2));
+        int day = Integer.parseInt(dateTime[1].substring(2));
+
+        int hour = Integer.parseInt(dateTime[2].substring(0, 2));
+        if(hour == 24) {
+            hour = 0;
+        }
+        int minute = Integer.parseInt(dateTime[2].substring(2));
+        
 
         // 현재 년도와 추출한 월, 일을 사용하여 LocalDateTime 생성
-        LocalDateTime gameDate = LocalDateTime.of(currentYear, month, day, 0, 0);
+        LocalDateTime gameDate = LocalDateTime.of(currentYear, month, day, hour, minute);
 
         for (JsonNode statsNode : statsArray) {
             LeagueVO leagueVO = new LeagueVO();
@@ -71,7 +107,7 @@ public class LeagueService {
             String name = statsNode.get("NAME").asText();
             String win = statsNode.get("WIN").asText().replace("Win", "승").replace("Fail","패");
             String skin = statsNode.get("SKIN").asText();
-            String Camp = statsNode.get("TEAM").asText().replace("100", "Blue").replace("200", "RED");
+            String Camp = statsNode.get("TEAM").asText().replace("100", "blue").replace("200", "red");
 
             String kda = championsKilled + "/" + numDeaths + "/" + assists;
 
@@ -90,6 +126,17 @@ public class LeagueService {
         leagueMapper.insertLeague(leagueVOList);
     }
 
+    /* update */
+
+    public int changeDeleteYN(String riot_name){
+        return leagueMapper.changeDeleteYN(riot_name);
+    }
+
+    public int changeRiotName(Map<String,Object> paramMap){
+        return leagueMapper.changeRiotName(paramMap);
+    }
+
+    /* 내부 함수 */
     private JsonNode parseReplay(MultipartFile file) throws Exception {
 
         String startIndex = "{\"gameLength\":";

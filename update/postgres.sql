@@ -52,7 +52,7 @@ select
     COUNT(*) AS total_count,
     COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
     COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose
-
+    ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
 FROM league
 where riot_name = '잘생긴정현이'
 and delete_yn  = 'N'
@@ -60,7 +60,6 @@ and game_date >= DATE_TRUNC('month', CURRENT_TIMESTAMP)
 and game_date < DATE_TRUNC('month', CURRENT_TIMESTAMP) + INTERVAL '1 month'
 
 group by position;
-
 
 -- 모스트픽
 SELECT champ_name,count(champ_name) ,
@@ -70,4 +69,55 @@ FROM league
 
 where riot_name = '잘생긴정현이'
 and delete_yn = 'N'
-group by champ_name, game_result
+group by champ_name
+ORDER BY TOTAL_COUNT DESC
+limit 10
+
+/* 승률 좋은 챔프*/
+select champ_name , count(champ_name),
+		COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
+		COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
+		ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
+
+from league 
+where delete_yn  = 'N'
+group by champ_name
+order by win_rate desc , count desc 
+
+/* 장인 */
+select 
+	riot_name, 
+	count(riot_name) as total_count,
+	COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
+	COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
+	ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
+from league 
+where champ_name = 'Vi'
+and delete_yn = 'N'
+group by riot_name 
+order by total_count desc  , win_rate  desc
+
+/* game_id */		
+select 
+	game_id, riot_name, champ_name, position, kda, game_result, game_team, game_date
+from 
+league l where game_id ='2t_0424_2355'		
+ORDER BY 
+  CASE WHEN game_team = 'blue' THEN
+    CASE position
+      WHEN 'TOP' THEN 1
+      WHEN 'JUG' THEN 2
+      WHEN 'MID' THEN 3
+      WHEN 'ADC' THEN 4
+      WHEN 'SUP' THEN 5
+    END
+  ELSE
+    CASE position
+      WHEN 'TOP' THEN 6
+      WHEN 'JUG' THEN 7
+      WHEN 'MID' THEN 8
+      WHEN 'ADC' THEN 9
+      WHEN 'SUP' THEN 10
+    END
+  END
+
