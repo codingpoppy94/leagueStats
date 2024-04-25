@@ -40,7 +40,7 @@ public class LeagueController {
     }
 
     @GetMapping("/getRecord")
-    public List<LeagueVO> getRecord(@RequestParam String riot_name){
+    public List<LeagueStatsVO> getRecord(@RequestParam String riot_name){
         return leagueService.findRecord(riot_name);
     }
 

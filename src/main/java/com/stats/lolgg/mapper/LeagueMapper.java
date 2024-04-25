@@ -12,7 +12,7 @@ import com.stats.lolgg.model.LeagueVO;
 public interface LeagueMapper {
     List<LeagueVO> findAll();
     List<LeagueVO> findTopTen(String riot_name);
-    List<LeagueVO> findRecord(String riot_name);
+    List<LeagueStatsVO> findRecord(String riot_name);
     List<LeagueStatsVO> findRecordMonth(String riot_name);
     List<LeagueStatsVO> findMostPick(String riot_name);
     List<LeagueStatsVO> findChampMaster(String champ_name);

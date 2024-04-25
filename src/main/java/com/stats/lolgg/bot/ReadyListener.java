@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.stats.lolgg.command.UserManager;
+import com.stats.lolgg.model.LeagueStatsVO;
+import com.stats.lolgg.model.LeagueVO;
+import com.stats.lolgg.service.LeagueService;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -24,6 +27,9 @@ public class ReadyListener extends ListenerAdapter {
 
     @Autowired
     private UserManager userManager;
+
+    @Autowired
+    private LeagueService leagueService;
     
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -188,6 +194,34 @@ public class ReadyListener extends ListenerAdapter {
                 
                 channel.sendMessage("서버 ID: " + servierId).queue();
             }
+
+            /**
+             * !전적
+             */
+            if (event.getMessage().getContentRaw().equals("!전적")) {
+                // JDA jda = event.getJDA();
+
+                // 남의꺼 호출
+                if(message.length > 1) {
+                    
+                } else {
+                    // 자기꺼 호출
+                    String nickName = event.getMember().getNickname();
+                    int index = nickName.lastIndexOf("/");
+                    nickName = nickName.substring(0, index);
+
+                    List<LeagueStatsVO> allRecord = leagueService.findRecord(nickName);
+                    List<LeagueVO> recentMatch = leagueService.findTopTen(nickName);
+                    List<LeagueStatsVO> mostPick = leagueService.findMostPick(nickName);
+                    List<LeagueStatsVO> monthRecord = leagueService.findRecordMonth(nickName);
+                }
+
+                sendMessage(channel, "ㅈㅈ");
+                
+                
+                // channel.sendMessage("서버 ID: " + servierId).queue();
+            }
+
         }
     }
 

@@ -40,7 +40,7 @@ public class LeagueService {
         return leagueMapper.findTopTen(riot_name);
     }
 
-    public List<LeagueVO> findRecord(String riot_name){
+    public List<LeagueStatsVO> findRecord(String riot_name){
         return leagueMapper.findRecord(riot_name);
     }
 
