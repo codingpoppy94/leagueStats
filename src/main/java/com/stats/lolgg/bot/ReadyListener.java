@@ -41,6 +41,9 @@ public class ReadyListener extends ListenerAdapter {
         String originMessage = event.getMessage().getContentRaw();
         String[] message = originMessage.split("\\s");
 
+        String command = message[0];
+        // String nickName = "";
+
         if(message[0].charAt(0) == '!'){
             
             // 테스트1
@@ -70,7 +73,7 @@ public class ReadyListener extends ListenerAdapter {
                     String memberIndex = message[1];
                     int[] selectMember = memberIndexparsing(memberIndex, channel);
 
-                    if(memberIndex.length() > 1) {
+                    if(memberIndex.length() > 1 && selectMember[0] != 0) {
                         // 다중
                         int start = selectMember[0];
                         int end = selectMember[1];
@@ -90,11 +93,13 @@ public class ReadyListener extends ListenerAdapter {
                         sendMessage(channel, userManager.sendUserList());
                         
                     } else {
-                        int min = selectMember[0];
-                        List<Member> userList = userManager.getUserList();
-                        Member deleteMember = userList.get(min);
-                        userManager.removeUser(deleteMember);
-                        sendMessage(channel, userManager.sendUserList());
+                        if(selectMember[0] != 0){
+                            int min = selectMember[0];
+                            List<Member> userList = userManager.getUserList();
+                            Member deleteMember = userList.get(min);
+                            userManager.removeUser(deleteMember);
+                            sendMessage(channel, userManager.sendUserList());
+                        }
                     }
                     
                 }  else {
@@ -205,7 +210,9 @@ public class ReadyListener extends ListenerAdapter {
                 String templateMessage = "";
                 // 남의꺼 호출
                 if(message.length > 1) {
-                    riotName = message[1];
+                    int commandIndex = originMessage.indexOf(message[1]);
+                    riotName = originMessage.substring(commandIndex);
+
                     templateMessage = leagueManager.getRecord(riotName);
                 } else {
                     // 자기꺼 호출
@@ -238,22 +245,27 @@ public class ReadyListener extends ListenerAdapter {
     private int[] memberIndexparsing(String memberIndex, MessageChannel channel){
         int[] result = new int[2];
 
-        Pattern numberPattern = Pattern.compile("\\d");
-        Matcher numberMatcher = numberPattern.matcher(memberIndex);
-        if(numberMatcher.find()){
-            if(memberIndex.length() > 1) {
-                int min = Integer.parseInt(numberMatcher.group(0)) - 1;
-                int max = Integer.parseInt(memberIndex.substring(2)) -1;
-
-                result[0] = min;
-                result[1] = max;
-            
+        try{
+            Pattern numberPattern = Pattern.compile("\\d");
+            Matcher numberMatcher = numberPattern.matcher(memberIndex);
+            if(numberMatcher.find()){
+                if(memberIndex.length() > 1) {
+                    int min = Integer.parseInt(numberMatcher.group(0)) - 1;
+                    int max = Integer.parseInt(memberIndex.substring(2)) -1;
+    
+                    result[0] = min;
+                    result[1] = max;
+                
+                } else {
+                    result[0] = Integer.parseInt(memberIndex) - 1;
+                }
             } else {
-                result[0] = Integer.parseInt(memberIndex) - 1;
+                sendErrorMessage(channel);
             }
-        } else {
+        } catch (Exception e) {
             sendErrorMessage(channel);
         }
+
         return result;
     }
 
