@@ -60,6 +60,13 @@ public class LeagueManager {
 
     /* !통계  */
     public String getChampHighRate(){
-        return "";
+        List<LeagueStatsVO> records = leagueService.findChampHighRate();
+        if(records.size() < 1){
+            return "";
+        }
+        LolStatsTemplate template = new LolStatsTemplate();
+        String result = template.makeChampHighRateTemplate(records);
+        
+        return result;
     }
 }

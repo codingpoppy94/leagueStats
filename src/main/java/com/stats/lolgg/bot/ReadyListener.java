@@ -241,7 +241,20 @@ public class ReadyListener extends ListenerAdapter {
                     } else {
                         sendMessage(channel, templateMessage);
                     }
+                }
+            }
 
+            /* !통계 */
+            if (message[0].equalsIgnoreCase("!통계")) {
+                String templateMessage = "";
+                if(message.length < 2) {
+                    templateMessage = leagueManager.getChampHighRate();
+                    
+                    if("".equals(templateMessage)){
+                        sendMessage(channel, "not found data");
+                    } else {
+                        sendMessage(channel, templateMessage);
+                    }
                 }
             }
         }

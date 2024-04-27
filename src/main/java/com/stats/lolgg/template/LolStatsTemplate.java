@@ -104,6 +104,19 @@ public class LolStatsTemplate {
         }
         return header + content1;
     }
-    
+
+    /* !통계 */
+    public String makeChampHighRateTemplate(List<LeagueStatsVO> records){
+        String header = "**이번달 챔프 통계(5판 이상)** \n\n";
+        String content1 = "";
+
+        for(LeagueStatsVO record : records ){
+            String list = "";
+            list += record.getChamp_name() + " ";
+            list += record.getWin() + "승 " + record.getLose() + "패 " + record.getWin_rate() + "% \n";
+            content1 += list;
+        }
+        return header + content1;
+    }
 }
 
