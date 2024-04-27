@@ -20,9 +20,7 @@ public class LeagueManager {
 
     public LeagueManager () {}
 
-    /* 
-     * !전적조회
-     */
+    /* !전적 */
     public String getRecord(String riotName) {
 
         Map<String,Object> map =  new HashMap<String,Object>();
@@ -43,17 +41,24 @@ public class LeagueManager {
         map.put("monthRecord", monthRecord);
 
         LolStatsTemplate template = new LolStatsTemplate();
-        String result = template.makeTemplate(map);
+        String result = template.makeRecordTemplate(map);
 
         return result;
     }
 
-    /* 장인 챔 Rank */
-    public String getChampMaster(){
-        return "";
+    /* !장인 {riot_champ} */
+    public String getChampMaster(String champName){
+        List<LeagueStatsVO> records = leagueService.findChampMaster(champName);
+        if(records.size() < 1){
+            return "";
+        }
+        LolStatsTemplate template = new LolStatsTemplate();
+        String result = template.makeChampMasterTemplate(records, champName);
+
+        return result;
     }
 
-    /* 이번달 승률 좋은 챔 */
+    /* !통계  */
     public String getChampHighRate(){
         return "";
     }

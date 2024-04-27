@@ -60,6 +60,14 @@ public class LeagueService {
         return leagueMapper.findChampHighRate();
     }
 
+    public List<LeagueStatsVO> findRecordWithTeam(String riot_name){
+        return leagueMapper.findRecordWithTeam(riot_name);
+    }
+
+    public List<LeagueStatsVO> findRecordOtherTeam(String riot_name){
+        return leagueMapper.findRecordOtherTeam(riot_name);
+    }
+
     /* insert */
 
     /**

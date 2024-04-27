@@ -17,6 +17,8 @@ public interface LeagueMapper {
     List<LeagueStatsVO> findMostPick(String riot_name);
     List<LeagueStatsVO> findChampMaster(String champ_name);
     List<LeagueStatsVO> findChampHighRate();
+    List<LeagueStatsVO> findRecordWithTeam(String riot_name);
+    List<LeagueStatsVO> findRecordOtherTeam(String riot_name);
 
     void insertLeague(List<LeagueVO> leagueVO);
 

@@ -76,7 +76,7 @@ group by champ_name
 ORDER BY TOTAL_COUNT DESC
 limit 10
 
-/* 승률 좋은 챔프*/
+/* 픽 순 */
 select champ_name , count(champ_name),
 		COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
 		COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
@@ -124,3 +124,48 @@ ORDER BY
     END
   END
 
+
+/* 최근 30게임에서 같은 팀 시너지 */
+select 
+	A.riot_name,
+	count(A.riot_name) as total_count,
+	count(CASE WHEN A.game_result = '승' THEN 1 END) as win,
+	count(CASE WHEN A.game_result = '패' THEN 1 END) as lose
+	from league A 
+	inner join 
+	(
+		select * from league 
+		where riot_name = '잘생긴정현이'
+		order by game_date desc
+		limit 30
+	) B
+	on A.game_team = B.game_team 
+  and A.game_id = B.game_id 
+  and A.riot_name != '잘생긴정현이' 
+  and A.delete_yn = 'N'
+	group by A.riot_name
+	having  COUNT(A.riot_name) >= 3
+	order by total_count desc
+
+/* 나와 인간상성 찾기 */
+select 
+	A.riot_name,
+	count(A.riot_name) as total_count,
+	count(CASE WHEN A.game_result = '승' THEN 1 END) as win,
+	count(CASE WHEN A.game_result = '패' THEN 1 END) as lose
+	from league A 
+	inner join 
+	(
+		select * from league 
+		where riot_name = '신조차모독한천재'
+		order by game_date desc
+		limit 30
+	) B
+	on A.game_team != B.game_team 
+  and A.game_id = B.game_id 
+  and A.riot_name != '신조차모독한천재' 
+  and A.delete_yn = 'N'
+	and A.position = B.position
+	group by A.riot_name
+	having  COUNT(A.riot_name) >= 3
+	order by total_count desc

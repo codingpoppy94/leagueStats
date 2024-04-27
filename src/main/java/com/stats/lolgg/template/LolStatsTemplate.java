@@ -8,7 +8,8 @@ import com.stats.lolgg.model.LeagueVO;
 
 public class LolStatsTemplate {
 
-    public String makeTemplate(Map<String,Object> map){
+    /* !전적 템플릿 */
+    public String makeRecordTemplate(Map<String,Object> map){
 
         String riotName = (String) map.get("riotName");
         LeagueStatsVO monthRecord = (LeagueStatsVO) map.get("monthRecord");
@@ -88,6 +89,20 @@ public class LolStatsTemplate {
 
         String result =  headerStr + content + content2 + content3+ end;
         return result;
+    }
+
+    /* !장인 */
+    public String makeChampMasterTemplate(List<LeagueStatsVO> records, String champName){
+        String header = "**이번달 " +champName+ " 장인** \n\n";
+        String content1 = "";
+
+        for(LeagueStatsVO record : records ){
+            String list = "";
+            list += record.getRiot_name() + " ";
+            list += record.getWin() + "승 " + record.getLose() + "패 " + record.getWin_rate() + "% \n";
+            content1 += list;
+        }
+        return header + content1;
     }
     
 }

@@ -14,11 +14,11 @@
     </sql>
 
     <!-- TOP 10  -->
-    <sql id="where_top_ten">
+    <!--  <sql id="where_top_ten">
         AND GAME_DATE <![CDATA[ < ]]> CURRENT_TIMESTAMP 
         ORDER BY ABS(EXTRACT(EPOCH FROM CURRENT_TIMESTAMP - GAME_DATE))
         LIMIT 10
-    </sql>
+    </sql> -->
 
     <!-- 전체 조회 (조건 없음) -->
     <select id="findAll" resultType="com.stats.lolgg.model.LeagueVO">
@@ -52,7 +52,8 @@
         FROM LEAGUE
         WHERE RIOT_NAME = #{riot_name}
         AND DELETE_YN = 'N'
-        <include refid="where_top_ten"></include>
+        ORDER BY GAME_DATE DESC
+        LIMIT 10
 
     </select>
 
@@ -123,7 +124,7 @@
         ORDER BY TOTAL_COUNT DESC, WIN_RATE DESC
     </select>
 
-    <!-- 이번달 승률 좋은 챔프 -->
+    <!-- 이번달 핫한 챔프 픽,승률 -->
     <select id="findChampHighRate" resultType="com.stats.lolgg.model.LeagueStatsVO">
         SELECT 
             CHAMP_NAME,
@@ -136,6 +137,55 @@
         <include refid="where_month"></include>
         GROUP BY CHAMP_NAME
         ORDER BY TOTAL_COUNT DESC, WIN_RATE DESC 
+    </select>
+
+    <!-- 최근 30게임에서 같은 팀 시너지 -->
+    <select id="findRecordWithTeam" parameterType="String" resultType="com.stats.lolgg.model.LeagueStatsVO">
+        SELECT 
+            A.RIOT_NAME,
+            COUNT(A.RIOT_NAME) AS TOTAL_COUNT,
+            COUNT(CASE WHEN A.GAME_RESULT = '승' THEN 1 END) AS WIN,
+            COUNT(CASE WHEN A.GAME_RESULT = '패' THEN 1 END) AS LOSE
+        FROM LEAGUE A 
+        INNER JOIN  
+        (
+            SELECT * FROM LEAGUE 
+            WHERE RIOT_NAME = #{riot_name}
+            ORDER BY GAME_DATE DESC
+            LIMIT 30
+        ) B
+        ON A.GAME_TEAM = B.GAME_TEAM 
+        AND A.GAME_ID = B.GAME_ID 
+        AND A.RIOT_NAME != #{riot_name}
+        AND A.DELETE_YN = 'N'
+        GROUP BY A.RIOT_NAME
+        HAVING  COUNT(A.RIOT_NAME) <![CDATA[ >= ]]> 3
+        ORDER BY TOTAL_COUNT DESC
+    </select>
+
+    <!-- 나와 인간상성 찾기 -->
+    <select id="findRecordOtherTeam" parameterType="String" resultType="com.stats.lolgg.model.LeagueStatsVO">
+        SELECT 
+            A.RIOT_NAME,
+            COUNT(A.RIOT_NAME) AS TOTAL_COUNT,
+            COUNT(CASE WHEN A.GAME_RESULT = '승' THEN 1 END) AS WIN,
+            COUNT(CASE WHEN A.GAME_RESULT = '패' THEN 1 END) AS LOSE
+        FROM LEAGUE A 
+        INNER JOIN  
+        (
+            SELECT * FROM LEAGUE 
+            WHERE RIOT_NAME = #{riot_name}
+            ORDER BY GAME_DATE DESC
+            LIMIT 30
+        ) B
+        ON A.GAME_TEAM != B.GAME_TEAM 
+        AND A.GAME_ID = B.GAME_ID 
+        AND A.RIOT_NAME != #{riot_name}
+        AND A.DELETE_YN = 'N'
+        AND A.POSITION = B.POSITION
+        GROUP BY A.RIOT_NAME
+        HAVING  COUNT(A.RIOT_NAME) <![CDATA[ >= ]]> 3
+        ORDER BY TOTAL_COUNT DESC
     </select>
         
     <!-- INSERT  -->

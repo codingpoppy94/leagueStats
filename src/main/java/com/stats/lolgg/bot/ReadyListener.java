@@ -228,6 +228,22 @@ public class ReadyListener extends ListenerAdapter {
                     sendMessage(channel, templateMessage);
                 }
             }
+
+            /* !장인 */
+            if (message[0].equalsIgnoreCase("!장인")) {
+                String templateMessage = "";
+                if(message.length > 1) {
+                    String champName = message[1];
+                    templateMessage = leagueManager.getChampMaster(champName);
+
+                    if("".equals(templateMessage)){
+                        sendMessage(channel, "not found data");
+                    } else {
+                        sendMessage(channel, templateMessage);
+                    }
+
+                }
+            }
         }
     }
 
