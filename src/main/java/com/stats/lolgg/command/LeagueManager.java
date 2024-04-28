@@ -1,8 +1,12 @@
 package com.stats.lolgg.command;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,12 +37,27 @@ public class LeagueManager {
         List<LeagueVO> recentMatch = leagueService.findTopTen(riotName);
         List<LeagueStatsVO> mostPick = leagueService.findMostPick(riotName);
         LeagueStatsVO monthRecord = leagueService.findRecordMonth(riotName); 
+        List<LeagueStatsVO> otherTeamRecord = leagueService.findRecordOtherTeam(riotName);
+        
+        List<LeagueStatsVO> teamRecord = leagueService.findRecordWithTeam(riotName);
+
+        List<LeagueStatsVO> goodTeam = teamRecord.stream().filter(t -> t.getWin_rate() > 55).collect(Collectors.toList());
+        List<LeagueStatsVO> badTeam = teamRecord.stream().filter(t -> t.getWin_rate() < 45).collect(Collectors.toList());
+        Collections.reverse(badTeam);
+
+        List<LeagueStatsVO> goodEnemy = otherTeamRecord.stream().filter(t -> t.getWin_rate() > 55).collect(Collectors.toList());
+        List<LeagueStatsVO> badEnemy = otherTeamRecord.stream().filter(t -> t.getWin_rate() < 45).collect(Collectors.toList());
+        Collections.reverse(badEnemy);
 
         map.put("riotName",riotName);
         map.put("allRecord", allRecord);
         map.put("recentMatch", recentMatch);
         map.put("mostPick", mostPick);
         map.put("monthRecord", monthRecord);
+        map.put("goodTeam", goodTeam);
+        map.put("badTeam", badTeam);
+        map.put("goodEnemy", goodEnemy);
+        map.put("badEnemy", badEnemy);
 
         LolStatsTemplate template = new LolStatsTemplate();
         String result = template.makeRecordTemplate(map);

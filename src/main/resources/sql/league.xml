@@ -145,8 +145,9 @@
         SELECT 
             A.RIOT_NAME,
             COUNT(A.RIOT_NAME) AS TOTAL_COUNT,
-            COUNT(CASE WHEN A.GAME_RESULT = '승' THEN 1 END) AS WIN,
-            COUNT(CASE WHEN A.GAME_RESULT = '패' THEN 1 END) AS LOSE
+            COUNT(CASE WHEN B.GAME_RESULT = '승' THEN 1 END) AS WIN,
+            COUNT(CASE WHEN B.GAME_RESULT = '패' THEN 1 END) AS LOSE,
+            ROUND(COUNT(CASE WHEN B.GAME_RESULT = '승' THEN 1 END)::NUMERIC / COUNT(*)*100,2) AS WIN_RATE
         FROM LEAGUE A 
         INNER JOIN  
         (
@@ -161,7 +162,7 @@
         AND A.DELETE_YN = 'N'
         GROUP BY A.RIOT_NAME
         HAVING  COUNT(A.RIOT_NAME) <![CDATA[ >= ]]> 3
-        ORDER BY TOTAL_COUNT DESC
+        ORDER BY WIN_RATE DESC
     </select>
 
     <!-- 나와 인간상성 찾기 -->
@@ -169,8 +170,9 @@
         SELECT 
             A.RIOT_NAME,
             COUNT(A.RIOT_NAME) AS TOTAL_COUNT,
-            COUNT(CASE WHEN A.GAME_RESULT = '승' THEN 1 END) AS WIN,
-            COUNT(CASE WHEN A.GAME_RESULT = '패' THEN 1 END) AS LOSE
+            COUNT(CASE WHEN B.GAME_RESULT = '승' THEN 1 END) AS WIN,
+            COUNT(CASE WHEN B.GAME_RESULT = '패' THEN 1 END) AS LOSE,
+            ROUND(COUNT(CASE WHEN B.GAME_RESULT = '승' THEN 1 END)::NUMERIC / COUNT(*)*100,2) AS WIN_RATE
         FROM LEAGUE A 
         INNER JOIN  
         (
@@ -186,7 +188,7 @@
         AND A.POSITION = B.POSITION
         GROUP BY A.RIOT_NAME
         HAVING  COUNT(A.RIOT_NAME) <![CDATA[ >= ]]> 3
-        ORDER BY TOTAL_COUNT DESC
+        ORDER BY WIN_RATE DESC
     </select>
         
     <!-- INSERT  -->

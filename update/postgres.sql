@@ -129,8 +129,9 @@ ORDER BY
 select 
 	A.riot_name,
 	count(A.riot_name) as total_count,
-	count(CASE WHEN A.game_result = '승' THEN 1 END) as win,
-	count(CASE WHEN A.game_result = '패' THEN 1 END) as lose
+	count(CASE WHEN B.game_result = '승' THEN 1 END) as win,
+	count(CASE WHEN B.game_result = '패' THEN 1 END) as lose,
+	ROUND(COUNT(CASE WHEN B.game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
 	from league A 
 	inner join 
 	(
@@ -145,14 +146,15 @@ select
   and A.delete_yn = 'N'
 	group by A.riot_name
 	having  COUNT(A.riot_name) >= 3
-	order by total_count desc
+	order by win_rate desc
 
 /* 나와 인간상성 찾기 */
 select 
 	A.riot_name,
 	count(A.riot_name) as total_count,
-	count(CASE WHEN A.game_result = '승' THEN 1 END) as win,
-	count(CASE WHEN A.game_result = '패' THEN 1 END) as lose
+	count(CASE WHEN B.game_result = '승' THEN 1 END) as win,
+	count(CASE WHEN B.game_result = '패' THEN 1 END) as lose,
+	ROUND(COUNT(CASE WHEN B.game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
 	from league A 
 	inner join 
 	(
@@ -167,5 +169,5 @@ select
   and A.delete_yn = 'N'
 	and A.position = B.position
 	group by A.riot_name
-	having  COUNT(A.riot_name) >= 3
-	order by total_count desc
+--	having  COUNT(A.riot_name) >= 3
+	order by win_rate desc

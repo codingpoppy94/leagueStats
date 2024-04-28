@@ -1,7 +1,9 @@
 package com.stats.lolgg.template;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
@@ -16,6 +18,12 @@ public class LolStatsTemplate {
         List<LeagueStatsVO> allRecords = (List<LeagueStatsVO>) map.get("allRecord");
         List<LeagueVO> recentMatchs = (List<LeagueVO>) map.get("recentMatch");
         List<LeagueStatsVO> mostPicks = (List<LeagueStatsVO>) map.get("mostPick");
+        List<LeagueStatsVO> goodTeams = (List<LeagueStatsVO>) map.get("goodTeam");
+        List<LeagueStatsVO> badTeams = (List<LeagueStatsVO>) map.get("badTeam");
+
+        List<LeagueStatsVO> goodEnemys = (List<LeagueStatsVO>) map.get("goodEnemy");
+        List<LeagueStatsVO> badEnemys = (List<LeagueStatsVO>) map.get("badEnemy");
+        
 
         int allTotal = 0;
         int allWin = 0;
@@ -45,7 +53,7 @@ public class LolStatsTemplate {
         allTotal = allWin + allLose;
         allWinLate = Math.round((float) allWin * 100 / allTotal * 100) / 100.0f;
 
-        //최근전적
+        //최근전적 + 팀 시너지 GOOD,Bad
         String recentStr = "";
         int recentTotal = 0;
         int recentWin = 0;
@@ -62,10 +70,16 @@ public class LolStatsTemplate {
             recentStr +=   recent.getChamp_name() + " " + recent.getKda() + "\n";
         }
 
+        String teamBest = "";
+        String teamWrost = "";
+        for(LeagueStatsVO goodTeam : goodTeams){
+            teamBest += goodTeam.getRiot_name() + ": " + goodTeam.getWin() +"승/" + goodTeam.getLose() + "패 " + goodTeam.getWin_rate();
+        }
+
         //모스트픽
         String mostStr = "";
         for(LeagueStatsVO most : mostPicks) {
-            mostStr += most.getChamp_name() + ": " + most.getTotal_count() + "회 " + most.getWin_rate() + "\n";
+            mostStr += most.getChamp_name() + ": " + most.getTotal_count() + "회 " + most.getWin_rate() + "%\n";
         }
 
         //템플릿생성
@@ -78,7 +92,7 @@ public class LolStatsTemplate {
         content += allStatStr;
         content += "\n";
 
-        String content2 = "최근 "+recentTotal+"전 "+recentWin+"승 "+recentlose+"패\n" ;
+        String content2 = "최근 "+recentTotal+"전 "+recentWin+"승 "+recentlose+"패" ;
         content2 += recentStr;
         content2 += "\n";
         
