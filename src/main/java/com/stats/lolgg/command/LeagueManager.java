@@ -41,13 +41,13 @@ public class LeagueManager {
         
         List<LeagueStatsVO> teamRecord = leagueService.findRecordWithTeam(riotName);
 
-        List<LeagueStatsVO> goodTeam = teamRecord.stream().filter(t -> t.getWin_rate() > 55).collect(Collectors.toList());
+        List<LeagueStatsVO> goodTeam = teamRecord.stream().filter(t -> t.getWin_rate() >= 50).collect(Collectors.toList());
         List<LeagueStatsVO> badTeam = teamRecord.stream().filter(t -> t.getWin_rate() < 45).collect(Collectors.toList());
         Collections.reverse(badTeam);
 
-        List<LeagueStatsVO> goodEnemy = otherTeamRecord.stream().filter(t -> t.getWin_rate() > 55).collect(Collectors.toList());
-        List<LeagueStatsVO> badEnemy = otherTeamRecord.stream().filter(t -> t.getWin_rate() < 45).collect(Collectors.toList());
-        Collections.reverse(badEnemy);
+        List<LeagueStatsVO> easyRivals = otherTeamRecord.stream().filter(t -> t.getWin_rate() >= 50).collect(Collectors.toList());
+        List<LeagueStatsVO> hardRivals = otherTeamRecord.stream().filter(t -> t.getWin_rate() < 45).collect(Collectors.toList());
+        Collections.reverse(hardRivals);
 
         map.put("riotName",riotName);
         map.put("allRecord", allRecord);
@@ -56,8 +56,8 @@ public class LeagueManager {
         map.put("monthRecord", monthRecord);
         map.put("goodTeam", goodTeam);
         map.put("badTeam", badTeam);
-        map.put("goodEnemy", goodEnemy);
-        map.put("badEnemy", badEnemy);
+        map.put("easyRivals", easyRivals);
+        map.put("hardRivals", hardRivals);
 
         LolStatsTemplate template = new LolStatsTemplate();
         String result = template.makeRecordTemplate(map);
