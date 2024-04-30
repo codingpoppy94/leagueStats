@@ -136,8 +136,8 @@ public class LeagueService {
 
     /* update */
 
-    public int changeDeleteYN(String riot_name){
-        return leagueMapper.changeDeleteYN(riot_name);
+    public int changeDeleteYN(Map<String,Object> paramMap){
+        return leagueMapper.changeDeleteYN(paramMap);
     }
 
     public int changeRiotName(Map<String,Object> paramMap){

@@ -230,16 +230,16 @@
     <!-- UPDATE -->
 
     <!-- 탈퇴회원처리 -->
-    <update id="changeDeleteYN" parameterType="String">
+    <update id="changeDeleteYN" parameterType="java.util.HashMap">
         UPDATE LEAGUE
-            SET DELETE_YN = 'Y'
+            SET DELETE_YN = #{delete_yn}
         WHERE 
             RIOT_NAME = #{riot_name}
 
     </update>
 
     <!-- 닉네임 변경 -->
-    <update id="changeRiotName" parameterType="com.stats.lolgg.model.LeagueStatsVO" >
+    <update id="changeRiotName" parameterType="java.util.HashMap" >
         UPDATE LEAGUE
             SET RIOT_NAME = #{changed_riot_name} 
         WHERE RIOT_NAME = #{origin_riot_name}

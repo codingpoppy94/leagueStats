@@ -22,7 +22,7 @@ public interface LeagueMapper {
 
     void insertLeague(List<LeagueVO> leagueVO);
 
-    int changeDeleteYN(String riot_name);
+    int changeDeleteYN(Map<String,Object> paramMap);
     int changeRiotName(Map<String,Object> paramMap);
     
 }

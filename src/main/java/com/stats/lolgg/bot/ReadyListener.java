@@ -257,6 +257,26 @@ public class ReadyListener extends ListenerAdapter {
                     }
                 }
             }
+
+            /* !탈퇴 {riot_name} */
+            if (message[0].equalsIgnoreCase("!탈퇴")){
+                int result = userManager.withdrawUser(event, originMessage);
+                if(result > 0){
+                    sendMessage(channel, "탈퇴 처리 완료");
+                }else {
+                    sendMessage(channel, "권한 없음");
+                }
+            }
+
+            /* !복귀 {riot_name} */
+            if (message[0].equalsIgnoreCase("!복귀")){
+                int result = userManager.recoverUser(event, originMessage);
+                if(result > 0){
+                    sendMessage(channel, "복귀 처리 완료");
+                }else {
+                    sendMessage(channel, "권한 없음");
+                }
+            }
         }
     }
 
