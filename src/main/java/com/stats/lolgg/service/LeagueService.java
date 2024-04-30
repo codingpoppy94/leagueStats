@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stats.lolgg.mapper.LeagueMapper;
+import com.stats.lolgg.model.ChampEnum;
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 
@@ -112,9 +113,10 @@ public class LeagueService {
             String numDeaths = statsNode.get("NUM_DEATHS").asText();
             String championsKilled = statsNode.get("CHAMPIONS_KILLED").asText();
             String teamPostion = statsNode.get("TEAM_POSITION").asText().replace("JUNGLE", "JUG").replace("BOTTOM", "ADC").replace("UTILITY", "SUP").replace("MIDDLE", "MID");
-            String name = statsNode.get("NAME").asText();
+            String name = statsNode.get("NAME").asText().trim();
             String win = statsNode.get("WIN").asText().replace("Win", "승").replace("Fail","패");
-            String skin = statsNode.get("SKIN").asText();
+            String skin = statsNode.get("SKIN").asText().toLowerCase().trim();
+            skin = ChampEnum.getKoreanValue(skin);
             String Camp = statsNode.get("TEAM").asText().replace("100", "blue").replace("200", "red");
 
             String kda = championsKilled + "/" + numDeaths + "/" + assists;
