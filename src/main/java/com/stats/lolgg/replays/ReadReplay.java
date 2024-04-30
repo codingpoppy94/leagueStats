@@ -12,13 +12,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stats.lolgg.mapper.LeagueMapper;
 import com.stats.lolgg.model.LeagueVO;
-import com.stats.lolgg.service.LeagueService;
 
 public class ReadReplay {
 
@@ -79,7 +75,7 @@ public class ReadReplay {
                 String name = statsNode.get("NAME").asText();
                 String win = statsNode.get("WIN").asText().replace("WIN", "승").replace("FAIL","패");
                 String skin = statsNode.get("SKIN").asText();
-                String Camp = statsNode.get("TEAM").asText().replace("100", "Blue").replace("200", "RED");
+                // String Camp = statsNode.get("TEAM").asText().replace("100", "Blue").replace("200", "RED");
                 
                 // 추출한 프로퍼티 출력
                 System.out.println("ASSISTS: " + assists);

@@ -73,7 +73,7 @@ public class LeagueController {
     @PostMapping("/replay")
     public String getReplayFile(@RequestBody List<MultipartFile> files) throws Exception {
         for(MultipartFile file : files ){
-            String fileName = file.getOriginalFilename();
+            // String fileName = file.getOriginalFilename();
             // System.out.println(fileName);
             
             leagueService.saveAll(file);

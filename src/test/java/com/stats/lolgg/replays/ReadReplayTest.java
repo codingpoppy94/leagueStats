@@ -6,8 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ReadReplayTest {
     public static void main(String[] args) {
 
-        List<String> fileList = Arrays.asList(args);
+        // List<String> fileList = Arrays.asList(args);
 
         // if (fileList.isEmpty()) {
         //     System.out.println("파일 리스트가 비어 있습니다.");
@@ -91,7 +89,7 @@ public class ReadReplayTest {
                 String name = statsNode.get("NAME").asText();
                 String win = statsNode.get("WIN").asText().replace("WIN", "승").replace("FAIL","패");
                 String skin = statsNode.get("SKIN").asText();
-                String Camp = statsNode.get("TEAM").asText().replace("100", "Blue").replace("200", "RED");
+                // String Camp = statsNode.get("TEAM").asText().replace("100", "Blue").replace("200", "RED");
                 
                 // 추출한 프로퍼티 출력
                 System.out.println("ASSISTS: " + assists);

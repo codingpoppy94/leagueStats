@@ -84,7 +84,7 @@ public class ReadReplayMain {
                     String name = statsNode.get("NAME").asText();
                     String win = statsNode.get("WIN").asText().replace("WIN", "승").replace("FAIL","패");
                     String skin = statsNode.get("SKIN").asText();
-                    String Camp = statsNode.get("TEAM").asText().replace("100", "Blue").replace("200", "RED");
+                    // String Camp = statsNode.get("TEAM").asText().replace("100", "Blue").replace("200", "RED");
                     
                     // 추출한 프로퍼티 출력
                     System.out.println("ASSISTS: " + assists);
