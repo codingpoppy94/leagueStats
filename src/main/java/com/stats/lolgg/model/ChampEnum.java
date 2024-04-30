@@ -1,6 +1,7 @@
 package com.stats.lolgg.model;
 
 public enum ChampEnum {
+    // 사이온까지
     ATROX("Aatrox", ""),
     AHRI("Ahri", ""),
     AKALI("Akali", ""),
