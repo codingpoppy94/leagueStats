@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,10 @@ public class LeagueService {
         return leagueMapper.findRecordOtherTeam(riot_name);
     }
 
+    public List<Map<String,Object>> findMappingName(){
+        return leagueMapper.findMappingName();
+    }
+
     /* insert */
 
     /**
@@ -88,7 +93,8 @@ public class LeagueService {
         System.out.println("fileName: "+fileName);
 
         List<LeagueVO> leagueVOList = new ArrayList<>();
-    
+        List<Map<String,Object>> mappingMaps = findMappingName();
+        
         // 날짜
         int currentYear = LocalDateTime.now().getYear();
         String[] dateTime = fileName.split("_");
@@ -114,6 +120,7 @@ public class LeagueService {
             String championsKilled = statsNode.get("CHAMPIONS_KILLED").asText();
             String teamPostion = statsNode.get("TEAM_POSITION").asText().replace("JUNGLE", "JUG").replace("BOTTOM", "ADC").replace("UTILITY", "SUP").replace("MIDDLE", "MID");
             String name = statsNode.get("NAME").asText().trim();
+            name = getMainName(mappingMaps, name);
             String win = statsNode.get("WIN").asText().replace("Win", "승").replace("Fail","패");
             String skin = statsNode.get("SKIN").asText().toLowerCase().trim();
             skin = ChampEnum.getKoreanValue(skin);
@@ -135,7 +142,13 @@ public class LeagueService {
         }
         leagueMapper.insertLeague(leagueVOList);
     }
-
+    /* 
+     * 부캐닉 저장
+     */
+    public void saveMappingName(Map<String,Object> paramMap){
+        leagueMapper.insertMappingName(paramMap);
+    }
+    
     /* update */
 
     public int changeDeleteYN(Map<String,Object> paramMap){
@@ -179,26 +192,6 @@ public class LeagueService {
             JsonNode rootNode = objectMapper.readTree(StringData);
             JsonNode statsArray = rootNode.get("statsJson");
 
-            // for (JsonNode statsNode : statsArray) {
-            //     // 원하는 프로퍼티 추출
-            //     String assists = statsNode.get("ASSISTS").asText();
-            //     String numDeaths = statsNode.get("NUM_DEATHS").asText();
-            //     String championsKilled = statsNode.get("CHAMPIONS_KILLED").asText();
-            //     String teamPostion = statsNode.get("TEAM_POSITION").asText().replace("JUNGLE", "JUG").replace("BOTTOM", "ADC").replace("UTILITY", "SUP").replace("MIDDLE", "MID");
-            //     String name = statsNode.get("NAME").asText();
-            //     String win = statsNode.get("WIN").asText().replace("WIN", "승").replace("FAIL","패");
-            //     String skin = statsNode.get("SKIN").asText();
-            //     String Camp = statsNode.get("TEAM").asText().replace("100", "Blue").replace("200", "RED");
-                
-            //     // 추출한 프로퍼티 출력
-            //     System.out.println("ASSISTS: " + assists);
-            //     System.out.println("NUM_DEATHS: " + numDeaths);
-            //     System.out.println("CHAMPIONS_KILLED: " + championsKilled);
-            //     System.out.println("TEAM_POSITION: " + teamPostion);
-            //     System.out.println("NAME: " + name);
-            //     System.out.println("WIN: " + win);
-            //     System.out.println("SKIN: " + skin);
-            // }
             System.out.println("파싱완료");
             // 파일 닫기
             inputStream.close();
@@ -208,5 +201,19 @@ public class LeagueService {
             throw new Exception("파싱에러");
         }
 
+    }
+
+    private String getMainName(List<Map<String,Object>> mappingMaps, String originName) {
+        // System.out.println("originName: " +originName);
+        for (Map<String,Object> mappingMap : mappingMaps){
+            // for (Entry<String, Object> entrySet : mappingMap.entrySet()) {     
+            //     System.out.println(entrySet.getKey() + " : " + entrySet.getValue());        
+            // }
+            // System.out.println(mappingMap.entrySet());
+            if(mappingMap.get("sub_name").equals(originName)){
+                return (String) mappingMap.getOrDefault("main_name", originName);
+            }   
+        }
+        return  originName;
     }
 }

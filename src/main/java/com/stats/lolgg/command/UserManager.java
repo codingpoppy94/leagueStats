@@ -199,6 +199,32 @@ public class UserManager {
         return 0;
     }
 
+    // !부캐저장
+    public String saveSubInfo(MessageReceivedEvent event,String originMessage){
+        String[] message = originMessage.split("\\s");
+        if(message.length > 1) {
+            String[] names = message[1].split("/");
+            Map<String,Object> paramMap = new HashMap<>();
+            String subName = names[0];
+            String mainName = names[1];
+            paramMap.put("sub_name", subName);
+            paramMap.put("main_name", mainName);
+
+            List<Role> roles = event.getMember().getRoles();
+            for (Role role : roles) {
+                // System.out.println(role.getPermissions());
+                if(role.getPermissions().contains(Permission.ADMINISTRATOR)){
+                    leagueService.saveMappingName(paramMap);
+                    return "등록 완료";
+                } else {
+                    return "권한 없음";
+                }
+            }
+        }
+        return "error";
+    }
+    
+
     // 다중 memberIndex 처리
     private int[] memberIndexparsing(String memberIndex){
         int[] result = new int[2];

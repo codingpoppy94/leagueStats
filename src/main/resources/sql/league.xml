@@ -85,7 +85,10 @@
             COUNT(*) AS TOTAL_COUNT,
             COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
             COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE,
-            ROUND(COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END)::numeric / COUNT(*) * 100 ,2) AS WIN_RATE
+            CASE 
+                WHEN COUNT(*) = 0 THEN 0
+                ELSE ROUND(COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END)::numeric / NULLIF(COUNT(*), 0) * 100 ,2)
+			END AS WIN_RATE
         FROM LEAGUE
         WHERE RIOT_NAME = #{riot_name}
         AND DELETE_YN = 'N'
@@ -190,6 +193,17 @@
         HAVING  COUNT(A.RIOT_NAME) <![CDATA[ >= ]]> 3
         ORDER BY WIN_RATE DESC
     </select>
+
+    <!-- 부캐닉네임 조회 -->
+    <select id="findMappingName" resultType="java.util.HashMap" >
+        SELECT 
+            SUB_NAME,
+            MAIN_NAME
+        FROM
+            MAPPING_NAME
+        WHERE 
+            DELETE_YN = 'N'
+    </select>
         
     <!-- INSERT  -->
 
@@ -227,6 +241,25 @@
             </foreach>
     </insert>
 
+    <!-- 부캐닉 저장 -->
+    <insert id="insertMappingName" parameterType="java.util.HashMap">
+        INSERT INTO MAPPING_NAME 
+            (
+                ID,
+                SUB_NAME,
+                MAIN_NAME,
+                CREATE_DATE,
+                DELETE_YN
+            )
+            VALUES
+            (
+                nextval('mapping_name_id_seq'),
+                #{sub_name},
+                #{main_name},
+                CURRENT_TIMESTAMP,
+                'N'
+            )
+    </insert>
     <!-- UPDATE -->
 
     <!-- 탈퇴회원처리 -->

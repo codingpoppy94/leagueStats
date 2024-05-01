@@ -196,6 +196,18 @@ public class ReadyListener extends ListenerAdapter {
                     sendMessage(channel, "권한 없음");
                 }
             }
+            /* 
+             * !부캐저장
+             * sub_name,main_name
+             */
+            if(message[0].equalsIgnoreCase("!부캐저장")){
+                String result = userManager.saveSubInfo(event, originMessage);
+                if("error".equals(result)){
+                    sendErrorMessage(channel);
+                }else {
+                    sendMessage(channel, result);
+                }
+            }
         }
     }
 

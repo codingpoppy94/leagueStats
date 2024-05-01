@@ -185,7 +185,7 @@ public enum ChampEnum {
     }
 
     public static String getKoreanValue(String englishValue) {
-        System.out.println("englishValue: " +englishValue);
+        // System.out.println("englishValue: " +englishValue);
         for (ChampEnum mappingEnum : ChampEnum.values()) {
             if (mappingEnum.getEnglishChampName().toLowerCase().equals(englishValue)) {
                 return mappingEnum.getKoreanChampName();
