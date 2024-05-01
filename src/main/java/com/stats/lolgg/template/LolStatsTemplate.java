@@ -107,6 +107,26 @@ public class LolStatsTemplate {
         return header + content1;
     }
 
+    /* !help */
+    public String makeHelpTemplate(){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("!help");
+        sb.append("!전적 | !전적 {롤닉네임}: 자신의 전적 혹은 다른 사람의 전적 검색");
+        sb.append("!장인 | !전적 {롤닉네임}");
+        sb.append("!전적 | !전적 {롤닉네임}");
+        sb.append("!전적 | !전적 {롤닉네임}");
+        sb.append("!전적 | !전적 {롤닉네임}");
+        sb.append("!전적 | !전적 {롤닉네임}");
+        sb.append("!전적 | !전적 {롤닉네임}");
+        sb.append("!전적 | !전적 {롤닉네임}");
+
+
+
+
+        return "";
+    }
+
     private String mergeContent2(List<LeagueVO> recentMatchs, List<LeagueStatsVO> goodTeams, List<LeagueStatsVO> badTeams) {
         int maxLength = Math.max(Math.max(recentMatchs.size(), goodTeams.size()), badTeams.size());
         StringBuilder sb = new StringBuilder();

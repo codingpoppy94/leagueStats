@@ -38,9 +38,10 @@ public class ReadyListener extends ListenerAdapter {
         if(message[0].charAt(0) == '!'){
             
             // 테스트1
-            if(message[0].equals("!ping")){
+            if(message[0].equals("!help")){
                 // log.info("message get");
                 event.getChannel().sendMessage("pong!").queue();
+                
                 return;
             }
     
