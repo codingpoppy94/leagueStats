@@ -122,6 +122,8 @@ public class ReadyListener extends ListenerAdapter {
                 if(message.length > 1) {
                     int commandIndex = originMessage.indexOf(message[1]);
                     riotName = originMessage.substring(commandIndex);
+                    // 공백제거
+                    riotName = riotName.replaceAll("\\s+", "");
 
                     templateMessage = leagueManager.getRecord(riotName);
                 } else {
@@ -146,7 +148,9 @@ public class ReadyListener extends ListenerAdapter {
             if (message[0].equalsIgnoreCase("!장인")) {
                 String templateMessage = "";
                 if(message.length > 1) {
-                    String champName = message[1];
+                    int commandIndex = originMessage.indexOf(message[1]);
+                    String champName = originMessage.substring(commandIndex);
+                    champName = champName.replaceAll("\\s+", "");
                     templateMessage = leagueManager.getChampMaster(champName);
 
                     if("".equals(templateMessage)){
