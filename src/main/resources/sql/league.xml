@@ -164,7 +164,7 @@
         AND A.RIOT_NAME != #{riot_name}
         AND A.DELETE_YN = 'N'
         GROUP BY A.RIOT_NAME
-        HAVING  COUNT(A.RIOT_NAME) <![CDATA[ >= ]]> 3
+        HAVING  COUNT(A.RIOT_NAME) <![CDATA[ >= ]]> 5
         ORDER BY WIN_RATE DESC
     </select>
 
@@ -190,7 +190,7 @@
         AND A.DELETE_YN = 'N'
         AND A.POSITION = B.POSITION
         GROUP BY A.RIOT_NAME
-        HAVING  COUNT(A.RIOT_NAME) <![CDATA[ >= ]]> 3
+        HAVING  COUNT(A.RIOT_NAME) <![CDATA[ >= ]]> 5
         ORDER BY WIN_RATE DESC
     </select>
 
