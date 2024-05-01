@@ -123,6 +123,7 @@
         FROM LEAGUE 
         WHERE CHAMP_NAME = #{champ_name}
         AND DELETE_YN = 'N'
+        <include refid="where_month"></include>
         GROUP BY RIOT_NAME 
         ORDER BY TOTAL_COUNT DESC, WIN_RATE DESC
     </select>
