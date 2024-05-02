@@ -70,6 +70,10 @@ public class LeagueService {
         return leagueMapper.findRecordOtherTeam(riot_name);
     }
 
+    public List<LeagueStatsVO> findRecordLine(String position){
+        return leagueMapper.findRecordLine(position);
+    }
+
     public List<Map<String,Object>> findMappingName(){
         return leagueMapper.findMappingName();
     }

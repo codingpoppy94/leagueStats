@@ -19,6 +19,7 @@ public interface LeagueMapper {
     List<LeagueStatsVO> findChampHighRate();
     List<LeagueStatsVO> findRecordWithTeam(String riot_name);
     List<LeagueStatsVO> findRecordOtherTeam(String riot_name);
+    List<LeagueStatsVO> findRecordLine(String position);
     List<Map<String,Object>> findMappingName();
 
     void insertLeague(List<LeagueVO> leagueVO);

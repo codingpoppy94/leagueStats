@@ -174,6 +174,24 @@ public class ReadyListener extends ListenerAdapter {
                     }
                 }
                 /* 
+                 * !라인 {position}
+                 */
+                if (message[0].equalsIgnoreCase("!라인")) {
+                    EmbedBuilder templateMessage;
+                    if(message.length > 1) {
+                        int commandIndex = originMessage.indexOf(message[1]);
+                        String position = originMessage.substring(commandIndex);
+                        templateMessage = leagueManager.getRecordLine(position);
+
+                        if(templateMessage == null){
+                            sendMessage(channel, "not found data");
+                        } else {
+                            sendMessage(channel, templateMessage);
+                        }
+                    }
+                }
+
+                /* 
                 * !탈퇴 
                 * riot_name
                 */

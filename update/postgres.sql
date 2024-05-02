@@ -182,6 +182,24 @@ select
 --	having  COUNT(A.riot_name) >= 3
 	order by win_rate desc
 
+/* 라인별 승률  */
+select 	position,
+		riot_name,
+		count(riot_name) as total_count,
+		count(CASE WHEN game_result = '승' THEN 1 END) as win,
+		count(CASE WHEN game_result = '패' THEN 1 END) as lose,
+		ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate,
+		 CASE
+			WHEN SUM(DEATH) = 0 THEN 9999
+			ELSE ROUND((SUM(KILL) + SUM(ASSIST))::NUMERIC / NULLIF(SUM(DEATH), 0), 2) 
+        END AS KDA
+from league  
+where position = 'TOP'
+group by "position" ,riot_name 
+having  COUNT(riot_name) >= 5
+order by total_count desc, win_rate desc
+limit 15    
+
 
 /* 한글 update */
 UPDATE league

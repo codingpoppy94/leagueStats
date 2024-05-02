@@ -156,6 +156,40 @@ public class LolTemplate {
         return embed;
     }
 
+    /* !라인 */
+    public EmbedBuilder makeRecordLine(List<LeagueStatsVO> records, String position){
+        EmbedBuilder embed = new EmbedBuilder();
+        String header = position + " 라인";
+        String content = "";
+        int i = 1;
+        for(LeagueStatsVO record : records ){
+            if(i == 1){
+                i++;
+                content += ":one: ";
+            }else if(i == 2) {
+                i++;
+                content += ":two: ";
+            }else if(i == 3) {
+                i++;
+                content += ":three: ";
+            }else if(i == 4) {
+                i++;
+                content += ":four: ";
+            }else if(i == 5) {
+                i++;
+                content += ":five: ";
+            }else {
+                content += i++ +". ";
+            }
+            content +=record.getRiot_name()+makeStats("",record.getTotal_count(), record.getWin(), record.getLose(), record.getWin_rate(), record.getKda());
+        }
+        embed.setTitle(header);
+        embed.setDescription(content);
+        return embed;
+    }
+
+
+
     /* !help */
     public EmbedBuilder makeHelpTemplate(){
         EmbedBuilder builder = new EmbedBuilder();

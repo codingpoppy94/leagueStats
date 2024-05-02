@@ -203,6 +203,27 @@
         ORDER BY WIN_RATE DESC
     </select>
 
+    <!-- 라인별 승률 조회 -->
+    <select id="findRecordLine" parameterType="String" resultType="com.stats.lolgg.model.LeagueStatsVO">
+        SELECT 	
+            POSITION,
+            RIOT_NAME,
+            COUNT(RIOT_NAME) AS TOTAL_COUNT,
+            COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
+            COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE,
+            ROUND(COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END)::NUMERIC / COUNT(*)*100,2) AS WIN_RATE,
+            CASE
+                WHEN SUM(DEATH) = 0 THEN 9999
+                ELSE ROUND((SUM(KILL) + SUM(ASSIST))::NUMERIC / NULLIF(SUM(DEATH), 0), 2) 
+            END AS KDA
+        FROM LEAGUE  
+        WHERE POSITION = #{position}
+        GROUP BY POSITION ,RIOT_NAME 
+        HAVING COUNT(RIOT_NAME) <![CDATA[ >= ]]>  5
+        ORDER BY TOTAL_COUNT DESC, WIN_RATE DESC
+        LIMIT 15    
+    </select>
+
     <!-- 부캐닉네임 조회 -->
     <select id="findMappingName" resultType="java.util.HashMap" >
         SELECT 

@@ -32,7 +32,6 @@ public class LeagueManager {
 
     /* !전적 */
     public EmbedBuilder getRecord(String riotName) {
-        EmbedBuilder builder = new EmbedBuilder();
         Map<String,Object> map =  new HashMap<String,Object>();
 
         List<LeagueStatsVO> allRecord = leagueService.findRecord(riotName);
@@ -92,6 +91,39 @@ public class LeagueManager {
         LolTemplate template = new LolTemplate();
         EmbedBuilder result = template.makeChampHighRateTemplate(records);
         
+        return result;
+    }
+
+    /* !라인 {position} */
+    public EmbedBuilder getRecordLine(String position){
+        String realPostion = "";
+        switch (position) {
+            case "탑": 
+            realPostion = "TOP";
+            break;
+            case "정글":
+            realPostion = "JUG";
+            break;
+            case "미드":
+            realPostion = "MID";
+            break;
+            case "원딜":
+            realPostion = "ADC";
+            break;
+            case "서폿":
+            realPostion = "SUP";
+            break;
+        
+            default:
+            realPostion = "TOP";
+            break;
+        }
+        List<LeagueStatsVO> records = leagueService.findRecordLine(realPostion);
+        if(records.size() < 1){
+            return null;
+        } 
+        LolTemplate template = new LolTemplate();
+        EmbedBuilder result = template.makeRecordLine(records, realPostion);
         return result;
     }
 }
