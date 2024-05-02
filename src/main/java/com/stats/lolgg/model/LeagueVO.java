@@ -12,9 +12,9 @@ public class LeagueVO {
     private String riot_name;
     private String champ_name;
     private String position;
-    private String kill;
-    private String death;
-    private String assist;
+    private int kill;
+    private int death;
+    private int assist;
     private String game_result;
     private String game_team;
     private LocalDateTime game_date;

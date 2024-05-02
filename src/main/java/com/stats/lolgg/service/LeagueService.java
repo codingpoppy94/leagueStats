@@ -115,9 +115,9 @@ public class LeagueService {
         for (JsonNode statsNode : statsArray) {
             LeagueVO leagueVO = new LeagueVO();
             // 원하는 프로퍼티 추출
-            String assists = statsNode.get("ASSISTS").asText();
-            String numDeaths = statsNode.get("NUM_DEATHS").asText();
-            String championsKilled = statsNode.get("CHAMPIONS_KILLED").asText();
+            int assists = statsNode.get("ASSISTS").asInt();
+            int numDeaths = statsNode.get("NUM_DEATHS").asInt();
+            int championsKilled = statsNode.get("CHAMPIONS_KILLED").asInt();
             String teamPostion = statsNode.get("TEAM_POSITION").asText().replace("JUNGLE", "JUG").replace("BOTTOM", "ADC").replace("UTILITY", "SUP").replace("MIDDLE", "MID");
             String name = statsNode.get("NAME").asText().trim();
             name = name.replaceAll("\\s+","");
