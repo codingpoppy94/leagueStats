@@ -38,10 +38,7 @@ public class ReadyListener extends ListenerAdapter {
                 String[] message = originMessage.split("\\s");
                 // !help
                 if(message[0].equals("!help")){
-                    // EmbedBuilder builder = new EmbedBuilder().setFooter("zz");
-                    // channel.sendMessage(builder).queue();
-                    // channel.sendMessageEmbeds(builder.build());
-                    // channel.sendMessage("dd").queue();
+                    sendMessage(channel, leagueManager.getHelp());
                 }
         
                 /* 
@@ -146,14 +143,14 @@ public class ReadyListener extends ListenerAdapter {
                 * !장인
                 */
                 if (message[0].equalsIgnoreCase("!장인")) {
-                    String templateMessage = "";
+                    EmbedBuilder templateMessage;
                     if(message.length > 1) {
                         int commandIndex = originMessage.indexOf(message[1]);
                         String champName = originMessage.substring(commandIndex);
                         champName = champName.replaceAll("\\s+", "");
                         templateMessage = leagueManager.getChampMaster(champName);
 
-                        if("".equals(templateMessage)){
+                        if(templateMessage == null){
                             sendMessage(channel, "not found data");
                         } else {
                             sendMessage(channel, templateMessage);
@@ -165,11 +162,11 @@ public class ReadyListener extends ListenerAdapter {
                 * !통계
                 */
                 if (message[0].equalsIgnoreCase("!통계")) {
-                    String templateMessage = "";
+                    EmbedBuilder templateMessage;
                     if(message.length < 2) {
                         templateMessage = leagueManager.getChampHighRate();
                         
-                        if("".equals(templateMessage)){
+                        if(templateMessage == null){
                             sendMessage(channel, "not found data");
                         } else {
                             sendMessage(channel, templateMessage);

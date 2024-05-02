@@ -127,63 +127,59 @@ public class LolTemplate {
     }
 
     /* !장인 */
-    public String makeChampMasterTemplate(List<LeagueStatsVO> records, String champName){
-        String header = "**" +champName+ " 장인** \n\n";
-        String content1 = "";
-
+    public EmbedBuilder makeChampMasterTemplate(List<LeagueStatsVO> records, String champName){
+        EmbedBuilder embed = new EmbedBuilder();
+        String header =champName+ " 장인";
+        String content = "";
+        
         for(LeagueStatsVO record : records ){
-            String list = "";
-            list += record.getRiot_name() + " ";
-            list += record.getWin() + "승 " + record.getLose() + "패 " + record.getWin_rate() + "% \n";
-            content1 += list;
+            content += record.getRiot_name() + " ";
+            content += record.getWin() + "승 " + record.getLose() + "패 " + record.getWin_rate() + "% \n";
         }
-        return header + content1;
+        embed.setTitle(header);
+        embed.setDescription(content);
+        return embed;
     }
 
     /* !통계 */
-    public String makeChampHighRateTemplate(List<LeagueStatsVO> records){
-        String header = "**이번달 챔프 통계(5판 이상)** \n\n";
-        String content1 = "";
+    public EmbedBuilder makeChampHighRateTemplate(List<LeagueStatsVO> records){
+        EmbedBuilder embed = new EmbedBuilder();
+        String header = "이번달 챔프 통계(5판 이상)";
+        String content = "";
 
         for(LeagueStatsVO record : records ){
-            String list = "";
-            list += record.getChamp_name() + " ";
-            list += record.getWin() + "승 " + record.getLose() + "패 " + record.getWin_rate() + "% \n";
-            content1 += list;
+            content += record.getChamp_name() + " ";
+            content += record.getWin() + "승 " + record.getLose() + "패 " + record.getWin_rate() + "% \n";
         }
-        return header + content1;
+        embed.setTitle(header);
+        embed.setDescription(content);
+        return embed;
     }
 
     /* !help */
     public EmbedBuilder makeHelpTemplate(){
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("제목")
-            .setDescription("내용")
-            .addField("필드제목", "필드 내용",true);
-       
+        StringBuilder sb = new StringBuilder();
+        sb.append("");
+        sb.append("※내전관리명령어 \n");
+        sb.append("`!ㅊㅋ !.`  내전 대기 추가 \n");
+        sb.append("`!취소 !ㅊㅅ {x} {x~y}`  본인 내전 대기 취소, x번 취소,x~y범위 취소 \n");
+        sb.append("`!ㅌㅊㅅ {x}`   x팀에 속한 사람들 내전 대기 단체 취소 \n");
+        sb.append("`!대기 !ㄷㄱ`  내전대기 목록 \n");
+        sb.append("`!ㅁㅅ {x} {x~y}` x번 멘션, x~y범위 멘션 \n\n");
+        sb.append("※통계명령어 \n");
+        sb.append("`!전적  !전적 {name}` 자신의 전적, name의 전적 검색 \n");
+        sb.append("`!장인 {champ}` 승률55%이상 장인 목록 \n");
+        sb.append("`!통계` 이번달 5판 이상 챔피언 목록 \n\n");
+        sb.append("※관리자명령어 (디코관리자 권한 필요) \n");
+        sb.append("`!탈퇴 {name}` 탈퇴한 회원 추가, 전적검색제외 \n");
+        sb.append("`!복귀 {name}` 탈퇴한 회원 복구, 전잭검색포함 \n");
+        sb.append("`!부캐저장 {부캐닉/본캐닉}` 부캐닉네임 등록, 데이터저장할때 부캐닉네임은 본캐닉네임으로 변경되서 저장 \n");
+        sb.append("");
+        builder.setTitle("help");
+        builder.setDescription(sb.toString());
         return builder;
     }
-
-    // public String makeHelpTemplate(){
-    //     StringBuilder sb = new StringBuilder();
-    //     sb.append("");
-    //     sb.append("※내전관리명령어 \n");
-    //     sb.append("`!ㅊㅋ !.`  내전 대기 추가 \n");
-    //     sb.append("`!취소 !ㅊㅅ {x} {x~y}`  본인 내전 대기 취소, x번 취소,x~y범위 취소 \n");
-    //     sb.append("`!ㅌㅊㅅ {x}`   x팀에 속한 사람들 내전 대기 단체 취소 \n");
-    //     sb.append("`!대기 !ㄷㄱ`  내전대기 목록 \n");
-    //     sb.append("`!ㅁㅅ {x} {x~y}` x번 멘션, x~y범위 멘션 \n\n");
-    //     sb.append("※통계명령어 \n");
-    //     sb.append("`!전적  !전적 {name}` 자신의 전적, name의 전적 검색 \n");
-    //     sb.append("`!장인 {champ}` 승률55%이상 장인 목록 \n");
-    //     sb.append("`!통계` 이번달 5판 이상 챔피언 목록 \n\n");
-    //     sb.append("※관리자명령어 (디코관리자 권한 필요) \n");
-    //     sb.append("`!탈퇴 {name}` 탈퇴한 회원 추가, 전적검색제외 \n");
-    //     sb.append("`!복귀 {name}` 탈퇴한 회원 복구, 전잭검색포함 \n");
-    //     sb.append("`!부캐저장 {부캐닉/본캐닉}` 부캐닉네임 등록, 데이터저장할때 부캐닉네임은 본캐닉네임으로 변경되서 저장 \n");
-    //     sb.append("");
-    //     return sb.toString();
-    // }
 
     private String makeStats(String prefix, int totalCount, int win, int lose, float win_rate, float kda){
         String stats = prefix + " - " + totalCount+"전 "+win+"승/"+lose+"패  "+win_rate+"% 승률";

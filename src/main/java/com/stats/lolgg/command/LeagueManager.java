@@ -72,25 +72,25 @@ public class LeagueManager {
     }
 
     /* !장인 {riot_champ} */
-    public String getChampMaster(String champName){
+    public EmbedBuilder getChampMaster(String champName){
         List<LeagueStatsVO> records = leagueService.findChampMaster(champName);
         if(records.size() < 1){
-            return "";
+            return null;
         }
         LolTemplate template = new LolTemplate();
-        String result = template.makeChampMasterTemplate(records, champName);
+        EmbedBuilder result = template.makeChampMasterTemplate(records, champName);
 
         return result;
     }
 
     /* !통계  */
-    public String getChampHighRate(){
+    public EmbedBuilder getChampHighRate(){
         List<LeagueStatsVO> records = leagueService.findChampHighRate();
         if(records.size() < 1){
-            return "";
+            return null;
         }
         LolTemplate template = new LolTemplate();
-        String result = template.makeChampHighRateTemplate(records);
+        EmbedBuilder result = template.makeChampHighRateTemplate(records);
         
         return result;
     }

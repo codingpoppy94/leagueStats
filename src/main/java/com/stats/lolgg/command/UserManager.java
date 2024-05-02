@@ -159,7 +159,10 @@ public class UserManager {
         StringBuilder userListString = new StringBuilder();
         userListString.append("```대기자: ");
         for (int i = 0; i < userList.size(); i++) {
-            userListString.append((i + 1) + "." + userList.get(i).getNickname() + " ");
+            String riotName = userList.get(i).getNickname();
+            int index = riotName.indexOf("/");
+            riotName = riotName.substring(0, index);
+            userListString.append((i + 1) + "." + riotName + " ");
         }
         userListString.append("```");
         return userListString.toString();
