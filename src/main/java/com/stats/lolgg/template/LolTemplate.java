@@ -188,8 +188,6 @@ public class LolTemplate {
         return embed;
     }
 
-
-
     /* !help */
     public EmbedBuilder makeHelpTemplate(){
         EmbedBuilder builder = new EmbedBuilder();

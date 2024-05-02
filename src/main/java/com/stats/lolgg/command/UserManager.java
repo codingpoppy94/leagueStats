@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.stats.lolgg.service.LeagueService;
@@ -15,10 +16,20 @@ import com.stats.lolgg.service.LeagueService;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 @Component
 public class UserManager {
+
+    @Value("${team.channelId.one}")
+    private String teamIdOne;
+
+    @Value("${team.channelId.two}")
+    private String teamIdTwo;
+
+    @Value("${team.channelId.three}")
+    private String teamIdThree;
 
     @Autowired
     private LeagueService leagueService;
@@ -104,6 +115,28 @@ public class UserManager {
             }
         }
         return "error";
+    }
+
+    /* 팀취소 */
+    public String teamCancel(MessageReceivedEvent event, String originMessage){
+        String message[] = originMessage.split("\\s");
+        int messageIndex =  Integer.parseInt(message[1]);
+        String channelId = "";
+        if(messageIndex == 1){
+            channelId = teamIdOne;
+        }else if(messageIndex == 2){
+            channelId = teamIdTwo;
+        }else if(messageIndex == 3){
+            channelId = teamIdThree;
+        }
+        System.out.println(channelId);
+        VoiceChannel targetChannel = event.getGuild().getVoiceChannelById(channelId);
+        if(targetChannel == null){
+            return "error";
+        }
+        List<Member> targetMembers = targetChannel.getMembers();
+        this.compareMembers(targetMembers);
+        return this.sendUserList();
     }
 
     /* mention */
