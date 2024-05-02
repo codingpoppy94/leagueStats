@@ -127,14 +127,14 @@ public class LeagueService {
             skin = ChampEnum.getKoreanValue(skin);
             String Camp = statsNode.get("TEAM").asText().replace("100", "blue").replace("200", "red");
 
-            String kda = championsKilled + "/" + numDeaths + "/" + assists;
-
             leagueVO.setGame_id(fileName);
             leagueVO.setGame_team(Camp);
             leagueVO.setPosition(teamPostion);
             leagueVO.setRiot_name(name);
             leagueVO.setChamp_name(skin);
-            leagueVO.setKda(kda);
+            leagueVO.setKill(championsKilled);
+            leagueVO.setDeath(numDeaths);
+            leagueVO.setAssist(assists);
             leagueVO.setGame_result(win);
             leagueVO.setGame_date(gameDate);
             leagueVO.setDelete_yn('N');

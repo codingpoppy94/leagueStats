@@ -8,7 +8,9 @@ CREATE TABLE league (
     riot_name VARCHAR(200),
     champ_name VARCHAR(200),
     position VARCHAR(100),
-    kda VARCHAR(20),
+    kill VARCHAR(20),
+    death VARCHAR(20),
+    assist VARCHAR(20),
     game_result VARCHAR(20),
     game_team VARCHAR(20),
     game_date TIMESTAMP,
@@ -28,16 +30,12 @@ CREATE SEQUENCE mapping_name_id_seq
 START WITH 1
 INCREMENT BY 1
 
-INSERT INTO public.league
-(id, game_id, riot_name, champ_name, position, kda, game_result, game_team, game_date, create_date, delete_yn)
-VALUES('1', '03-28-1-1', '잘정', '자르반4세', 'JUG', '10/1/13', "승", 'blue', '20240328', CURRENT_TIMESTAMP, 'N');
-
 CREATE SEQUENCE league_id_seq
 START WITH 1
 INCREMENT BY 1
 
 -- 최근전적 10 조회
-SELECT id, game_id, riot_name, champ_name, position, kda, game_result, game_team, game_date, create_date
+SELECT id, game_id, riot_name, champ_name, position, kill, death, assist, game_result, game_team, game_date, create_date
 FROM league
 
 where riot_name = '잘생긴정현이'
@@ -47,14 +45,14 @@ ORDER BY ABS(EXTRACT(EPOCH FROM CURRENT_TIMESTAMP - game_date))
 LIMIT 10;
 
 -- 전체 조회
-SELECT id, game_id, riot_name, champ_name, position, kda, game_result, game_team, game_date, create_date
+SELECT id, game_id, riot_name, champ_name, position, kill, death, assist, game_result, game_team, game_date, create_date
 FROM league
 
 where riot_name = '잘생긴정현이'
 and delete_yn = 'N';
 
 -- 이번달 조회
-SELECT id, game_id, riot_name, champ_name, position, kda, game_result, game_team, game_date, create_date
+SELECT id, game_id, riot_name, champ_name, position, kill, death, assist, game_result, game_team, game_date, create_date
 FROM league
 where riot_name = '잘생긴정현이'
 and delete_yn  = 'N'
@@ -114,7 +112,7 @@ order by total_count desc  , win_rate  desc
 
 /* game_id */		
 select 
-	game_id, riot_name, champ_name, position, kda, game_result, game_team, game_date
+	game_id, riot_name, champ_name, position, kill, death, assist, game_result, game_team, game_date
 from 
 league l where game_id ='2t_0424_2355'		
 ORDER BY 

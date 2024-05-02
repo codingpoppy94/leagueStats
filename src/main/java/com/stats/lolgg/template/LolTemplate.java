@@ -68,7 +68,8 @@ public class LolTemplate {
                 recentlose ++;
                 matchStr += ":red_circle: ";
             }
-            matchStr +=recentMatch.getChamp_name() + " " + recentMatch.getKda() + "\n";
+            String kda = recentMatch.getKill()+"/"+recentMatch.getDeath()+"/"+recentMatch.getAssist();
+            matchStr +=recentMatch.getChamp_name() + " " + kda + "\n";
         }
         String matchHeader = "최근 "+recentTotal+"전 "+recentWin+"승 "+recentlose+"패";
 
