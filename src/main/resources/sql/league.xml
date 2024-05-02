@@ -91,8 +91,12 @@
             COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE,
             CASE 
                 WHEN COUNT(*) = 0 THEN 0
-                ELSE ROUND(COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END)::numeric / NULLIF(COUNT(*), 0) * 100 ,2)
-			END AS WIN_RATE
+                ELSE ROUND(COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END)::NUMERIC / NULLIF(COUNT(*), 0) * 100 ,2)
+			END AS WIN_RATE,
+            CASE
+			WHEN SUM(DEATH) = 0 THEN 9999
+			ELSE ROUND((SUM(KILL) + SUM(ASSIST))::NUMERIC / NULLIF(SUM(DEATH), 0), 2) 
+            END AS KDA
         FROM LEAGUE
         WHERE RIOT_NAME = #{riot_name}
         AND DELETE_YN = 'N'

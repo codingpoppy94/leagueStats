@@ -11,6 +11,7 @@ public class LeagueStatsVO {
     private int win;
     private int lose;
     private float win_rate;
+    private float kda;
 
     public LeagueStatsVO(){}
 

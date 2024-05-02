@@ -37,7 +37,7 @@ public class LolTemplate {
             }
         }
         //이번달전적
-        String monthStatStr = makeStats("이번달 전적", monthRecord.getTotal_count(), monthRecord.getWin(), monthRecord.getLose(), monthRecord.getWin_rate());
+        String monthStatStr = makeStats("이번달 전적", monthRecord.getTotal_count(), monthRecord.getWin(), monthRecord.getLose(), monthRecord.getWin_rate(), monthRecord.getKda());
         
         //통합전적
         String allStatStr = "";
@@ -48,11 +48,11 @@ public class LolTemplate {
             if(record.getTotal_count() ==  maxTotalCount ) {
                 allStatStr += ":thumbsup: ";
             }
-            allStatStr += makeStats(record.getPosition(), record.getTotal_count(), record.getWin(), record.getLose(), record.getWin_rate());
+            allStatStr += makeStats(record.getPosition(), record.getTotal_count(), record.getWin(), record.getLose(), record.getWin_rate(),9999);
         }
         allTotal = allWin + allLose;
         allWinLate = Math.round((float) allWin * 100 / allTotal * 100) / 100.0f;
-        String allStatStrHeader = makeStats("통합 전적", allTotal, allWin, allLose, allWinLate);
+        String allStatStrHeader = makeStats("통합 전적", allTotal, allWin, allLose, allWinLate,9999);
 
         //최근전적
         String matchStr = "";
@@ -185,8 +185,12 @@ public class LolTemplate {
     //     return sb.toString();
     // }
 
-    private String makeStats(String prefix, int totalCount, int win, int lose, float win_rate){
-        String stats = prefix + " - " + totalCount+"전 "+win+"승/"+lose+"패  "+win_rate+"% 승률\n";
+    private String makeStats(String prefix, int totalCount, int win, int lose, float win_rate, float kda){
+        String stats = prefix + " - " + totalCount+"전 "+win+"승/"+lose+"패  "+win_rate+"% 승률";
+        if(kda != 9999){
+            stats += " KDA: " + kda;
+        }
+        stats += "\n";
         return stats;
     }
 
