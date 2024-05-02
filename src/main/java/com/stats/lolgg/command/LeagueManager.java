@@ -12,7 +12,10 @@ import org.springframework.stereotype.Component;
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 import com.stats.lolgg.service.LeagueService;
-import com.stats.lolgg.template.LolStatsTemplate;
+import com.stats.lolgg.template.LolTemplate;
+
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
 @Component
 public class LeagueManager {
@@ -22,14 +25,19 @@ public class LeagueManager {
 
     public LeagueManager () {}
 
-    /* !전적 */
-    public String getRecord(String riotName) {
+    public EmbedBuilder  getHelp(){
+        LolTemplate template = new LolTemplate();
+        return template.makeHelpTemplate();
+    }
 
+    /* !전적 */
+    public EmbedBuilder getRecord(String riotName) {
+        EmbedBuilder builder = new EmbedBuilder();
         Map<String,Object> map =  new HashMap<String,Object>();
 
         List<LeagueStatsVO> allRecord = leagueService.findRecord(riotName);
         if(allRecord.size() < 1) {
-            return "";
+            return null;
         }
         
         List<LeagueVO> recentMatch = leagueService.findTopTen(riotName);
@@ -57,8 +65,8 @@ public class LeagueManager {
         map.put("easyRivals", easyRivals);
         map.put("hardRivals", hardRivals);
 
-        LolStatsTemplate template = new LolStatsTemplate();
-        String result = template.makeRecordTemplate(map);
+        LolTemplate template = new LolTemplate();
+        EmbedBuilder result = template.makeRecordTemplate(map);
 
         return result;
     }
@@ -69,7 +77,7 @@ public class LeagueManager {
         if(records.size() < 1){
             return "";
         }
-        LolStatsTemplate template = new LolStatsTemplate();
+        LolTemplate template = new LolTemplate();
         String result = template.makeChampMasterTemplate(records, champName);
 
         return result;
@@ -81,7 +89,7 @@ public class LeagueManager {
         if(records.size() < 1){
             return "";
         }
-        LolStatsTemplate template = new LolStatsTemplate();
+        LolTemplate template = new LolTemplate();
         String result = template.makeChampHighRateTemplate(records);
         
         return result;
