@@ -22,7 +22,7 @@ public enum ChampEnum {
     CAITLYN("Caitlyn", "케이틀린"),
     CAMILLE("Camille", "카밀"),
     CASSIOPEIA("Cassiopeia", "카시오페아"),
-    CHO_GATH("ChoGath", "초가스"),
+    CHO_GATH("Chogath", "초가스"),
     CORKI("Corki", "코르키"),
     DARIUS("Darius", "다리우스"),
     DIANA("Diana", "다이애나"),
