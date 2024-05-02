@@ -123,7 +123,6 @@
         FROM LEAGUE 
         WHERE CHAMP_NAME = #{champ_name}
         AND DELETE_YN = 'N'
-        <include refid="where_month"></include>
         GROUP BY RIOT_NAME 
         HAVING (ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2)) <![CDATA[ >= ]]> 55
         ORDER BY TOTAL_COUNT DESC, WIN_RATE DESC

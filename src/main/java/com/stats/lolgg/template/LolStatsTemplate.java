@@ -81,7 +81,7 @@ public class LolStatsTemplate {
 
     /* !장인 */
     public String makeChampMasterTemplate(List<LeagueStatsVO> records, String champName){
-        String header = "**이번달 " +champName+ " 장인** \n\n";
+        String header = "**" +champName+ " 장인** \n\n";
         String content1 = "";
 
         for(LeagueStatsVO record : records ){
