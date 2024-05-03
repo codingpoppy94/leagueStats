@@ -113,8 +113,6 @@ public class LolTemplate {
         String hardHeader = "맞라인:thumbsdown:";
 
         String desc = monthStatStr +"\n"+ allStatStrHeader + allStatStr;
-        // CustomEmoji emoji = "<:__:1197186572433490090>";
-        // emoji.getAsMention();
 
         if("크넹".equals(riotName)){
             riotName = "<:__:1197186572433490090>";
