@@ -7,6 +7,7 @@ import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 
 public class LolTemplate {
 
@@ -111,7 +112,14 @@ public class LolTemplate {
         }
         String hardHeader = "맞라인:thumbsdown:";
 
-        String desc = monthStatStr +"\n"+ allStatStrHeader + allStatStr;
+        String desc = "<:__:1197186572433490090>"+ monthStatStr +"\n"+ allStatStrHeader + allStatStr;
+        // CustomEmoji emoji = "<:__:1197186572433490090>";
+        // emoji.getAsMention();
+
+        if("크넹".equals(riotName)){
+            riotName = "<:__:1197186572433490090>";
+            riotName += "<:__:1197186590968139836>";
+        }
 
         //템플릿생성
         embed.setTitle(riotName);   
