@@ -144,9 +144,9 @@ public class ReadyListener extends ListenerAdapter {
                     if(message.length > 1) {
                         int commandIndex = originMessage.indexOf(message[1]);
                         riotName = originMessage.substring(commandIndex);
-                        // 공백제거
-                        riotName = riotName.replaceAll("\\s+", "");
-
+                        // 공백제거, й -> n으로 replace
+                        riotName = riotName.replaceAll("\\s+", "").replaceAll("й", "n");
+                        
                         templateMessage = leagueManager.getRecord(riotName);
                     } else {
                         // 자기꺼 호출

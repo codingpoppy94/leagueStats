@@ -125,6 +125,7 @@ public class ReplayService {
             String teamPostion = statsNode.get("TEAM_POSITION").asText().replace("JUNGLE", "JUG").replace("BOTTOM", "ADC").replace("UTILITY", "SUP").replace("MIDDLE", "MID");
             String name = statsNode.get("NAME").asText().trim();
             name = name.replaceAll("\\s+","");
+            name = name.replaceAll("й", "n");
             name = getMainName(mappingMaps, name);
             String win = statsNode.get("WIN").asText().replace("Win", "승").replace("Fail","패");
             String skin = statsNode.get("SKIN").asText().toLowerCase().trim();
