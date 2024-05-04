@@ -253,6 +253,7 @@
                 game_team,
                 game_date,
                 create_date,
+                update_date,
                 delete_yn
             )
             VALUES
@@ -270,6 +271,7 @@
                     #{item.game_team},
                     #{item.game_date},
                     CURRENT_TIMESTAMP,
+                    CURRENT_TIMESTAMP,
                     #{item.delete_yn}
                 )
             </foreach>
@@ -283,6 +285,7 @@
                 SUB_NAME,
                 MAIN_NAME,
                 CREATE_DATE,
+                UPDATE_DATE,
                 DELETE_YN
             )
             VALUES
@@ -290,6 +293,7 @@
                 nextval('mapping_name_id_seq'),
                 #{sub_name},
                 #{main_name},
+                CURRENT_TIMESTAMP,
                 CURRENT_TIMESTAMP,
                 'N'
             )
@@ -299,7 +303,8 @@
     <!-- 탈퇴회원처리 -->
     <update id="changeDeleteYN" parameterType="java.util.HashMap">
         UPDATE LEAGUE
-            SET DELETE_YN = #{delete_yn}
+            SET DELETE_YN = #{delete_yn},
+            UPDATE_DATE = CURRENT_TIMESTAMP
         WHERE 
             RIOT_NAME = #{riot_name}
 
@@ -308,7 +313,8 @@
     <!-- 닉네임 변경 -->
     <update id="changeRiotName" parameterType="java.util.HashMap" >
         UPDATE LEAGUE
-            SET RIOT_NAME = #{changed_riot_name} 
+            SET RIOT_NAME = #{changed_riot_name},
+            UPDATE_DATE = CURRENT_TIMESTAMP
         WHERE RIOT_NAME = #{origin_riot_name}
     </update>
 
