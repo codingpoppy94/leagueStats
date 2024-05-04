@@ -234,6 +234,17 @@
         WHERE 
             DELETE_YN = 'N'
     </select>
+
+    <!-- 중복 리플 파일 조회 -->
+    <select id="findReplayName" parameterType="String" resultType="Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            LEAGUE
+        WHERE
+            GAME_ID = #{game_id}
+            
+    </select>
         
     <!-- INSERT  -->
 

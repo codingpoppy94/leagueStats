@@ -21,6 +21,7 @@ public interface LeagueMapper {
     List<LeagueStatsVO> findRecordOtherTeam(String riot_name);
     List<LeagueStatsVO> findRecordLine(String position);
     List<Map<String,Object>> findMappingName();
+    int findReplayName(String game_id);
 
     void insertLeague(List<LeagueVO> leagueVO);
     void insertMappingName(Map<String,Object> paramMap);

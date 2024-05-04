@@ -78,6 +78,10 @@ public class LeagueService {
         return leagueMapper.findMappingName();
     }
 
+    public int findReplayName(String game_id){
+        return leagueMapper.findReplayName(game_id);
+    }
+
     /* insert */
 
     /**
@@ -91,9 +95,19 @@ public class LeagueService {
 
         // 파일이름
         String fileNameWithExt = file.getOriginalFilename();
+        String fileRegExp = "^[a-zA-Z0-9]*_\\d{4}_\\d{4}\\.rofl$";
+
+        if(!fileRegExp.matches(fileNameWithExt)){
+            throw new IllegalArgumentException("잘못된 리플 파일 형식");
+        }
 
         int index = fileNameWithExt.lastIndexOf('.');
         String fileName = fileNameWithExt.substring(0, index).toLowerCase();
+
+        if(this.findReplayName(fileName) > 1) {
+            throw new IllegalArgumentException("중복된 리플 파일 등록");
+        }
+
         System.out.println("fileName: "+fileName);
 
         List<LeagueVO> leagueVOList = new ArrayList<>();
