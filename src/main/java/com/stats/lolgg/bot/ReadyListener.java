@@ -1,19 +1,18 @@
 package com.stats.lolgg.bot;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.stats.lolgg.command.LeagueManager;
+import com.stats.lolgg.command.ReplayManager;
 import com.stats.lolgg.command.UserManager;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -28,10 +27,32 @@ public class ReadyListener extends ListenerAdapter {
     @Autowired
     private LeagueManager leagueManager;
 
+    @Autowired
+    private ReplayManager replayManager;
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
         String originMessage = event.getMessage().getContentRaw();
+
+        //파일관련
+        Message fileMessage = event.getMessage();
+        for(Attachment attachment : fileMessage.getAttachments()){
+            String fileName = attachment.getFileName();
+            // int Size = attachment.getSize();
+            String fileRegExp = ".rofl";
+            if(fileName.contains(fileRegExp)){
+                String fileUrl = attachment.getUrl();
+                try {
+                    String resultMessage = replayManager.saveFile(fileUrl,fileName);
+                    sendMessage(channel, resultMessage);
+                } catch (Exception e) {
+                    // e.printStackTrace();
+                    // e.getMessage();
+                    sendMessage(channel, e.getMessage());
+                }
+            }   
+        }
 
         if(originMessage.length() > 0) {
             if(originMessage.charAt(0) == '!'){

@@ -13,7 +13,9 @@ public class FileNameValidator {
         String[] invalidFileNames = {"rofl.rofl.rofl", "12345_a1234_5678.rofl", "1_1234_5678.text","test_test_1234_5678.rofl"};
 
 
-        String regexp = "^[a-zA-Z0-9]*_\\d{4}_\\d{4}\\.rofl$";
+        // String regexp = "^[a-zA-Z0-9]*_\\d{4}_\\d{4}\\.rofl$";
+        String regexp = ".rofl$";
+
         for(String filename : validFileNames) {
             assertTrue(filename.matches(regexp));
         }

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 import com.stats.lolgg.service.LeagueService;
+import com.stats.lolgg.service.ReplayService;
 
 
 
@@ -23,6 +24,11 @@ public class LeagueController {
 
     @Autowired
     private LeagueService leagueService;
+
+    @Autowired
+    private ReplayService replayService;
+
+
 
     /**
      * 전체 조회
@@ -64,6 +70,7 @@ public class LeagueController {
         return leagueService.findChampHighRate();
     }
 
+    // 파일올리면 바로 저장되게 변경
     /**
      * Replay 데이터 파싱>저장
      * @param files
@@ -76,7 +83,7 @@ public class LeagueController {
             // String fileName = file.getOriginalFilename();
             // System.out.println(fileName);
             
-            leagueService.saveAll(file);
+            replayService.saveAll(file);
         }
         return "성공";
     }
