@@ -66,7 +66,7 @@ public class ReplayService {
             File file = filePath.toFile();
     
             if (!file.exists()) {
-                throw new Exception("등록실패: 파일을 찾을 수 없습니다.");
+                throw new Exception(":red_circle:등록실패: 파일을 찾을 수 없습니다.");
             }
     
             InputStream inputStream = new FileInputStream(file);
@@ -83,14 +83,14 @@ public class ReplayService {
         String fileRegExp = "^[a-zA-Z0-9]*_\\d{4}_\\d{4}.rofl$";
 
         if(!fileNameWithExt.matches(fileRegExp)){
-            throw new IllegalArgumentException("등록실패: 잘못된 리플 파일 형식");
+            throw new IllegalArgumentException(":red_circle:등록실패: 잘못된 리플 파일 형식");
         }
 
         int index = fileNameWithExt.lastIndexOf('.');
         String fileName = fileNameWithExt.substring(0, index).toLowerCase();
 
         if(this.findReplayName(fileName) > 1) {
-            throw new IllegalArgumentException("등록실패: 중복된 리플 파일 등록");
+            throw new IllegalArgumentException(":red_circle:등록실패: 중복된 리플 파일 등록");
         }
 
         // 파싱 데이터
@@ -161,7 +161,9 @@ public class ReplayService {
 
         HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
         String[] monthDate = fileName.split("_");
-        String savePath = "src/main/resources/replays/"+monthDate[1]+"/"+fileName;
+        // String savePath = "src/main/resources/replays/"+monthDate[1]+"/"+fileName;
+        String savePath = "/replays/"+monthDate[1]+"/"+fileName;
+
         Path directory = Paths.get(savePath).getParent();
         if(!Files.exists(directory)){
             Files.createDirectories(directory);
