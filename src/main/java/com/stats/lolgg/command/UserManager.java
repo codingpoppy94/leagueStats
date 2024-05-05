@@ -249,6 +249,9 @@ public class UserManager {
             if(checkAuth(roles)){
                 leagueService.saveMappingName(paramMap);
                 leagueService.changeRiotName(paramMap);
+                return "등록 및 변경 완료";
+            } else {
+                return "권한 없음";
             }
         }
         return "error";
