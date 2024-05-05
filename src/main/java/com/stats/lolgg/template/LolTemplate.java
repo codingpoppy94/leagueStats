@@ -197,7 +197,7 @@ public class LolTemplate {
         return embed;
     }
 
-    /* !help */
+    /* !doc */
     public EmbedBuilder makeHelpTemplate(){
         EmbedBuilder builder = new EmbedBuilder();
         StringBuilder sb = new StringBuilder();
@@ -211,13 +211,14 @@ public class LolTemplate {
         sb.append("※통계명령어 \n");
         sb.append("`!전적  !전적 {name}` 자신의 전적, name의 전적 검색 \n");
         sb.append("`!장인 {champ}` 승률55%이상 장인 목록 \n");
-        sb.append("`!통계` 이번달 5판 이상 챔피언 목록 \n\n");
+        sb.append("`!통계` 이번달 5판 이상 챔피언 목록 \n");
+        sb.append("`!라인 {탑|정글|미드|원딜|서폿}` {라인}별 승률\n\n");
         sb.append("※관리자명령어 (디코관리자 권한 필요) \n");
         sb.append("`!탈퇴 {name}` 탈퇴한 회원 추가, 전적검색제외 \n");
         sb.append("`!복귀 {name}` 탈퇴한 회원 복구, 전잭검색포함 \n");
         sb.append("`!부캐저장 {부캐닉/본캐닉}` 부캐닉네임 등록, 데이터저장할때 부캐닉네임은 본캐닉네임으로 변경되서 저장 \n");
         sb.append("");
-        builder.setTitle("help");
+        builder.setTitle("doc");
         builder.setDescription(sb.toString());
         return builder;
     }

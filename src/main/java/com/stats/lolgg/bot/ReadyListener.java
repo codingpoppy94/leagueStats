@@ -57,7 +57,7 @@ public class ReadyListener extends ListenerAdapter {
         if(originMessage.length() > 0) {
             if(originMessage.charAt(0) == '!'){
                 String[] message = originMessage.split("\\s");
-                // !help
+                // !doc
                 if(message[0].equals("!doc")){
                     sendMessage(channel, leagueManager.getHelp());
                 }
