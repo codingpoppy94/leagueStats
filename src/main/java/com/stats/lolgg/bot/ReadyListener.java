@@ -153,6 +153,7 @@ public class ReadyListener extends ListenerAdapter {
                         String nickName = event.getMember().getNickname();
                         int index = nickName.lastIndexOf("/");
                         riotName = nickName.substring(0, index);
+                        riotName = riotName.replaceAll("\\s+", "").replaceAll("й", "n");
 
                         templateMessage = leagueManager.getRecord(riotName);
                     }
