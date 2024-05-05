@@ -119,6 +119,7 @@ public class LolTemplate {
         if("크넹".equals(riotName)){
             riotName = "<:__:1197186572433490090>";
             riotName += "<:__:1197186590968139836>";
+            riotName += ":crown:";
         }
 
         //템플릿생성
