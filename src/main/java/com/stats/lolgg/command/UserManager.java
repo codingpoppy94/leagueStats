@@ -96,11 +96,13 @@ public class UserManager {
                 return this.sendUserList();
                 
             } else {
-                if(selectMember[0] != 0){
+                if(selectMember[0] >= 0){
                     int min = selectMember[0];
-                    Member deleteMember = this.userList.get(min);
-                    this.removeUser(deleteMember);
-                    return this.sendUserList();
+                    if(min + 1 <= this.userList.size()){
+                        Member deleteMember = this.userList.get(min);
+                        this.removeUser(deleteMember);
+                        return this.sendUserList();
+                    }
                 }
             }
             
@@ -248,8 +250,8 @@ public class UserManager {
 
             List<Role> roles = event.getMember().getRoles();
             for (Role role : roles) {
-                // System.out.println(role.getPermissions());
-                if(role.getPermissions().contains(Permission.ADMINISTRATOR)){
+                System.out.println(role.getPermissions());
+                if(role.getPermissions().contains(Permission.MESSAGE_HISTORY)){
                     leagueService.saveMappingName(paramMap);
                     return "등록 완료";
                 } else {
@@ -266,29 +268,26 @@ public class UserManager {
         int[] result = new int[2];
 
         try{
-            Pattern numberPattern = Pattern.compile("\\d");
-            Matcher numberMatcher = numberPattern.matcher(memberIndex);
-            if(numberMatcher.find()){
-                if(memberIndex.length() > 1) {
-                    int min = Integer.parseInt(numberMatcher.group(0)) - 1;
-                    int max = Integer.parseInt(memberIndex.substring(2)) -1;
-    
-                    result[0] = min;
-                    result[1] = max;
-                
-                } else {
-                    result[0] = Integer.parseInt(memberIndex) - 1;
-                }
-            } else {
-                result[0] = 9999;
+            String mulitReg = "\\d{1,2}~\\d{1,2}";
+            String numberReg = "\\d{1,2}";
+            if(memberIndex.matches(numberReg)){
+                result[0] = Integer.parseInt(memberIndex) - 1;
                 return result;
-                // sendErrorMessage(channel);
             }
+            if(memberIndex.matches(mulitReg)){
+                String[] indexes = memberIndex.split("~");
+                int min = Integer.parseInt(indexes[0]) - 1;
+                int max = Integer.parseInt(indexes[1]) -1;
+
+                result[0] = min;
+                result[1] = max;
+                return result;
+            }
+            result[0] = 9999;
+            return result;
         } catch (Exception e) {
             result[0] = 9999;
             return result;
         }
-
-        return result;
     }
 }
