@@ -2,7 +2,6 @@ package com.stats.lolgg.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,19 +15,18 @@ import com.stats.lolgg.model.LeagueVO;
 import com.stats.lolgg.service.LeagueService;
 import com.stats.lolgg.service.ReplayService;
 
+import lombok.RequiredArgsConstructor;
+
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/league")
 public class LeagueController {
 
-    @Autowired
-    private LeagueService leagueService;
+    private final LeagueService leagueService;
 
-    @Autowired
-    private ReplayService replayService;
-
-
+    private final ReplayService replayService;
 
     /**
      * 전체 조회

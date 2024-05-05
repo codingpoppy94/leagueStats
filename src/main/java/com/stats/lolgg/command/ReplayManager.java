@@ -2,10 +2,11 @@ package com.stats.lolgg.command;
 
 import java.nio.file.Path;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.stats.lolgg.service.ReplayService;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * Replay 저장 Manager
@@ -13,9 +14,10 @@ import com.stats.lolgg.service.ReplayService;
  * @version 1.0
  */
 @Component
+@RequiredArgsConstructor
 public class ReplayManager {
-    @Autowired
-    private ReplayService replayService;
+
+    private final ReplayService replayService;
 
     // 리플 저장 및 데이터 저장
     public String saveFile(String fileUrl,String fileName) throws Exception{

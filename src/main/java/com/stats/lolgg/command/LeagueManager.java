@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.stats.lolgg.model.LeagueStatsVO;
@@ -14,6 +13,7 @@ import com.stats.lolgg.model.LeagueVO;
 import com.stats.lolgg.service.LeagueService;
 import com.stats.lolgg.template.LolTemplate;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 /**
@@ -22,12 +22,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
  * @version 1.0
  */
 @Component
+@RequiredArgsConstructor
 public class LeagueManager {
 
-    @Autowired
-    private LeagueService leagueService;
-
-    public LeagueManager () {}
+    private final LeagueService leagueService;
 
     public EmbedBuilder  getHelp(){
         LolTemplate template = new LolTemplate();

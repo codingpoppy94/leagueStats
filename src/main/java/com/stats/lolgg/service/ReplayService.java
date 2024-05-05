@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,13 +28,16 @@ import com.stats.lolgg.mapper.LeagueMapper;
 import com.stats.lolgg.model.ChampEnum;
 import com.stats.lolgg.model.LeagueVO;
 
+import lombok.RequiredArgsConstructor;
+
 /* 
  * Replay 자동 저장, 자동 데이터 등록 서비스
  */
 @Service
+@RequiredArgsConstructor
 public class ReplayService {
-    @Autowired
-    private LeagueMapper leagueMapper;
+
+    private final LeagueMapper leagueMapper;
 
     // 중복리플검사
     public int findReplayName(String game_id){

@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.stats.lolgg.service.LeagueService;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -25,6 +25,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  */
 
 @Component
+@RequiredArgsConstructor
 public class UserManager {
 
     @Value("${team.channelId.one}")
@@ -36,14 +37,9 @@ public class UserManager {
     @Value("${team.channelId.three}")
     private String teamIdThree;
 
-    @Autowired
-    private LeagueService leagueService;
+    private final LeagueService leagueService;
 
     private final List<Member> userList;
-
-    public UserManager(){
-        userList = new ArrayList<>();
-    }
 
     public void addUser(Member user) {
         userList.add(user);

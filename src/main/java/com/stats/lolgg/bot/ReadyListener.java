@@ -2,13 +2,13 @@ package com.stats.lolgg.bot;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.stats.lolgg.command.LeagueManager;
 import com.stats.lolgg.command.ReplayManager;
 import com.stats.lolgg.command.UserManager;
 
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -18,17 +18,13 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 @Component
+@RequiredArgsConstructor
 public class ReadyListener extends ListenerAdapter {
     private static Log log = LogFactory.getLog(ReadyListener.class); 
 
-    @Autowired
-    private UserManager userManager;
-
-    @Autowired
-    private LeagueManager leagueManager;
-
-    @Autowired
-    private ReplayManager replayManager;
+    private final UserManager userManager;
+    private final LeagueManager leagueManager;
+    private final ReplayManager replayManager;
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
