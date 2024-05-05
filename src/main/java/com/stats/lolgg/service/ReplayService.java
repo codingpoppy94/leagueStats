@@ -162,7 +162,7 @@ public class ReplayService {
         HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
         String[] monthDate = fileName.split("_");
         // String savePath = "src/main/resources/replays/"+monthDate[1]+"/"+fileName;
-        String savePath = "/replays/"+monthDate[1]+"/"+fileName;
+        String savePath = "./replays/"+monthDate[1]+"/"+fileName;
 
         Path directory = Paths.get(savePath).getParent();
         if(!Files.exists(directory)){
