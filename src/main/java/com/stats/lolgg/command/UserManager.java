@@ -1,15 +1,9 @@
 package com.stats.lolgg.command;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import com.stats.lolgg.service.LeagueService;
 
@@ -19,7 +13,11 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-@Component
+/**
+ * 내전 등록 취소 Manager
+ * @author codingpoppy94
+ * @version 1.0
+ */
 public class UserManager {
 
     @Value("${team.channelId.one}")
@@ -48,14 +46,6 @@ public class UserManager {
         return userList.remove(user);
     }
 
-    public List<Member> getUserList() {
-        return userList;
-    }
-
-    public String getUserId(Member user){
-        return user.getNickname();
-    }
-
     public void compareMembers(List<Member> targetMembers){
         List<Member> memberToRemove = new ArrayList<>();
 
@@ -69,7 +59,7 @@ public class UserManager {
 
     /* 취소 */
     public String cancelUser(MessageReceivedEvent event, String originMessage){
-        String message[] = originMessage.split("\\s");
+        String[] message = originMessage.split("\\s");
 
         if(message.length > 1){
             // 범위취소
@@ -121,7 +111,7 @@ public class UserManager {
 
     /* 팀취소 */
     public String teamCancel(MessageReceivedEvent event, String originMessage){
-        String message[] = originMessage.split("\\s");
+        String[] message = originMessage.split("\\s");
         int messageIndex =  Integer.parseInt(message[1]);
         String channelId = "";
         if(messageIndex == 1){
@@ -143,7 +133,7 @@ public class UserManager {
 
     /* mention */
     public String userMention(String originMessage){
-        String message[] = originMessage.split("\\s");
+        String[] message = originMessage.split("\\s");
         String memberIndex = message[1];
         int[] selectMember = memberIndexparsing(memberIndex);
         if(selectMember[0] == 9999) {
@@ -211,7 +201,7 @@ public class UserManager {
         paramMap.put("riot_name", message[1]);
 
         //권한체크
-        List<Role> roles = event.getMember().getRoles();
+        List<Role> roles = Objects.requireNonNull(event.getMember()).getRoles();
         if(checkAuth(roles)){
             return leagueService.changeDeleteYN(paramMap);
         }
@@ -226,7 +216,7 @@ public class UserManager {
         paramMap.put("riot_name", message[1]);
 
         //권한체크
-        List<Role> roles = event.getMember().getRoles();
+        List<Role> roles = Objects.requireNonNull(event.getMember()).getRoles();
         if(checkAuth(roles)){
             return leagueService.changeDeleteYN(paramMap);
         }
@@ -245,7 +235,7 @@ public class UserManager {
             paramMap.put("main_name", mainName);
 
             //권한체크
-            List<Role> roles = event.getMember().getRoles();
+            List<Role> roles = Objects.requireNonNull(event.getMember()).getRoles();
             if(checkAuth(roles)){
                 leagueService.saveMappingName(paramMap);
                 leagueService.changeRiotName(paramMap);

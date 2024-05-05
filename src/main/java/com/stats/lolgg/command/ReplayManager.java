@@ -7,6 +7,11 @@ import org.springframework.stereotype.Component;
 
 import com.stats.lolgg.service.ReplayService;
 
+/**
+ * Replay 저장 Manager
+ * @author codingpoppy94
+ * @version 1.0
+ */
 @Component
 public class ReplayManager {
     @Autowired

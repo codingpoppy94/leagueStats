@@ -15,8 +15,12 @@ import com.stats.lolgg.service.LeagueService;
 import com.stats.lolgg.template.LolTemplate;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 
+/**
+ * 본인 전적 데이터 처리 Manager
+ * @author codingpoppy94
+ * @version 1.0
+ */
 @Component
 public class LeagueManager {
 
@@ -32,10 +36,10 @@ public class LeagueManager {
 
     /* !전적 */
     public EmbedBuilder getRecord(String riotName) {
-        Map<String,Object> map =  new HashMap<String,Object>();
+        Map<String,Object> map = new HashMap<>();
 
         List<LeagueStatsVO> allRecord = leagueService.findRecord(riotName);
-        if(allRecord.size() < 1) {
+        if(allRecord.isEmpty()) {
             return null;
         }
         
@@ -65,65 +69,47 @@ public class LeagueManager {
         map.put("hardRivals", hardRivals);
 
         LolTemplate template = new LolTemplate();
-        EmbedBuilder result = template.makeRecordTemplate(map);
 
-        return result;
+        return template.makeRecordTemplate(map);
     }
 
     /* !장인 {riot_champ} */
     public EmbedBuilder getChampMaster(String champName){
         List<LeagueStatsVO> records = leagueService.findChampMaster(champName);
-        if(records.size() < 1){
+        if(records.isEmpty()){
             return null;
         }
         LolTemplate template = new LolTemplate();
-        EmbedBuilder result = template.makeChampMasterTemplate(records, champName);
 
-        return result;
+        return template.makeChampMasterTemplate(records, champName);
     }
 
     /* !통계  */
     public EmbedBuilder getChampHighRate(){
         List<LeagueStatsVO> records = leagueService.findChampHighRate();
-        if(records.size() < 1){
+        if(records.isEmpty()){
             return null;
         }
         LolTemplate template = new LolTemplate();
-        EmbedBuilder result = template.makeChampHighRateTemplate(records);
-        
-        return result;
+
+        return template.makeChampHighRateTemplate(records);
     }
 
     /* !라인 {position} */
     public EmbedBuilder getRecordLine(String position){
-        String realPostion = "";
-        switch (position) {
-            case "탑": 
-            realPostion = "TOP";
-            break;
-            case "정글":
-            realPostion = "JUG";
-            break;
-            case "미드":
-            realPostion = "MID";
-            break;
-            case "원딜":
-            realPostion = "ADC";
-            break;
-            case "서폿":
-            realPostion = "SUP";
-            break;
-        
-            default:
-            realPostion = "TOP";
-            break;
-        }
+        String realPostion = switch (position) {
+            case "탑" -> "TOP";
+            case "정글" -> "JUG";
+            case "미드" -> "MID";
+            case "원딜" -> "ADC";
+            case "서폿" -> "SUP";
+            default -> throw new IllegalStateException("Unexpected value: " + position);
+        };
         List<LeagueStatsVO> records = leagueService.findRecordLine(realPostion);
-        if(records.size() < 1){
+        if(records.isEmpty()){
             return null;
         } 
         LolTemplate template = new LolTemplate();
-        EmbedBuilder result = template.makeRecordLine(records, realPostion);
-        return result;
+        return template.makeRecordLine(records, realPostion);
     }
 }
