@@ -253,7 +253,8 @@ public class UserManager {
                 System.out.println(role.getPermissions());
                 if(role.getPermissions().contains(Permission.MESSAGE_HISTORY)){
                     leagueService.saveMappingName(paramMap);
-                    return "등록 완료";
+                    leagueService.changeRiotName(paramMap);
+                    return "등록 및 변경 완료";
                 } else {
                     return "권한 없음";
                 }
