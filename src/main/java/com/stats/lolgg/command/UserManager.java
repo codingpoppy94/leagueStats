@@ -210,12 +210,11 @@ public class UserManager {
         paramMap.put("delete_yn", "Y");
         paramMap.put("riot_name", message[1]);
 
+        //권한체크
         List<Role> roles = event.getMember().getRoles();
-        for (Role role : roles) {
-            // System.out.println("Role: " + role.getName());
-            if(role.getPermissions().contains(Permission.ADMINISTRATOR)){
-                return leagueService.changeDeleteYN(paramMap);
-            }
+        if(checkAuth(roles)){
+            leagueService.saveMappingName(paramMap);
+            leagueService.changeRiotName(paramMap);
         }
         return 0;
     }
@@ -227,12 +226,11 @@ public class UserManager {
         paramMap.put("delete_yn", "N");
         paramMap.put("riot_name", message[1]);
 
+        //권한체크
         List<Role> roles = event.getMember().getRoles();
-        for (Role role : roles) {
-            // System.out.println(role.getPermissions());
-            if(role.getPermissions().contains(Permission.ADMINISTRATOR)){
-                return leagueService.changeDeleteYN(paramMap);
-            }
+        if(checkAuth(roles)){
+            leagueService.saveMappingName(paramMap);
+            leagueService.changeRiotName(paramMap);
         }
         return 0;
     }
@@ -248,16 +246,11 @@ public class UserManager {
             paramMap.put("sub_name", subName);
             paramMap.put("main_name", mainName);
 
+            //권한체크
             List<Role> roles = event.getMember().getRoles();
-            for (Role role : roles) {
-                System.out.println(role.getPermissions());
-                if(role.getPermissions().contains(Permission.MESSAGE_HISTORY)){
-                    leagueService.saveMappingName(paramMap);
-                    leagueService.changeRiotName(paramMap);
-                    return "등록 및 변경 완료";
-                } else {
-                    return "권한 없음";
-                }
+            if(checkAuth(roles)){
+                leagueService.saveMappingName(paramMap);
+                leagueService.changeRiotName(paramMap);
             }
         }
         return "error";
@@ -290,5 +283,16 @@ public class UserManager {
             result[0] = 9999;
             return result;
         }
+    }
+
+    private boolean checkAuth(List<Role> roles){
+        for (Role role : roles) {
+            if("난민디코관리자".equals(role.getName())){
+                if(role.getPermissions().contains(Permission.ADMINISTRATOR)){
+                    return true;
+                } 
+            }
+        }
+        return false;
     }
 }
