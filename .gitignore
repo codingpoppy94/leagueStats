@@ -2,6 +2,7 @@
 **/build/
 !src/**/build/
 
+replays
 src/**/Login.java
 
 # Ignore Gradle GUI config

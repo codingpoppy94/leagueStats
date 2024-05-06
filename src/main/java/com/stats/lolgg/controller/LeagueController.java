@@ -18,7 +18,11 @@ import com.stats.lolgg.service.ReplayService;
 import lombok.RequiredArgsConstructor;
 
 
-
+/**
+ * League API
+ * @author codingpoppy94
+ * @version 1.0
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/league")

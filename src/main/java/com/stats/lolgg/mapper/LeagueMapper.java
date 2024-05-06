@@ -8,6 +8,11 @@ import org.apache.ibatis.annotations.Mapper;
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 
+/**
+ * League Mapper
+ * @author codingpoppy94
+ * @version 1.0
+ */
 @Mapper
 public interface LeagueMapper {
     List<LeagueVO> findAll();

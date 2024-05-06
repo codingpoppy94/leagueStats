@@ -1,5 +1,10 @@
 package com.stats.lolgg.model;
 
+/**
+ * 챔피언 영문명 변경
+ * @author codingpoppy94
+ * @version 1.0
+ */
 public enum ChampEnum {
     AATROX("Aatrox", "아트록스"),
     AHRI("Ahri", "아리"),

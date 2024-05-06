@@ -9,6 +9,11 @@ import com.stats.lolgg.model.LeagueVO;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 
+/** 
+ * 디스코드 메시지 보내는 template 
+ * @author: codingpoppy94
+ * @version 1.0
+ */
 public class LolTemplate {
 
     /* !전적 템플릿 */
@@ -202,12 +207,12 @@ public class LolTemplate {
         EmbedBuilder builder = new EmbedBuilder();
         StringBuilder sb = new StringBuilder();
         sb.append("");
-        sb.append("※내전관리명령어 \n");
-        sb.append("`!ㅊㅋ !.`  내전 대기 추가 \n");
-        sb.append("`!취소 !ㅊㅅ {x} {x~y}`  본인 내전 대기 취소, x번 취소,x~y범위 취소 \n");
-        sb.append("`!ㅌㅊㅅ {x}`   x팀에 속한 사람들 내전 대기 단체 취소 \n");
-        sb.append("`!대기 !ㄷㄱ`  내전대기 목록 \n");
-        sb.append("`!ㅁㅅ {x} {x~y}` x번 멘션, x~y범위 멘션 \n\n");
+        // sb.append("※내전관리명령어 \n");
+        // sb.append("`!ㅊㅋ !.`  내전 대기 추가 \n");
+        // sb.append("`!취소 !ㅊㅅ {x} {x~y}`  본인 내전 대기 취소, x번 취소,x~y범위 취소 \n");
+        // sb.append("`!ㅌㅊㅅ {x}`   x팀에 속한 사람들 내전 대기 단체 취소 \n");
+        // sb.append("`!대기 !ㄷㄱ`  내전대기 목록 \n");
+        // sb.append("`!ㅁㅅ {x} {x~y}` x번 멘션, x~y범위 멘션 \n\n");
         sb.append("※통계명령어 \n");
         sb.append("`!전적  !전적 {name}` 자신의 전적, name의 전적 검색 \n");
         sb.append("`!장인 {champ}` 승률55%이상 장인 목록 \n");

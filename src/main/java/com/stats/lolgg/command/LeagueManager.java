@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 /**
- * 본인 전적 데이터 처리 Manager
+ * 통계데이터 event 호출 Manager
  * @author codingpoppy94
  * @version 1.0
  */

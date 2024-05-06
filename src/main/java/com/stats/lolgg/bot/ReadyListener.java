@@ -17,6 +17,11 @@ import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+/**
+ * Discord Bot 명령어
+ * @author codingpoppy94
+ * @version 1.0
+ */
 @Component
 @RequiredArgsConstructor
 public class ReadyListener extends ListenerAdapter {

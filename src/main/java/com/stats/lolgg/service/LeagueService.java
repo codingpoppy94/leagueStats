@@ -11,8 +11,11 @@ import com.stats.lolgg.model.LeagueVO;
 
 import lombok.RequiredArgsConstructor;
 
-
-
+/** 
+ * 통계 명령어(!전적 !라인 !장인 !통계) service
+ * @author: codingpoppy94
+ * @version 1.0
+ */
 @Service
 @RequiredArgsConstructor
 public class LeagueService {

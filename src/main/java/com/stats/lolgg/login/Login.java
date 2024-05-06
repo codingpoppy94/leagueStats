@@ -9,6 +9,11 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
+/**
+ * login 첫 기동시 JDA Build
+ * @author codingpoppy94
+ * @version 1.0
+ */
 @Component
 public class Login implements CommandLineRunner {
 
