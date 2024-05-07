@@ -63,22 +63,23 @@ public class ReplayService {
         save(inputStream, fileNameWithExt);
     }
 
-    public void saveOne(Path filePath) throws Exception{
-        try {
-            File file = filePath.toFile();
+    // 리플저장 미사용 2024-05-07
+    // public void saveOne(Path filePath) throws Exception{
+    //     try {
+    //         File file = filePath.toFile();
     
-            if (!file.exists()) {
-                throw new Exception(":red_circle:등록실패: 파일을 찾을 수 없습니다.");
-            }
+    //         if (!file.exists()) {
+    //             throw new Exception(":red_circle:등록실패: 파일을 찾을 수 없습니다.");
+    //         }
     
-            InputStream inputStream = new FileInputStream(file);
-            String fileNameWithExt = file.getName();
-            save(inputStream, fileNameWithExt);        
-            inputStream.close();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-    }
+    //         InputStream inputStream = new FileInputStream(file);
+    //         String fileNameWithExt = file.getName();
+    //         save(inputStream, fileNameWithExt);        
+    //         inputStream.close();
+    //     }catch(IOException e){
+    //         e.printStackTrace();
+    //     }
+    // }
 
     public void save(InputStream inputStream, String fileNameWithExt) throws Exception{
         // 파일이름
@@ -174,7 +175,7 @@ public class ReplayService {
         try (
             InputStream inputStream = response.body();){
             this.save(inputStream, fileName);
-            // 리플레이 파일 다운로드 (지금은 삭제)
+            // 리플레이 파일 다운로드 (2024-05-07 변경)
             // FileOutputStream outputStream = new FileOutputStream(savePath)) {
             // byte[] buffer = new byte[4096];
             // int bytesRead;
