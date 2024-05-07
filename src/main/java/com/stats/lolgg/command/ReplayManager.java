@@ -25,12 +25,12 @@ public class ReplayManager {
         if(!fileName.matches(fileRegExp)){
             return ":red_circle:등록실패: 잘못된 파일 이름 형식";
         }
-        replayService.downloadFile(fileUrl, fileName);
-        return ":green_circle:등록완료: 리플레이 전적 반영 완료";
-        // if (path != null){
-            // replayService.saveOne(path);
-        // }
-        // return "error";
+        Path path = replayService.downloadFile(fileUrl, fileName);
+        if (path != null){
+            replayService.saveOne(path);
+            return ":green_circle:등록완료: 리플레이 전적 반영 완료";
+        }
+        return "error";
     }
 
 }
