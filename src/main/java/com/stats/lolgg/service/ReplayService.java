@@ -152,7 +152,7 @@ public class ReplayService {
     }
 
     // discord에서 리플파일 url을 받아서 다운로드
-    public Path downloadFile(String fileUrl,String fileName) throws IOException, InterruptedException{
+    public void downloadFile(String fileUrl,String fileName) throws IOException, InterruptedException{
         // HttpClient 생성
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -172,23 +172,24 @@ public class ReplayService {
         }
 
         try (
-            InputStream inputStream = response.body();
-            FileOutputStream outputStream = new FileOutputStream(savePath)) {
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
+            InputStream inputStream = response.body();){
+            this.save(inputStream, fileName);
+            // 리플레이 파일 다운로드 (지금은 삭제)
+            // FileOutputStream outputStream = new FileOutputStream(savePath)) {
+            // byte[] buffer = new byte[4096];
+            // int bytesRead;
+            // while ((bytesRead = inputStream.read(buffer)) != -1) {
+            //     outputStream.write(buffer, 0, bytesRead);
+            // }
             inputStream.close();
-            outputStream.close();
+            // outputStream.close();
             
         } catch (Exception e){
             e.printStackTrace();
-            return null;
         } finally {
 
         }
-        return Paths.get(savePath);
+        // return Paths.get(savePath);
     }
 
     /* 내부 함수 */
