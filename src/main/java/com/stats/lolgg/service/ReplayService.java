@@ -60,11 +60,11 @@ public class ReplayService {
         InputStream inputStream = file.getInputStream();
         
         // 파일이름
-        save(inputStream, fileNameWithExt);
+        save(inputStream, fileNameWithExt, "api");
     }
 
     // 리플저장 미사용 2024-05-07
-    public void saveOne(Path filePath) throws Exception{
+    public void saveOne(Path filePath, String createUser) throws Exception{
         try {
             File file = filePath.toFile();
     
@@ -74,14 +74,14 @@ public class ReplayService {
     
             InputStream inputStream = new FileInputStream(file);
             String fileNameWithExt = file.getName();
-            save(inputStream, fileNameWithExt);        
+            save(inputStream, fileNameWithExt,createUser);        
             inputStream.close();
         }catch(IOException e){
             e.printStackTrace();
         }
     }
 
-    public void save(InputStream inputStream, String fileNameWithExt) throws Exception{
+    public void save(InputStream inputStream, String fileNameWithExt, String createUser) throws Exception{
         // 파일이름
         String fileRegExp = "^[a-zA-Z0-9]*_\\d{4}_\\d{4}.rofl$";
 
@@ -146,6 +146,7 @@ public class ReplayService {
             leagueVO.setGame_result(win);
             leagueVO.setGame_date(gameDate);
             leagueVO.setDelete_yn('N');
+            leagueVO.setCreate_user(createUser);
 
             leagueVOList.add(leagueVO);
         }
