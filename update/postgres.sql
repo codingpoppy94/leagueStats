@@ -16,7 +16,8 @@ CREATE TABLE league (
     game_date TIMESTAMP,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    delete_yn char(1)
+    delete_yn char(1),
+    create_user VARCHAR(20)
 );
 
 create table mapping_name (

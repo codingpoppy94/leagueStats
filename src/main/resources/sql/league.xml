@@ -266,7 +266,8 @@
                 game_date,
                 create_date,
                 update_date,
-                delete_yn
+                delete_yn,
+                create_user
             )
             VALUES
             <foreach collection="list" item="item" separator=",">
@@ -284,7 +285,8 @@
                     #{item.game_date},
                     CURRENT_TIMESTAMP,
                     CURRENT_TIMESTAMP,
-                    #{item.delete_yn}
+                    #{item.delete_yn},
+                    #{item.create_user}
                 )
             </foreach>
     </insert>

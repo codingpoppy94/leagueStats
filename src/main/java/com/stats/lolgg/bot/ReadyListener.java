@@ -45,7 +45,7 @@ public class ReadyListener extends ListenerAdapter {
             if(fileName.contains(fileRegExp)){
                 String fileUrl = attachment.getUrl();
                 try {
-                    String resultMessage = replayManager.saveFile(fileUrl,fileName);
+                    String resultMessage = replayManager.saveFile(fileUrl,fileName,event);
                     sendMessage(channel, resultMessage);
                 } catch (Exception e) {
                     // e.printStackTrace();

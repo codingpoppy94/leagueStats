@@ -20,6 +20,7 @@ public class LeagueVO {
     private LocalDateTime game_date;
     private LocalDateTime create_date;
     private char delete_yn;
+    private String create_user;        //리플 올린 사람
 
     public LeagueVO() {}
 

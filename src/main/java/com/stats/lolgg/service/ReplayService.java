@@ -60,28 +60,28 @@ public class ReplayService {
         InputStream inputStream = file.getInputStream();
         
         // 파일이름
-        save(inputStream, fileNameWithExt);
+        save(inputStream, fileNameWithExt, "api");
     }
 
     // 리플저장 미사용 2024-05-07
-    // public void saveOne(Path filePath) throws Exception{
-    //     try {
-    //         File file = filePath.toFile();
+    public void saveOne(Path filePath, String createUser) throws Exception{
+        try {
+            File file = filePath.toFile();
     
-    //         if (!file.exists()) {
-    //             throw new Exception(":red_circle:등록실패: 파일을 찾을 수 없습니다.");
-    //         }
+            if (!file.exists()) {
+                throw new Exception(":red_circle:등록실패: 파일을 찾을 수 없습니다.");
+            }
     
-    //         InputStream inputStream = new FileInputStream(file);
-    //         String fileNameWithExt = file.getName();
-    //         save(inputStream, fileNameWithExt);        
-    //         inputStream.close();
-    //     }catch(IOException e){
-    //         e.printStackTrace();
-    //     }
-    // }
+            InputStream inputStream = new FileInputStream(file);
+            String fileNameWithExt = file.getName();
+            save(inputStream, fileNameWithExt,createUser);        
+            inputStream.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
 
-    public void save(InputStream inputStream, String fileNameWithExt) throws Exception{
+    public void save(InputStream inputStream, String fileNameWithExt, String createUser) throws Exception{
         // 파일이름
         String fileRegExp = "^[a-zA-Z0-9]*_\\d{4}_\\d{4}.rofl$";
 
@@ -146,6 +146,7 @@ public class ReplayService {
             leagueVO.setGame_result(win);
             leagueVO.setGame_date(gameDate);
             leagueVO.setDelete_yn('N');
+            leagueVO.setCreate_user(createUser);
 
             leagueVOList.add(leagueVO);
         }
@@ -153,7 +154,7 @@ public class ReplayService {
     }
 
     // discord에서 리플파일 url을 받아서 다운로드
-    public void downloadFile(String fileUrl,String fileName) throws IOException, InterruptedException{
+    public Path downloadFile(String fileUrl,String fileName) throws IOException, InterruptedException{
         // HttpClient 생성
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -173,24 +174,23 @@ public class ReplayService {
         }
 
         try (
-            InputStream inputStream = response.body();){
-            this.save(inputStream, fileName);
+            InputStream inputStream = response.body();
             // 리플레이 파일 다운로드 (2024-05-07 변경)
-            // FileOutputStream outputStream = new FileOutputStream(savePath)) {
-            // byte[] buffer = new byte[4096];
-            // int bytesRead;
-            // while ((bytesRead = inputStream.read(buffer)) != -1) {
-            //     outputStream.write(buffer, 0, bytesRead);
-            // }
+            FileOutputStream outputStream = new FileOutputStream(savePath)) {
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
             inputStream.close();
-            // outputStream.close();
+            outputStream.close();
             
         } catch (Exception e){
             e.printStackTrace();
         } finally {
 
         }
-        // return Paths.get(savePath);
+        return Paths.get(savePath);
     }
 
     /* 내부 함수 */
