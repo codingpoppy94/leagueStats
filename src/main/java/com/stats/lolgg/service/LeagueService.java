@@ -84,6 +84,11 @@ public class LeagueService {
         return leagueMapper.changeDeleteYN(paramMap);
     }
 
+    // 탈퇴하면 부캐매핑도 처리
+    public int changeMappingDeleteYN(Map<String,Object> paramMap){
+        return leagueMapper.changeMappingDeleteYN(paramMap);
+    }
+
     // 닉네임 변경
     public int changeRiotName(Map<String,Object> paramMap){
         return leagueMapper.changeRiotName(paramMap);

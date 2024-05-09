@@ -32,6 +32,7 @@ public interface LeagueMapper {
     void insertMappingName(Map<String,Object> paramMap);
 
     int changeDeleteYN(Map<String,Object> paramMap);
+    int changeMappingDeleteYN(Map<String,Object> paramMap);
     int changeRiotName(Map<String,Object> paramMap);
     
 }

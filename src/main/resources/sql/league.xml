@@ -324,6 +324,16 @@
 
     </update>
 
+    <!-- 탈퇴한회원처리 mappingName -->
+    <update id="changeMappingDeleteYN" parameterType="java.util.HashMap">
+        UPDATE MAPPING_NAME
+            SET DELETE_YN = #{delete_yn},
+            UPDATE_DATE = CURRENT_TIMESTAMP
+        WHERE 
+            MAIN_NAME = #{riot_name}
+
+    </update>
+
     <!-- 닉네임 변경 -->
     <update id="changeRiotName" parameterType="java.util.HashMap" >
         UPDATE LEAGUE
