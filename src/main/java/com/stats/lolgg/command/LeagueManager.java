@@ -83,14 +83,22 @@ public class LeagueManager {
     }
 
     /* !통계  */
-    public EmbedBuilder getChampHighRate(){
-        List<LeagueStatsVO> records = leagueService.findChampHighRate();
-        if(records.isEmpty()){
+    public EmbedBuilder getChampStats(){
+        List<LeagueStatsVO> records = leagueService.findChampStats();
+        List<LeagueStatsVO> lastMonthRecords = leagueService.findChampStatsLastMonth();
+        List<LeagueStatsVO> leagueGames = leagueService.groupLeagueByRiotName();
+
+        Map<String, List<LeagueStatsVO>> resultMap = new HashMap<>();
+        resultMap.put("thisMonth", records);
+        resultMap.put("lastMonth", lastMonthRecords);
+        resultMap.put("leagueGames", leagueGames);
+
+        if(records.isEmpty() && lastMonthRecords.isEmpty()){
             return null;
         }
         LolTemplate template = new LolTemplate();
 
-        return template.makeChampHighRateTemplate(records);
+        return template.makeChampRateTemplate(resultMap);
     }
 
     /* !라인 {position} */

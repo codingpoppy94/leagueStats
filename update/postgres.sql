@@ -89,18 +89,7 @@ group by champ_name
 ORDER BY TOTAL_COUNT DESC
 limit 10
 
-/* 픽 순 */
-select champ_name , count(champ_name),
-		COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
-		COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
-		ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
-
-from league 
-where delete_yn  = 'N'
-group by champ_name
-order by win_rate desc , count desc 
-
-/* 장인 */
+/* 장인 - 수정예정 */
 select 
 	riot_name, 
 	count(riot_name) as total_count,
@@ -203,6 +192,36 @@ having  COUNT(riot_name) >= 5
 order by total_count desc, win_rate desc
 limit 15    
 
+/* 통계 */
+select 
+	CHAMP_NAME,
+    COUNT(CHAMP_NAME) AS TOTAL_COUNT,
+    COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
+    COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
+    ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
+from league 
+where delete_yn  = 'N'
+-- 이번달
+AND GAME_DATE >= DATE_TRUNC('month', CURRENT_TIMESTAMP)
+AND GAME_DATE < DATE_TRUNC('month', CURRENT_TIMESTAMP) + INTERVAL '1 month'
+-- 저번달
+-- AND GAME_DATE >= DATE_TRUNC('month', CURRENT_TIMESTAMP - INTERVAL '1 month')
+--AND GAME_DATE < DATE_TRUNC('month', CURRENT_TIMESTAMP)
+group by champ_name
+HAVING COUNT(CHAMP_NAME) >= 20
+
+/* 블루vs레드*/
+select 
+	game_team,
+	count(game_team) as total_count,
+    COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
+    COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
+ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
+from league
+where delete_yn  = 'N'
+AND GAME_DATE >= DATE_TRUNC('month', CURRENT_TIMESTAMP)
+AND GAME_DATE < DATE_TRUNC('month', CURRENT_TIMESTAMP) + INTERVAL '1 month'
+group by game_team
 
 /* 한글 update */
 UPDATE league

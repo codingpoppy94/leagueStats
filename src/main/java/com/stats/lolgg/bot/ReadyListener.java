@@ -191,7 +191,7 @@ public class ReadyListener extends ListenerAdapter {
                 if (message[0].equalsIgnoreCase("!통계")) {
                     EmbedBuilder templateMessage;
                     if(message.length < 2) {
-                        templateMessage = leagueManager.getChampHighRate();
+                        templateMessage = leagueManager.getChampStats();
                         
                         if(templateMessage == null){
                             sendMessage(channel, "not found data");
