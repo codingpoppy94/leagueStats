@@ -5,11 +5,19 @@
 
     <!-- SELECT -->
 
-    <!-- 한달 조회 -->
+    <!-- 이번달 조회 -->
     <sql id="where_month">
         <![CDATA[
         AND GAME_DATE >= DATE_TRUNC('month', CURRENT_TIMESTAMP)
         AND GAME_DATE < DATE_TRUNC('month', CURRENT_TIMESTAMP) + INTERVAL '1 month'
+        ]]>
+    </sql>
+
+    <!-- 저번달 조회 -->
+    <sql id="last_month">
+        <![CDATA[
+        AND GAME_DATE >= DATE_TRUNC('month', CURRENT_TIMESTAMP - INTERVAL '1 month')
+        AND GAME_DATE < DATE_TRUNC('month', CURRENT_TIMESTAMP)
         ]]>
     </sql>
 
@@ -136,8 +144,8 @@
         ORDER BY TOTAL_COUNT DESC, WIN_RATE DESC
     </select>
 
-    <!-- 이번달 핫한 챔프 픽,승률 -->
-    <select id="findChampHighRate" resultType="com.stats.lolgg.model.LeagueStatsVO">
+    <!-- !통계(이번달)-->
+    <select id="findChampStats" resultType="com.stats.lolgg.model.LeagueStatsVO">
         SELECT 
             CHAMP_NAME,
             COUNT(CHAMP_NAME) AS TOTAL_COUNT,
@@ -148,8 +156,55 @@
         WHERE DELETE_YN = 'N'
         <include refid="where_month"></include>
         GROUP BY CHAMP_NAME
-        HAVING COUNT(CHAMP_NAME) <![CDATA[ >= ]]> 5
-        ORDER BY TOTAL_COUNT DESC, WIN_RATE DESC 
+        HAVING COUNT(CHAMP_NAME) <![CDATA[ >= ]]> 10
+    </select>
+
+    <!-- !통계(저번달) -->
+    <select id="findChampStatsLastMonth" resultType="com.stats.lolgg.model.LeagueStatsVO">
+        SELECT 
+            CHAMP_NAME,
+            COUNT(CHAMP_NAME) AS TOTAL_COUNT,
+            COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
+            COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
+            ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
+        FROM LEAGUE 
+        WHERE DELETE_YN = 'N'
+        <include refid="last_month"></include>
+        GROUP BY CHAMP_NAME
+        HAVING COUNT(CHAMP_NAME) <![CDATA[ >= ]]> 10
+    </select>
+
+    <!-- !통계 블루vs레드승률 -->
+    <select id="findTeamWinRate" resultType="com.stats.lolgg.model.LeagueStatsVO">
+        SELECT 
+            GAME_TEAM,
+            COUNT(GAME_TEAM) AS TOTAL_COUNT,
+            COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
+            COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
+            ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
+        FROM LEAGUE 
+        WHERE DELETE_YN = 'N'
+        <include refid="where_month"></include>
+        GROUP BY GAME_TEAM
+    </select>
+
+    <!-- !통계 이번달 판수 -->
+    <select id="groupLeagueByRiotName" resultType="com.stats.lolgg.model.LeagueStatsVO">
+        SELECT 
+            RIOT_NAME,
+            COUNT(RIOT_NAME) AS TOTAL_COUNT,
+            COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
+            COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
+            ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate,
+            CASE
+			WHEN SUM(DEATH) = 0 THEN 9999
+			ELSE ROUND((SUM(KILL) + SUM(ASSIST))::NUMERIC / NULLIF(SUM(DEATH), 0), 2) 
+            END AS KDA
+        FROM LEAGUE 
+        WHERE DELETE_YN = 'N'
+        <include refid="where_month"></include>
+        GROUP BY RIOT_NAME
+        ORDER BY TOTAL_COUNT DESC 
     </select>
 
     <!-- 최근 30게임에서 같은 팀 시너지 -->
@@ -267,7 +322,14 @@
                 create_date,
                 update_date,
                 delete_yn,
-                create_user
+                create_user,
+                gold,
+                ccing,
+                time_played,
+                total_damage_champions,
+                total_damage_taken,
+                vision_score,
+                vision_bought
             )
             VALUES
             <foreach collection="list" item="item" separator=",">
@@ -286,7 +348,14 @@
                     CURRENT_TIMESTAMP,
                     CURRENT_TIMESTAMP,
                     #{item.delete_yn},
-                    #{item.create_user}
+                    #{item.create_user},
+                    #{item.gold},
+                    #{item.ccing},
+                    #{item.time_played},
+                    #{item.total_damage_champions},
+                    #{item.total_damage_taken},
+                    #{item.vision_score},
+                    #{item.vision_bought}
                 )
             </foreach>
     </insert>
@@ -321,6 +390,16 @@
             UPDATE_DATE = CURRENT_TIMESTAMP
         WHERE 
             RIOT_NAME = #{riot_name}
+
+    </update>
+
+    <!-- 탈퇴한회원처리 mappingName -->
+    <update id="changeMappingDeleteYN" parameterType="java.util.HashMap">
+        UPDATE MAPPING_NAME
+            SET DELETE_YN = #{delete_yn},
+            UPDATE_DATE = CURRENT_TIMESTAMP
+        WHERE 
+            MAIN_NAME = #{riot_name}
 
     </update>
 

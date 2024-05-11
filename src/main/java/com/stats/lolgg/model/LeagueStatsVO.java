@@ -7,6 +7,7 @@ public class LeagueStatsVO {
     private String riot_name;
     private String position;
     private String champ_name;
+    private String game_team;
     private int total_count;
     private int win;
     private int lose;

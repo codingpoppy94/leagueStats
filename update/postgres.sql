@@ -3,21 +3,28 @@ create user rnasyd password 'welcome1!' SUPERUSER;
 drop user rnasyd;
 
 CREATE TABLE league (
-    id VARCHAR(20) PRIMARY KEY,
-    game_id VARCHAR(20),
-    riot_name VARCHAR(200),
-    champ_name VARCHAR(200),
-    position VARCHAR(100),
-    kill Integer,
-    death Integer,
-    assist Integer,
-    game_result VARCHAR(20),
-    game_team VARCHAR(20),
-    game_date TIMESTAMP,
-    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    delete_yn char(1),
-    create_user VARCHAR(20)
+  id VARCHAR(20) PRIMARY KEY,
+  game_id VARCHAR(20),
+  riot_name VARCHAR(200),
+  champ_name VARCHAR(200),
+  position VARCHAR(100),
+  kill Integer,
+  death Integer,
+  assist Integer,
+  game_result VARCHAR(20),
+  game_team VARCHAR(20),
+  game_date TIMESTAMP,
+  gold Integer,
+  ccing Integer,
+  time_played Integer,
+  total_damage_champions Integer,
+  total_damage_taken Integer,
+  vision_score Integer,
+  vision_bought Integer,
+  create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  delete_yn char(1),
+  create_user VARCHAR(20)
 );
 
 create table mapping_name (
@@ -89,18 +96,7 @@ group by champ_name
 ORDER BY TOTAL_COUNT DESC
 limit 10
 
-/* 픽 순 */
-select champ_name , count(champ_name),
-		COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
-		COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
-		ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
-
-from league 
-where delete_yn  = 'N'
-group by champ_name
-order by win_rate desc , count desc 
-
-/* 장인 */
+/* 장인 - 수정예정 */
 select 
 	riot_name, 
 	count(riot_name) as total_count,
@@ -203,6 +199,36 @@ having  COUNT(riot_name) >= 5
 order by total_count desc, win_rate desc
 limit 15    
 
+/* 통계 */
+select 
+	CHAMP_NAME,
+    COUNT(CHAMP_NAME) AS TOTAL_COUNT,
+    COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
+    COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
+    ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
+from league 
+where delete_yn  = 'N'
+-- 이번달
+AND GAME_DATE >= DATE_TRUNC('month', CURRENT_TIMESTAMP)
+AND GAME_DATE < DATE_TRUNC('month', CURRENT_TIMESTAMP) + INTERVAL '1 month'
+-- 저번달
+-- AND GAME_DATE >= DATE_TRUNC('month', CURRENT_TIMESTAMP - INTERVAL '1 month')
+--AND GAME_DATE < DATE_TRUNC('month', CURRENT_TIMESTAMP)
+group by champ_name
+HAVING COUNT(CHAMP_NAME) >= 20
+
+/* 블루vs레드*/
+select 
+	game_team,
+	count(game_team) as total_count,
+    COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
+    COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
+ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
+from league
+where delete_yn  = 'N'
+AND GAME_DATE >= DATE_TRUNC('month', CURRENT_TIMESTAMP)
+AND GAME_DATE < DATE_TRUNC('month', CURRENT_TIMESTAMP) + INTERVAL '1 month'
+group by game_team
 
 /* 한글 update */
 UPDATE league
@@ -374,3 +400,33 @@ CASE
     WHEN champ_name = 'Zyra' THEN '자이라'
     else champ_name
 END;
+
+ /* 컬럼 추가 */
+alter table league  add gold Integer;
+alter table league  add ccing Integer;
+alter table league  add time_played Integer;
+alter table league  add total_damage_champions Integer;
+alter table league  add total_damage_taken Integer;
+alter table league  add vision_score Integer;
+alter table league  add vision_bought Integer;
+
+/* 코멘트 추가 */
+comment on column league.game_id is '리플레이 파일 이름';
+comment on column league.riot_name is '소환사명';
+comment on column league.champ_name is '챔피언이름';
+comment on column league."position"  is '게임 포지션';
+comment on column league.kill is '킬 횟수';
+comment on column league.death  is '데스 횟수';
+comment on column league.assist  is '어시스트 횟수';
+comment on column league.game_result  is '게임 결과 승/패';
+comment on column league.game_team  is '진영';
+comment on column league.game_date  is '게임한 날짜';
+comment on column league.delete_yn  is '탈퇴여부';
+comment on column league.create_user  is '리플레이 저장한 디코유저';
+comment on column league.gold is '게임에서 번 골드량';
+comment on column league.ccing is 'cc기 건 횟수';
+comment on column league.time_played is '게임 경기 시간';
+comment on column league.total_damage_champions is '챔피언에게 준 총 피해량';
+comment on column league.total_damage_taken is '받은 총 피해량';
+comment on column league.vision_score is '와드 점수';
+comment on column league.vision_bought is '핑와 산 개수';

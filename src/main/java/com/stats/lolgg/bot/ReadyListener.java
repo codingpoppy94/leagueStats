@@ -48,7 +48,7 @@ public class ReadyListener extends ListenerAdapter {
                     String resultMessage = replayManager.saveFile(fileUrl,fileName,event);
                     sendMessage(channel, resultMessage);
                 } catch (Exception e) {
-                    // e.printStackTrace();
+                    e.printStackTrace();
                     // e.getMessage();
                     sendMessage(channel, e.getMessage());
                 }
@@ -186,12 +186,17 @@ public class ReadyListener extends ListenerAdapter {
                 }
 
                 /* 
-                * !통계
+                * !통계 챔프/게임
                 */
                 if (message[0].equalsIgnoreCase("!통계")) {
-                    EmbedBuilder templateMessage;
-                    if(message.length < 2) {
-                        templateMessage = leagueManager.getChampHighRate();
+                    EmbedBuilder templateMessage = null;
+                    if(message.length > 1) {
+                        if("챔프".equals(message[1])){
+                            templateMessage = leagueManager.getChampStats();
+                        }
+                        if("게임".equals(message[1])){
+                            templateMessage = leagueManager.getGamesStats();
+                        }
                         
                         if(templateMessage == null){
                             sendMessage(channel, "not found data");
@@ -200,6 +205,7 @@ public class ReadyListener extends ListenerAdapter {
                         }
                     }
                 }
+
                 /* 
                  * !라인 {position}
                  */

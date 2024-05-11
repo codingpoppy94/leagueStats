@@ -206,6 +206,7 @@ public class UserManager {
         //권한체크
         List<Role> roles = Objects.requireNonNull(event.getMember()).getRoles();
         if(checkAuth(roles)){
+            leagueService.changeMappingDeleteYN(paramMap);
             return leagueService.changeDeleteYN(paramMap);
         }
         return 0;
@@ -221,6 +222,7 @@ public class UserManager {
         //권한체크
         List<Role> roles = Objects.requireNonNull(event.getMember()).getRoles();
         if(checkAuth(roles)){
+            leagueService.changeMappingDeleteYN(paramMap);
             return leagueService.changeDeleteYN(paramMap);
         }
         return 0;

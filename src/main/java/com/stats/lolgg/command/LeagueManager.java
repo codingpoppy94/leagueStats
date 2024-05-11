@@ -82,15 +82,36 @@ public class LeagueManager {
         return template.makeChampMasterTemplate(records, champName);
     }
 
-    /* !통계  */
-    public EmbedBuilder getChampHighRate(){
-        List<LeagueStatsVO> records = leagueService.findChampHighRate();
-        if(records.isEmpty()){
+    /* !통계 챔피언 */
+    public EmbedBuilder getChampStats(){
+        List<LeagueStatsVO> records = leagueService.findChampStats();
+        List<LeagueStatsVO> lastMonthRecords = leagueService.findChampStatsLastMonth();
+
+        Map<String, List<LeagueStatsVO>> resultMap = new HashMap<>();
+        resultMap.put("thisMonth", records);
+        resultMap.put("lastMonth", lastMonthRecords);
+
+        if(records.isEmpty() && lastMonthRecords.isEmpty()){
             return null;
         }
         LolTemplate template = new LolTemplate();
 
-        return template.makeChampHighRateTemplate(records);
+        return template.makeChampRateTemplate(resultMap);
+    }
+
+    /* !통계 games*/
+    public EmbedBuilder getGamesStats(){
+        List<LeagueStatsVO> leagueGames = leagueService.groupLeagueByRiotName();
+
+        Map<String, List<LeagueStatsVO>> resultMap = new HashMap<>();
+        resultMap.put("leagueGames", leagueGames);
+
+        if(leagueGames.isEmpty()){
+            return null;
+        }
+        LolTemplate template = new LolTemplate();
+
+        return template.makeGamesTeamplte(resultMap);
     }
 
     /* !라인 {position} */

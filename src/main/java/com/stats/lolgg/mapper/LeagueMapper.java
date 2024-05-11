@@ -21,17 +21,21 @@ public interface LeagueMapper {
     LeagueStatsVO findRecordMonth(String riot_name);
     List<LeagueStatsVO> findMostPick(String riot_name);
     List<LeagueStatsVO> findChampMaster(String champ_name);
-    List<LeagueStatsVO> findChampHighRate();
+    List<LeagueStatsVO> findChampStats();
+    List<LeagueStatsVO> findChampStatsLastMonth();
     List<LeagueStatsVO> findRecordWithTeam(String riot_name);
     List<LeagueStatsVO> findRecordOtherTeam(String riot_name);
     List<LeagueStatsVO> findRecordLine(String position);
     List<Map<String,Object>> findMappingName();
     int findReplayName(String game_id);
 
+    List<LeagueStatsVO> groupLeagueByRiotName();
+
     void insertLeague(List<LeagueVO> leagueVO);
     void insertMappingName(Map<String,Object> paramMap);
 
     int changeDeleteYN(Map<String,Object> paramMap);
+    int changeMappingDeleteYN(Map<String,Object> paramMap);
     int changeRiotName(Map<String,Object> paramMap);
     
 }

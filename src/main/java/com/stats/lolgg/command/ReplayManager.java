@@ -25,7 +25,7 @@ public class ReplayManager {
     public String saveFile(String fileUrl,String fileName,MessageReceivedEvent event) throws Exception{
         String fileRegExp = "^[a-zA-Z0-9]*_\\d{4}_\\d{4}.rofl$";
         if(!fileName.matches(fileRegExp)){
-            return ":red_circle:등록실패: 잘못된 파일 이름 형식";
+            return ":red_circle:등록실패: "+fileName+" 잘못된 파일 이름 형식";
         }
         Member member = event.getMember();
         String createUser = member.getNickname();
@@ -34,7 +34,7 @@ public class ReplayManager {
         Path path = replayService.downloadFile(fileUrl, fileName);
         if (path != null){
             replayService.saveOne(path,createUser);
-            return ":green_circle:등록완료: 리플레이 전적 반영 완료";
+            return ":green_circle:등록완료: "+fileName+" 반영 완료";
         }
         return "error";
     }

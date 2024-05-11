@@ -67,11 +67,6 @@ public class LeagueController {
         return leagueService.findChampMaster(champ_name);
     }
 
-    @GetMapping("/getChampHighRate")
-    public List<LeagueStatsVO> getChampHighRate(){
-        return leagueService.findChampHighRate();
-    }
-
     // 파일올리면 바로 저장되게 변경
     /**
      * Replay 데이터 파싱>저장

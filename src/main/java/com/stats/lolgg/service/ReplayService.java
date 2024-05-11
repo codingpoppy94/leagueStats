@@ -135,6 +135,14 @@ public class ReplayService {
             skin = ChampEnum.getKoreanValue(skin);
             String Camp = statsNode.get("TEAM").asText().replace("100", "blue").replace("200", "red");
 
+            int goldEarend = statsNode.get("GOLD_EARNED").asInt();
+            int Ccing = statsNode.get("TIME_CCING_OTHERS").asInt();
+            int timePlayed = statsNode.get("TIME_PLAYED").asInt();
+            int totalDamage = statsNode.get("TOTAL_DAMAGE_DEALT_TO_CHAMPIONS").asInt();
+            int totalDamageTaken = statsNode.get("TOTAL_DAMAGE_TAKEN").asInt();
+            int visionScore = statsNode.get("VISION_SCORE").asInt();
+            int visionBought = statsNode.get("VISION_WARDS_BOUGHT_IN_GAME").asInt();
+
             leagueVO.setGame_id(fileName);
             leagueVO.setGame_team(Camp);
             leagueVO.setPosition(teamPostion);
@@ -147,6 +155,14 @@ public class ReplayService {
             leagueVO.setGame_date(gameDate);
             leagueVO.setDelete_yn('N');
             leagueVO.setCreate_user(createUser);
+
+            leagueVO.setGold(goldEarend);
+            leagueVO.setCcing(Ccing);
+            leagueVO.setTime_played(timePlayed);
+            leagueVO.setTotal_damage_champions(totalDamage);
+            leagueVO.setTotal_damage_taken(totalDamageTaken);
+            leagueVO.setVision_score(visionScore);
+            leagueVO.setVision_bought(visionBought);
 
             leagueVOList.add(leagueVO);
         }

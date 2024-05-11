@@ -1,13 +1,15 @@
 package com.stats.lolgg.template;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 
 /** 
  * 디스코드 메시지 보내는 template 
@@ -155,19 +157,85 @@ public class LolTemplate {
         return embed;
     }
 
-    /* !통계 */
-    public EmbedBuilder makeChampHighRateTemplate(List<LeagueStatsVO> records){
+    /* !통계 챔피언*/
+    public EmbedBuilder makeChampRateTemplate(Map<String, List<LeagueStatsVO>> recordsMap){
         EmbedBuilder embed = new EmbedBuilder();
-        String header = "이번달 챔프 통계(5판 이상)";
-        String content = "";
 
-        for(LeagueStatsVO record : records ){
-            content += record.getChamp_name() + " ";
-            content += record.getWin() + "승 " + record.getLose() + "패 " + record.getWin_rate() + "% \n";
+        List<LeagueStatsVO> thisMonthRecords = recordsMap.get("thisMonth");
+        List<LeagueStatsVO> lastMonthRecords = recordsMap.get("lastMonth");
+
+        LocalDateTime time = LocalDateTime.now();
+        String month = "";
+
+        if(!thisMonthRecords.isEmpty()){
+            month = Integer.toString(time.getMonthValue()) +"월";
+            makeField(thisMonthRecords,embed,month);
         }
+
+        if(!lastMonthRecords.isEmpty()){
+            month = Integer.toString(time.getMonthValue()-1) +"월";
+            makeField(lastMonthRecords,embed,month);
+        }
+  
+        String header = Integer.toString(time.getMonthValue()) +"월 통계(챔피언)";
         embed.setTitle(header);
-        embed.setDescription(content);
+        // embed.setDescription(content);
         return embed;
+    }
+
+    /* !통계 games */
+    public EmbedBuilder makeGamesTeamplte(Map<String, List<LeagueStatsVO>> recordsMap){
+        EmbedBuilder embed = new EmbedBuilder();
+
+        List<LeagueStatsVO> records = recordsMap.get("leagueGames");
+
+        // 판수 높은 순 20위
+        List<LeagueStatsVO> leagueGames = records.stream()
+        .sorted(Comparator.comparingInt(LeagueStatsVO::getTotal_count).reversed())
+        .limit(20)
+        .collect(Collectors.toList());
+        embed.addField("판수 20위",makeStatsList(leagueGames,"riotname"),true);
+
+        // 승률 높은 순 20위 
+        List<LeagueStatsVO> leagueGamesHighRate = records.stream()
+        .filter(stats -> stats.getTotal_count() >= 20)
+        .sorted(Comparator.comparingDouble(LeagueStatsVO::getWin_rate).reversed())
+        .limit(20)
+        .collect(Collectors.toList());
+        embed.addField("승률 20위",makeStatsList(leagueGamesHighRate,"riotname"),true);
+
+        LocalDateTime time = LocalDateTime.now();
+
+        String header = Integer.toString(time.getMonthValue()) +"월 통계(20판 이상)";
+        embed.setTitle(header);
+
+        return embed;
+    }
+
+    private void makeField(List<LeagueStatsVO> records,EmbedBuilder embed, String month){
+        // 픽률 높음
+        List<LeagueStatsVO> pickList =
+        records.stream()
+        .sorted(Comparator.comparingInt(LeagueStatsVO::getTotal_count).reversed())
+        .limit(10)
+        .collect(Collectors.toList());
+        embed.addField(month+" MostPick", makeStatsList(pickList,"champ"),true);
+        
+        // 승률 높음
+        List<LeagueStatsVO> highRate =
+        records.stream()
+        .sorted(Comparator.comparingDouble(LeagueStatsVO::getWin_rate).reversed())
+        .limit(10)
+        .collect(Collectors.toList());
+        embed.addField("1티어:partying_face:", makeStatsList(highRate,"champ"),true);
+        
+        // 승률 낮음
+        List<LeagueStatsVO> lowRate =
+        records.stream()
+        .sorted(Comparator.comparingDouble(LeagueStatsVO::getWin_rate))
+        .limit(10)
+        .collect(Collectors.toList());
+        embed.addField("5티어:scream:", makeStatsList(lowRate,"champ"),true);
     }
 
     /* !라인 */
@@ -216,7 +284,7 @@ public class LolTemplate {
         sb.append("※통계명령어 \n");
         sb.append("`!전적  !전적 {name}` 자신의 전적, name의 전적 검색 \n");
         sb.append("`!장인 {champ}` 승률55%이상 장인 목록 \n");
-        sb.append("`!통계` 이번달 5판 이상 챔피언 목록 \n");
+        sb.append("`!통계 게임|챔프` 게임,챔프 통계 \n");
         sb.append("`!라인 {탑|정글|미드|원딜|서폿}` {라인}별 승률\n\n");
         sb.append("※관리자명령어 (디코관리자 권한 필요) \n");
         sb.append("`!탈퇴 {name}` 탈퇴한 회원 추가, 전적검색제외 \n");
@@ -237,8 +305,24 @@ public class LolTemplate {
         return stats;
     }
 
-    private String makeTeamStats(String riotName, int win, int lose, float win_rate){
-        return riotName + ": " + win +"승/" + lose + "패 " + win_rate+ "%\n";
+    private String makeTeamStats(String prefix, int win, int lose, float win_rate){
+        return prefix + ": " + win +"승/" + lose + "패 " + win_rate+ "%\n";
+    }
+
+    private String makeStatsList(List<LeagueStatsVO> list, String type){
+        StringBuilder builder = new StringBuilder();
+        int i = 1;
+        if("champ".equals(type)){
+            for(LeagueStatsVO vo : list){
+                builder.append(i++ +". " + makeTeamStats(vo.getChamp_name(), vo.getWin(), vo.getLose(), vo.getWin_rate()));
+            }
+        }
+        if("riotname".equals(type)){
+            for(LeagueStatsVO vo : list){
+                builder.append(i++ +". " + makeStats(vo.getRiot_name(), vo.getTotal_count() ,vo.getWin(), vo.getLose(), vo.getWin_rate(), vo.getKda()));
+            }
+        }
+        return builder.toString();
     }
 }
 
