@@ -74,7 +74,7 @@ public class ReplayService {
     
             InputStream inputStream = new FileInputStream(file);
             String fileNameWithExt = file.getName();
-            save(inputStream, fileNameWithExt,createUser);        
+            save(inputStream, fileNameWithExt, createUser);        
             inputStream.close();
         }catch(IOException e){
             e.printStackTrace();
@@ -170,7 +170,7 @@ public class ReplayService {
     }
 
     // discord에서 리플파일 url을 받아서 다운로드
-    public Path downloadFile(String fileUrl,String fileName) throws IOException, InterruptedException{
+    public void downloadFile(String fileUrl,String fileName,String createUser) throws IOException, InterruptedException{
         // HttpClient 생성
         HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -189,24 +189,28 @@ public class ReplayService {
             Files.createDirectories(directory);
         }
 
-        try (
-            InputStream inputStream = response.body();
-            // 리플레이 파일 다운로드 (2024-05-07 변경)
-            FileOutputStream outputStream = new FileOutputStream(savePath)) {
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
+        try (InputStream inputStream = response.body();){
+            this.save(inputStream, fileName,createUser);
             inputStream.close();
-            outputStream.close();
-            
+        // try 
+        //     (
+        //     // 리플레이 파일 다운로드 (2024-05-07 변경)
+        //     InputStream inputStream = response.body();
+        //     FileOutputStream outputStream = new FileOutputStream(savePath)) {
+        //     byte[] buffer = new byte[4096];
+        //     int bytesRead;
+        //     while ((bytesRead = inputStream.read(buffer)) != -1) {
+        //         outputStream.write(buffer, 0, bytesRead);
+        //     }
+        //     inputStream.close();
+        //     outputStream.close();
+        //
         } catch (Exception e){
             e.printStackTrace();
         } finally {
 
         }
-        return Paths.get(savePath);
+        // return Paths.get(savePath);
     }
 
     /* 내부 함수 */

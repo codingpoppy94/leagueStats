@@ -31,12 +31,12 @@ public class ReplayManager {
         String createUser = member.getNickname();
         int index = createUser.indexOf("/");
         createUser = createUser.substring(0, index);
-        Path path = replayService.downloadFile(fileUrl, fileName);
-        if (path != null){
-            replayService.saveOne(path,createUser);
-            return ":green_circle:등록완료: "+fileName+" 반영 완료";
-        }
-        return "error";
+        replayService.downloadFile(fileUrl, fileName, createUser);
+        // if (path != null){
+            // replayService.saveOne(path,createUser);
+            // }
+        return ":green_circle:등록완료: "+fileName+" 반영 완료";
+        // return "error";
     }
 
 }
