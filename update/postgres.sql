@@ -3,21 +3,28 @@ create user rnasyd password 'welcome1!' SUPERUSER;
 drop user rnasyd;
 
 CREATE TABLE league (
-    id VARCHAR(20) PRIMARY KEY,
-    game_id VARCHAR(20),
-    riot_name VARCHAR(200),
-    champ_name VARCHAR(200),
-    position VARCHAR(100),
-    kill Integer,
-    death Integer,
-    assist Integer,
-    game_result VARCHAR(20),
-    game_team VARCHAR(20),
-    game_date TIMESTAMP,
-    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    delete_yn char(1),
-    create_user VARCHAR(20)
+  id VARCHAR(20) PRIMARY KEY,
+  game_id VARCHAR(20),
+  riot_name VARCHAR(200),
+  champ_name VARCHAR(200),
+  position VARCHAR(100),
+  kill Integer,
+  death Integer,
+  assist Integer,
+  game_result VARCHAR(20),
+  game_team VARCHAR(20),
+  game_date TIMESTAMP,
+  gold Integer,
+  ccing Integer,
+  time_played Integer,
+  total_damage_champions Integer,
+  total_damage_taken Integer,
+  vision_score Integer,
+  vision_bought Integer,
+  create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  delete_yn char(1),
+  create_user VARCHAR(20)
 );
 
 create table mapping_name (
@@ -393,3 +400,33 @@ CASE
     WHEN champ_name = 'Zyra' THEN '자이라'
     else champ_name
 END;
+
+ /* 컬럼 추가 */
+alter table league  add gold Integer;
+alter table league  add ccing Integer;
+alter table league  add time_played Integer;
+alter table league  add total_damage_champions Integer;
+alter table league  add total_damage_taken Integer;
+alter table league  add vision_score Integer;
+alter table league  add vision_bought Integer;
+
+/* 코멘트 추가 */
+comment on column league.game_id is '리플레이 파일 이름';
+comment on column league.riot_name is '소환사명';
+comment on column league.champ_name is '챔피언이름';
+comment on column league."position"  is '게임 포지션';
+comment on column league.kill is '킬 횟수';
+comment on column league.death  is '데스 횟수';
+comment on column league.assist  is '어시스트 횟수';
+comment on column league.game_result  is '게임 결과 승/패';
+comment on column league.game_team  is '진영';
+comment on column league.game_date  is '게임한 날짜';
+comment on column league.delete_yn  is '탈퇴여부';
+comment on column league.create_user  is '리플레이 저장한 디코유저';
+comment on column league.gold is '게임에서 번 골드량';
+comment on column league.ccing is 'cc기 건 횟수';
+comment on column league.time_played is '게임 경기 시간';
+comment on column league.total_damage_champions is '챔피언에게 준 총 피해량';
+comment on column league.total_damage_taken is '받은 총 피해량';
+comment on column league.vision_score is '와드 점수';
+comment on column league.vision_bought is '핑와 산 개수';

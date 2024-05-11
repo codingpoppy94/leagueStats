@@ -48,7 +48,7 @@ public class ReadyListener extends ListenerAdapter {
                     String resultMessage = replayManager.saveFile(fileUrl,fileName,event);
                     sendMessage(channel, resultMessage);
                 } catch (Exception e) {
-                    // e.printStackTrace();
+                    e.printStackTrace();
                     // e.getMessage();
                     sendMessage(channel, e.getMessage());
                 }

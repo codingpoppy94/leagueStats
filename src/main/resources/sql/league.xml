@@ -156,7 +156,7 @@
         WHERE DELETE_YN = 'N'
         <include refid="where_month"></include>
         GROUP BY CHAMP_NAME
-        HAVING COUNT(CHAMP_NAME) <![CDATA[ >= ]]> 20
+        HAVING COUNT(CHAMP_NAME) <![CDATA[ >= ]]> 10
     </select>
 
     <!-- !통계(저번달) -->
@@ -171,7 +171,7 @@
         WHERE DELETE_YN = 'N'
         <include refid="last_month"></include>
         GROUP BY CHAMP_NAME
-        HAVING COUNT(CHAMP_NAME) <![CDATA[ >= ]]> 20
+        HAVING COUNT(CHAMP_NAME) <![CDATA[ >= ]]> 10
     </select>
 
     <!-- !통계 블루vs레드승률 -->
@@ -322,7 +322,14 @@
                 create_date,
                 update_date,
                 delete_yn,
-                create_user
+                create_user,
+                gold,
+                ccing,
+                time_played,
+                total_damage_champions,
+                total_damage_taken,
+                vision_score,
+                vision_bought
             )
             VALUES
             <foreach collection="list" item="item" separator=",">
@@ -341,7 +348,14 @@
                     CURRENT_TIMESTAMP,
                     CURRENT_TIMESTAMP,
                     #{item.delete_yn},
-                    #{item.create_user}
+                    #{item.create_user},
+                    #{item.gold},
+                    #{item.ccing},
+                    #{item.time_played},
+                    #{item.total_damage_champions},
+                    #{item.total_damage_taken},
+                    #{item.vision_score},
+                    #{item.vision_bought}
                 )
             </foreach>
     </insert>

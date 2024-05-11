@@ -22,6 +22,14 @@ public class LeagueVO {
     private char delete_yn;
     private String create_user;        //리플 올린 사람
 
+    private int gold;
+    private int ccing;
+    private int time_played;
+    private int total_damage_champions;
+    private int total_damage_taken;
+    private int vision_score;
+    private int vision_bought;
+
     public LeagueVO() {}
 
     @Override
