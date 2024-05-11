@@ -206,7 +206,7 @@ public class LolTemplate {
 
         LocalDateTime time = LocalDateTime.now();
 
-        String header = Integer.toString(time.getMonthValue()) +"월 통계(판수)";
+        String header = Integer.toString(time.getMonthValue()) +"월 통계(20판 이상)";
         embed.setTitle(header);
 
         return embed;
