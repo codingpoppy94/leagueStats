@@ -187,17 +187,25 @@ public class ReplayService {
 
         String textFileName = "./replays/"+monthDate[1]+"/"+monthDate[1]+".text";
 
-        Path directory = Paths.get(savePath).getParent();
-        if(!Files.exists(directory)){
-            Files.createDirectories(directory);
+        // 디렉토리 생성
+        try {
+            Path directory = Paths.get(savePath).getParent();
+            if (!Files.exists(directory)) {
+                Files.createDirectories(directory);
+            }
+        } catch (IOException e) {
+            System.err.println("디렉토리 생성 중 오류가 발생했습니다: " + e.getMessage());
+            return;
         }
 
         try (InputStream inputStream = response.body();
-            BufferedWriter writer = new BufferedWriter(new FileWriter(textFileName))    
+            BufferedWriter writer = new BufferedWriter(new FileWriter(textFileName, true))    
         ){
             this.save(inputStream, fileName,createUser);
             writer.write(fileName);
+            writer.newLine();
             inputStream.close();
+            writer.close();
         // try 
         //     (
         //     // 리플레이 파일 다운로드 (2024-05-07 변경)
