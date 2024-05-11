@@ -186,12 +186,17 @@ public class ReadyListener extends ListenerAdapter {
                 }
 
                 /* 
-                * !통계
+                * !통계 챔프/게임
                 */
                 if (message[0].equalsIgnoreCase("!통계")) {
-                    EmbedBuilder templateMessage;
-                    if(message.length < 2) {
-                        templateMessage = leagueManager.getChampStats();
+                    EmbedBuilder templateMessage = null;
+                    if(message.length > 1) {
+                        if("챔프".equals(message[1])){
+                            templateMessage = leagueManager.getChampStats();
+                        }
+                        if("게임".equals(message[1])){
+                            templateMessage = leagueManager.getGamesStats();
+                        }
                         
                         if(templateMessage == null){
                             sendMessage(channel, "not found data");
@@ -200,6 +205,7 @@ public class ReadyListener extends ListenerAdapter {
                         }
                     }
                 }
+
                 /* 
                  * !라인 {position}
                  */

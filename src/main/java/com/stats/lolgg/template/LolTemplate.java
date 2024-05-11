@@ -157,25 +157,15 @@ public class LolTemplate {
         return embed;
     }
 
-    /* !통계 */
+    /* !통계 챔피언*/
     public EmbedBuilder makeChampRateTemplate(Map<String, List<LeagueStatsVO>> recordsMap){
         EmbedBuilder embed = new EmbedBuilder();
 
         List<LeagueStatsVO> thisMonthRecords = recordsMap.get("thisMonth");
         List<LeagueStatsVO> lastMonthRecords = recordsMap.get("lastMonth");
-        List<LeagueStatsVO> leagueGames = recordsMap.get("leagueGames");
-        
-        leagueGames = leagueGames.stream()
-        .sorted(Comparator.comparingInt(LeagueStatsVO::getTotal_count).reversed())
-        .limit(30)
-        .collect(Collectors.toList());
 
         LocalDateTime time = LocalDateTime.now();
         String month = "";
-
-        if(!leagueGames.isEmpty()){
-            embed.setDescription(makeStatsList(leagueGames, "riotname"));
-        }
 
         if(!thisMonthRecords.isEmpty()){
             month = Integer.toString(time.getMonthValue()) +"월";
@@ -187,9 +177,38 @@ public class LolTemplate {
             makeField(lastMonthRecords,embed,month);
         }
   
-        String header = Integer.toString(time.getMonthValue()) +"월 통계(판수)";
+        String header = Integer.toString(time.getMonthValue()) +"월 통계(챔피언)";
         embed.setTitle(header);
         // embed.setDescription(content);
+        return embed;
+    }
+
+    /* !통계 games */
+    public EmbedBuilder makeGamesTeamplte(Map<String, List<LeagueStatsVO>> recordsMap){
+        EmbedBuilder embed = new EmbedBuilder();
+
+        List<LeagueStatsVO> records = recordsMap.get("leagueGames");
+
+        // 판수 높은 순 20위
+        List<LeagueStatsVO> leagueGames = records.stream()
+        .sorted(Comparator.comparingInt(LeagueStatsVO::getTotal_count).reversed())
+        .limit(20)
+        .collect(Collectors.toList());
+        embed.addField("판수 20위",makeStatsList(leagueGames,"riotname"),true);
+
+        // 승률 높은 순 20위 
+        List<LeagueStatsVO> leagueGamesHighRate = records.stream()
+        .filter(stats -> stats.getTotal_count() >= 20)
+        .sorted(Comparator.comparingDouble(LeagueStatsVO::getWin_rate).reversed())
+        .limit(20)
+        .collect(Collectors.toList());
+        embed.addField("승률 20위",makeStatsList(leagueGamesHighRate,"riotname"),true);
+
+        LocalDateTime time = LocalDateTime.now();
+
+        String header = Integer.toString(time.getMonthValue()) +"월 통계(판수)";
+        embed.setTitle(header);
+
         return embed;
     }
 
@@ -265,7 +284,7 @@ public class LolTemplate {
         sb.append("※통계명령어 \n");
         sb.append("`!전적  !전적 {name}` 자신의 전적, name의 전적 검색 \n");
         sb.append("`!장인 {champ}` 승률55%이상 장인 목록 \n");
-        sb.append("`!통계` 챔피언 통계 목록 \n");
+        sb.append("`!통계 게임|챔프` 게임,챔프 통계 \n");
         sb.append("`!라인 {탑|정글|미드|원딜|서폿}` {라인}별 승률\n\n");
         sb.append("※관리자명령어 (디코관리자 권한 필요) \n");
         sb.append("`!탈퇴 {name}` 탈퇴한 회원 추가, 전적검색제외 \n");
