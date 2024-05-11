@@ -1,7 +1,9 @@
 package com.stats.lolgg.service;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.FileInputStream;
@@ -181,16 +183,20 @@ public class ReplayService {
 
         HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
         String[] monthDate = fileName.split("_");
-        // String savePath = "src/main/resources/replays/"+monthDate[1]+"/"+fileName;
         String savePath = "./replays/"+monthDate[1]+"/"+fileName;
+
+        String textFileName = "./replays/"+monthDate[1]+"/"+monthDate[1]+".text";
 
         Path directory = Paths.get(savePath).getParent();
         if(!Files.exists(directory)){
             Files.createDirectories(directory);
         }
 
-        try (InputStream inputStream = response.body();){
+        try (InputStream inputStream = response.body();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(textFileName))    
+        ){
             this.save(inputStream, fileName,createUser);
+            writer.write(fileName);
             inputStream.close();
         // try 
         //     (
