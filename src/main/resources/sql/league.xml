@@ -308,7 +308,7 @@
     <insert id="insertLeague" parameterType="java.util.List">
         INSERT INTO LEAGUE
             (
-                id,
+                <!-- id, -->
                 game_id,
                 riot_name,
                 champ_name,
@@ -334,7 +334,7 @@
             VALUES
             <foreach collection="list" item="item" separator=",">
                 (
-                    nextval('league_id_seq'),
+                    <!-- nextval('league_id_seq'), -->
                     #{item.game_id},
                     #{item.riot_name},
                     #{item.champ_name},
@@ -364,7 +364,7 @@
     <insert id="insertMappingName" parameterType="java.util.HashMap">
         INSERT INTO MAPPING_NAME 
             (
-                ID,
+                <!-- ID, -->
                 SUB_NAME,
                 MAIN_NAME,
                 CREATE_DATE,
@@ -373,7 +373,7 @@
             )
             VALUES
             (
-                nextval('mapping_name_id_seq'),
+                <!-- nextval('mapping_name_id_seq'), -->
                 #{sub_name},
                 #{main_name},
                 CURRENT_TIMESTAMP,
