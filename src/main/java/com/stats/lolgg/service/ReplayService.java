@@ -241,7 +241,7 @@ public class ReplayService {
             JsonNode rootNode = objectMapper.readTree(StringData);
             JsonNode statsArray = rootNode.get("statsJson");
 
-            System.out.println("파싱완료");
+            // System.out.println("파싱완료");
             // 파일 닫기
             inputStream.close();
             return statsArray;
