@@ -287,7 +287,7 @@ public class UserManager {
 
     private boolean checkAuth(List<Role> roles){
         for (Role role : roles) {
-            if("난민디코관리자".equals(role.getName())){
+            if("디코관리자".equals(role.getName())){
                 if(role.getPermissions().contains(Permission.ADMINISTRATOR)){
                     return true;
                 } 
