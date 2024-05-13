@@ -251,7 +251,11 @@ public class UserManager {
         }
         return "error";
     }
-    
+
+    // user 초기화
+    public void userClear(){
+        this.userList.clear();
+    }
 
     // 다중 memberIndex 처리
     private int[] memberIndexparsing(String memberIndex){
