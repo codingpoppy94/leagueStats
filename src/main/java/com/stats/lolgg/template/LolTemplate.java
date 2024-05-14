@@ -306,7 +306,7 @@ public class LolTemplate {
     }
 
     private String hideStats(String prefix, int win, float win_rate, float kda){
-        String stats = prefix + " - " + +win+"승" +" - "+ +win_rate+"% 승률";
+        String stats = prefix + " - " + +win+"승/"+win_rate+"%";
         if(kda != 9999){
             stats += " KDA: " + kda;
         }
