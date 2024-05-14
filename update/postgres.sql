@@ -2,17 +2,16 @@ create database lolgg;
 create user rnasyd password 'welcome1!' SUPERUSER;
 drop user rnasyd;
 
-CREATE TABLE league (
-  id VARCHAR(20) PRIMARY KEY,
-  game_id VARCHAR(20),
-  riot_name VARCHAR(200),
-  champ_name VARCHAR(200),
-  position VARCHAR(100),
+CREATE TABLE league ( 
+  game_id VARCHAR(128),
+  riot_name VARCHAR(128),
+  champ_name VARCHAR(128),
+  position VARCHAR(16),
   kill Integer,
   death Integer,
   assist Integer,
-  game_result VARCHAR(20),
-  game_team VARCHAR(20),
+  game_result VARCHAR(4),
+  game_team VARCHAR(8),
   game_date TIMESTAMP,
   gold Integer,
   ccing Integer,
@@ -24,28 +23,20 @@ CREATE TABLE league (
   create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   delete_yn char(1),
-  create_user VARCHAR(20)
+  create_user VARCHAR(128)
 );
 
 create table mapping_name (
-	id varchar(20) primary key,
-	sub_name varchar(200),
-	main_name varchar(200),
+	sub_name varchar(128),
+	main_name varchar(128),
 	create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   delete_yn char(1)
 );
 
-CREATE SEQUENCE mapping_name_id_seq
-START WITH 1
-INCREMENT BY 1
-
-CREATE SEQUENCE league_id_seq
-START WITH 1
-INCREMENT BY 1
 
 -- 최근전적 10 조회
-SELECT id, game_id, riot_name, champ_name, position, kill, death, assist, game_result, game_team, game_date, create_date
+SELECT  game_id, riot_name, champ_name, position, kill, death, assist, game_result, game_team, game_date, create_date
 FROM league
 
 where riot_name = '잘생긴정현이'
