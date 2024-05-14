@@ -21,6 +21,10 @@
         ]]>
     </sql>
 
+    <sql id="mushema">
+        musche.LEAGUE
+    </sql>
+
     <!-- TOP 10  -->
     <!--  <sql id="where_top_ten">
         AND GAME_DATE <![CDATA[ < ]]> CURRENT_TIMESTAMP 
@@ -44,7 +48,7 @@
             GAME_DATE, 
             CREATE_DATE,
             DELETE_YN
-        FROM LEAGUE
+        FROM musche.LEAGUE
 
     </select>
 
@@ -61,7 +65,7 @@
             GAME_RESULT, 
             GAME_TEAM, 
             GAME_DATE
-        FROM LEAGUE
+        FROM musche.LEAGUE
         WHERE LOWER(RIOT_NAME) = LOWER(#{riot_name})
         AND DELETE_YN = 'N'
         ORDER BY GAME_DATE DESC
@@ -77,7 +81,7 @@
             COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
             COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE,
             ROUND(COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END)::numeric / COUNT(*) * 100 ,2) AS WIN_RATE
-        FROM LEAGUE
+        FROM musche.LEAGUE
         WHERE LOWER(RIOT_NAME) = LOWER(#{riot_name})
         AND DELETE_YN = 'N'
         GROUP BY POSITION
@@ -105,7 +109,7 @@
 			WHEN SUM(DEATH) = 0 THEN 9999
 			ELSE ROUND((SUM(KILL) + SUM(ASSIST))::NUMERIC / NULLIF(SUM(DEATH), 0), 2) 
             END AS KDA
-        FROM LEAGUE
+        FROM musche.LEAGUE
         WHERE LOWER(RIOT_NAME) = LOWER(#{riot_name})
         AND DELETE_YN = 'N'
         <include refid="where_month"></include>
@@ -119,7 +123,7 @@
             COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
             COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE,
             ROUND(COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END)::numeric / COUNT(*) * 100 ,2) AS WIN_RATE
-        FROM LEAGUE
+        FROM musche.LEAGUE
         WHERE LOWER(RIOT_NAME) = LOWER(#{riot_name})
         AND DELETE_YN = 'N'
         GROUP BY CHAMP_NAME
@@ -136,7 +140,7 @@
             COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END) AS WIN,
             COUNT(CASE WHEN GAME_RESULT = '패' THEN 1 END) AS LOSE,
             ROUND(COUNT(CASE WHEN GAME_RESULT = '승' THEN 1 END)::NUMERIC / COUNT(*) * 100 ,2) AS WIN_RATE
-        FROM LEAGUE 
+        FROM musche.LEAGUE 
         WHERE CHAMP_NAME = #{champ_name}
         AND DELETE_YN = 'N'
         GROUP BY RIOT_NAME 
@@ -152,7 +156,7 @@
             COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
             COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
             ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
-        FROM LEAGUE 
+        FROM musche.LEAGUE 
         WHERE DELETE_YN = 'N'
         <include refid="where_month"></include>
         GROUP BY CHAMP_NAME
@@ -167,7 +171,7 @@
             COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
             COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
             ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
-        FROM LEAGUE 
+        FROM musche.LEAGUE 
         WHERE DELETE_YN = 'N'
         <include refid="last_month"></include>
         GROUP BY CHAMP_NAME
@@ -182,7 +186,7 @@
             COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
             COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
             ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
-        FROM LEAGUE 
+        FROM musche.LEAGUE 
         WHERE DELETE_YN = 'N'
         <include refid="where_month"></include>
         GROUP BY GAME_TEAM
@@ -200,7 +204,7 @@
 			WHEN SUM(DEATH) = 0 THEN 9999
 			ELSE ROUND((SUM(KILL) + SUM(ASSIST))::NUMERIC / NULLIF(SUM(DEATH), 0), 2) 
             END AS KDA
-        FROM LEAGUE 
+        FROM musche.LEAGUE 
         WHERE DELETE_YN = 'N'
         <include refid="where_month"></include>
         GROUP BY RIOT_NAME
@@ -215,10 +219,10 @@
             COUNT(CASE WHEN B.GAME_RESULT = '승' THEN 1 END) AS WIN,
             COUNT(CASE WHEN B.GAME_RESULT = '패' THEN 1 END) AS LOSE,
             ROUND(COUNT(CASE WHEN B.GAME_RESULT = '승' THEN 1 END)::NUMERIC / COUNT(*)*100,2) AS WIN_RATE
-        FROM LEAGUE A 
+        FROM musche.LEAGUE A 
         INNER JOIN  
         (
-            SELECT * FROM LEAGUE 
+            SELECT * FROM musche.LEAGUE 
             WHERE LOWER(RIOT_NAME) = LOWER(#{riot_name})
             ORDER BY GAME_DATE DESC
             LIMIT 30
@@ -240,10 +244,10 @@
             COUNT(CASE WHEN B.GAME_RESULT = '승' THEN 1 END) AS WIN,
             COUNT(CASE WHEN B.GAME_RESULT = '패' THEN 1 END) AS LOSE,
             ROUND(COUNT(CASE WHEN B.GAME_RESULT = '승' THEN 1 END)::NUMERIC / COUNT(*)*100,2) AS WIN_RATE
-        FROM LEAGUE A 
+        FROM musche.LEAGUE A 
         INNER JOIN  
         (
-            SELECT * FROM LEAGUE 
+            SELECT * FROM musche.LEAGUE 
             WHERE LOWER(RIOT_NAME) = LOWER(#{riot_name})
             ORDER BY GAME_DATE DESC
             LIMIT 30
@@ -271,7 +275,7 @@
                 WHEN SUM(DEATH) = 0 THEN 9999
                 ELSE ROUND((SUM(KILL) + SUM(ASSIST))::NUMERIC / NULLIF(SUM(DEATH), 0), 2) 
             END AS KDA
-        FROM LEAGUE  
+        FROM musche.LEAGUE  
         WHERE POSITION = #{position}
         AND DELETE_YN = 'N'
         GROUP BY POSITION ,RIOT_NAME 
@@ -286,7 +290,7 @@
             SUB_NAME,
             MAIN_NAME
         FROM
-            MAPPING_NAME
+            musche.MAPPING_NAME
         WHERE 
             DELETE_YN = 'N'
     </select>
@@ -296,7 +300,7 @@
         SELECT
             COUNT(*)
         FROM
-            LEAGUE
+            musche.LEAGUE
         WHERE
             GAME_ID = #{game_id}
             
@@ -306,7 +310,7 @@
 
     <!-- 리플 데이터 저장 -->
     <insert id="insertLeague" parameterType="java.util.List">
-        INSERT INTO LEAGUE
+        INSERT INTO musche.LEAGUE
             (
                 game_id,
                 riot_name,
@@ -360,7 +364,7 @@
 
     <!-- 부캐닉 저장 -->
     <insert id="insertMappingName" parameterType="java.util.HashMap">
-        INSERT INTO MAPPING_NAME 
+        INSERT INTO musche.MAPPING_NAME 
             (
                 SUB_NAME,
                 MAIN_NAME,
@@ -381,7 +385,7 @@
 
     <!-- 탈퇴회원처리 -->
     <update id="changeDeleteYN" parameterType="java.util.HashMap">
-        UPDATE LEAGUE
+        UPDATE musche.LEAGUE
             SET DELETE_YN = #{delete_yn},
             UPDATE_DATE = CURRENT_TIMESTAMP
         WHERE 
@@ -391,7 +395,7 @@
 
     <!-- 탈퇴한회원처리 mappingName -->
     <update id="changeMappingDeleteYN" parameterType="java.util.HashMap">
-        UPDATE MAPPING_NAME
+        UPDATE musche.MAPPING_NAME
             SET DELETE_YN = #{delete_yn},
             UPDATE_DATE = CURRENT_TIMESTAMP
         WHERE 
@@ -401,7 +405,7 @@
 
     <!-- 닉네임 변경 -->
     <update id="changeRiotName" parameterType="java.util.HashMap" >
-        UPDATE LEAGUE
+        UPDATE musche.LEAGUE
             SET RIOT_NAME = #{main_name},
             UPDATE_DATE = CURRENT_TIMESTAMP
         WHERE RIOT_NAME = #{sub_name}
