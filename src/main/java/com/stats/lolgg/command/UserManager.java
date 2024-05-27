@@ -189,7 +189,9 @@ public class UserManager {
         for (int i = 0; i < userList.size(); i++) {
             String riotName = userList.get(i).getNickname();
             int index = riotName.indexOf("/");
-            riotName = riotName.substring(0, index);
+            if(index != -1) {
+                riotName = riotName.substring(0, index);
+            }
             userListString.append((i + 1) + "." + riotName + " ");
         }
         userListString.append("```");
