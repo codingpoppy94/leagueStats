@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 import com.stats.lolgg.service.LeagueService;
@@ -82,6 +83,12 @@ public class LeagueController {
             
             replayService.saveAll(file);
         }
+        return "성공";
+    }
+
+    @PostMapping("/getReplayData")
+    public String getReplayData(@RequestBody JsonNode body) throws Exception {
+        System.out.println(body);
         return "성공";
     }
 }
