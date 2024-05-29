@@ -27,7 +27,7 @@ public class LeagueManager {
 
     private final LeagueService leagueService;
 
-    public EmbedBuilder  getHelp(){
+    public EmbedBuilder getHelp(){
         LolTemplate template = new LolTemplate();
         return template.makeHelpTemplate();
     }
