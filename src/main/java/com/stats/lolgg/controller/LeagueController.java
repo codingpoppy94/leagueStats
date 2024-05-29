@@ -1,6 +1,7 @@
 package com.stats.lolgg.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 import com.stats.lolgg.service.LeagueService;
@@ -68,27 +69,14 @@ public class LeagueController {
         return leagueService.findChampMaster(champ_name);
     }
 
-    // 파일올리면 바로 저장되게 변경
-    /**
-     * Replay 데이터 파싱>저장
-     * @param files
-     * @return
-     * @throws Exception
-     */
-    @PostMapping("/replay")
-    public String getReplayFile(@RequestBody List<MultipartFile> files) throws Exception {
-        for(MultipartFile file : files ){
-            // String fileName = file.getOriginalFilename();
-            // System.out.println(fileName);
-            
-            replayService.saveAll(file);
-        }
-        return "성공";
-    }
-
     @PostMapping("/getReplayData")
-    public String getReplayData(@RequestBody JsonNode body) throws Exception {
-        System.out.println(body);
+    public String getReplayData(@RequestBody Map<String,Object> body) throws Exception {
+        String fileNameWithExt = (String) body.get("fileNameWithExt");
+        String createUser = (String) body.get("createUser");
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode statsArray = objectMapper.convertValue(body.get("body"), JsonNode.class);
+
+        replayService.saveFromApi(statsArray, fileNameWithExt, createUser);
         return "성공";
     }
 }

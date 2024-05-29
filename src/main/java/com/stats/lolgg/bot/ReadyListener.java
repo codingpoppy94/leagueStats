@@ -39,13 +39,13 @@ public class ReadyListener extends ListenerAdapter {
         //파일관련
         Message fileMessage = event.getMessage();
         for(Attachment attachment : fileMessage.getAttachments()){
-            String fileName = attachment.getFileName();
+            String fileNameWithExt = attachment.getFileName();
             // int Size = attachment.getSize();
             String fileRegExp = ".rofl";
-            if(fileName.contains(fileRegExp)){
+            if(fileNameWithExt.contains(fileRegExp)){
                 String fileUrl = attachment.getUrl();
                 try {
-                    String resultMessage = replayManager.saveFile(fileUrl,fileName,event);
+                    String resultMessage = replayManager.saveFile(fileUrl,fileNameWithExt,event);
                     sendMessage(channel, resultMessage);
                 } catch (Exception e) {
                     e.printStackTrace();
