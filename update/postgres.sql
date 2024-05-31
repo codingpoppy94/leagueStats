@@ -221,6 +221,20 @@ AND GAME_DATE >= DATE_TRUNC('month', CURRENT_TIMESTAMP)
 AND GAME_DATE < DATE_TRUNC('month', CURRENT_TIMESTAMP) + INTERVAL '1 month'
 group by game_team
 
+-- 월별 통계
+SELECT 
+        CHAMP_NAME,
+        COUNT(CHAMP_NAME) AS TOTAL_COUNT,
+        COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
+        COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
+        ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100, 2) AS win_rate
+    FROM LEAGUE 
+    WHERE DELETE_YN = 'N'
+    AND EXTRACT(YEAR FROM GAME_DATE) = EXTRACT(YEAR FROM NOW())
+    AND EXTRACT(MONTH FROM GAME_DATE) = '5'  -- #{month} 
+    GROUP BY CHAMP_NAME
+    HAVING COUNT(CHAMP_NAME) >= 10;
+
 /* 한글 update */
 UPDATE league
 SET champ_name = 
