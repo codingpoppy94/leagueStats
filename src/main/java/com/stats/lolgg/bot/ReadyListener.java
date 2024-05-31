@@ -88,18 +88,18 @@ public class ReadyListener extends ListenerAdapter {
                 * 팀 취소(추가작업필요)
                 */
 
-                if (message[0].equals("!ㅌㅊㅅ")) { 
-                    if(message.length > 1){
-                        String resultMessage = userManager.teamCancel(event, originMessage);
-                        if("error".equals(resultMessage)){
-                            sendMessage(channel,"존재하지않는 채널");
-                        }else {
-                            sendMessage(channel, resultMessage);
-                        }
-                    }else {
-                        sendErrorMessage(channel);
-                    }
-                }
+                // if (message[0].equals("!ㅌㅊㅅ")) { 
+                //     if(message.length > 1){
+                //         String resultMessage = userManager.teamCancel(event, originMessage);
+                //         if("error".equals(resultMessage)){
+                //             sendMessage(channel,"존재하지않는 채널");
+                //         }else {
+                //             sendMessage(channel, resultMessage);
+                //         }
+                //     }else {
+                //         sendErrorMessage(channel);
+                //     }
+                // }
         
                 /* 
                 * 목록 
