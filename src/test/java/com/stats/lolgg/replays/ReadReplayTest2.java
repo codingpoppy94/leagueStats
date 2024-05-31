@@ -42,7 +42,6 @@ public class ReadReplayTest2 {
         try {
             // 파일 열기
             FileInputStream inputStream = new FileInputStream(filePath);
-            InputStreamReader isr = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             FileChannel fileChannel = inputStream.getChannel();
 
             long fileSize = fileChannel.size();
@@ -58,21 +57,39 @@ public class ReadReplayTest2 {
             buffer.flip();
 
             // 데이터 읽기
+            byte[] bytes = new byte[buffer.remaining()];
+            buffer.get(bytes);
+
+            String data = new String(bytes, "UTF-8");
+
+            // 데이터 읽기
             StringBuilder hexData = new StringBuilder();
 
-            while (buffer.hasRemaining()) {
-                // System.out.print((char) buffer.get());
-                hexData.append((char)buffer.get());
-                    // System.out.print((char) buffer.get());
+            for (int i = 0; i < data.length(); i++) {
+                hexData.append(data.charAt(i));
 
-                    if(hexData.toString().endsWith(startIndex)){
-                        hexData.setLength(0);
-                        hexData.append(startIndex);
-                    }
-                    if(hexData.toString().endsWith(endIndex)){
-                        break;
-                    } 
+                if(hexData.toString().endsWith(startIndex)){
+                    hexData.setLength(0);
+                    hexData.append(startIndex);
+                }
+                if(hexData.toString().endsWith(endIndex)){
+                    break;
+                }
             }
+
+            // while (buffer.hasRemaining()) {
+            //     // System.out.print((char) buffer.get());
+            //     hexData.append((char)buffer.get());
+            //         // System.out.print((char) buffer.get());
+
+            //         if(hexData.toString().endsWith(startIndex)){
+            //             hexData.setLength(0);
+            //             hexData.append(startIndex);
+            //         }
+            //         if(hexData.toString().endsWith(endIndex)){
+            //             break;
+            //         } 
+            // }
 
             // int data;
             
