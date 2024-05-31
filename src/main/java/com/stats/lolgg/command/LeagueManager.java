@@ -127,7 +127,7 @@ public class LeagueManager {
         }
         LolTemplate template = new LolTemplate();
 
-        return template.makeGamesTeamplte(resultMap);
+        return template.makeGamesTemplate(resultMap);
     }
 
     /* !라인 {position} */
@@ -164,6 +164,6 @@ public class LeagueManager {
             return null;
         }
         LolTemplate template = new LolTemplate();
-        return template.makeClanStatstemplate(resultMap, year, month);
+        return template.makeClanStatsTemplate(resultMap, year, month);
     }
 }

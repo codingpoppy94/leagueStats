@@ -45,7 +45,7 @@ public class LolTemplate {
             }
         }
         //이번달전적
-        String monthStatStr = makeStats("이번달 전적", monthRecord.getTotal_count(), monthRecord.getWin(), monthRecord.getLose(), monthRecord.getWin_rate(), monthRecord.getKda());
+        String monthStatStr = hideStats("이번달 전적", monthRecord.getWin(), monthRecord.getWin_rate(), monthRecord.getKda());
         
         //통합전적
         String allStatStr = "";
@@ -56,11 +56,11 @@ public class LolTemplate {
             if(record.getTotal_count() ==  maxTotalCount ) {
                 allStatStr += ":thumbsup: ";
             }
-            allStatStr += makeStats(record.getPosition(), record.getTotal_count(), record.getWin(), record.getLose(), record.getWin_rate(),9999);
+            allStatStr += hideStats(record.getPosition(), record.getWin(), record.getWin_rate(),9999);
         }
         allTotal = allWin + allLose;
         allWinLate = Math.round((float) allWin * 100 / allTotal * 100) / 100.0f;
-        String allStatStrHeader = makeStats("통합 전적", allTotal, allWin, allLose, allWinLate,9999);
+        String allStatStrHeader = hideStats("통합 전적", allWin, allWinLate,9999);
 
         //최근전적
         String matchStr = "";
@@ -184,7 +184,7 @@ public class LolTemplate {
     }
 
     /* !통계 games */
-    public EmbedBuilder makeGamesTeamplte(Map<String, List<LeagueStatsVO>> recordsMap){
+    public EmbedBuilder makeGamesTemplate(Map<String, List<LeagueStatsVO>> recordsMap){
         EmbedBuilder embed = new EmbedBuilder();
 
         List<LeagueStatsVO> records = recordsMap.get("leagueGames");
@@ -213,7 +213,7 @@ public class LolTemplate {
     }
 
     /* !클랜 통계 */
-    public String makeClanStatstemplate(Map<String, List<LeagueStatsVO>> recordsMap, int year, int month){
+    public String makeClanStatsTemplate(Map<String, List<LeagueStatsVO>> recordsMap, int year, int month){
         StringBuilder builder = new StringBuilder();
 
         String stringYear = Integer.toString(year);
@@ -290,7 +290,7 @@ public class LolTemplate {
             }else {
                 content += i++ +". ";
             }
-            content +=record.getRiot_name()+makeStats("",record.getTotal_count(), record.getWin(), record.getLose(), record.getWin_rate(), record.getKda());
+            content +=record.getRiot_name()+hideStats("", record.getWin(), record.getWin_rate(), record.getKda());
         }
         embed.setTitle(header);
         embed.setDescription(content);
@@ -332,6 +332,15 @@ public class LolTemplate {
         return stats;
     }
 
+    private String hideStats(String prefix, int win, float win_rate, float kda){
+        String stats = prefix + " - " + +win+"승/"+win_rate+"%";
+        if(kda != 9999){
+            stats += " KDA: " + kda;
+        }
+        stats += "\n";
+        return stats;
+    }
+
     private String makeTeamStats(String prefix, int win, int lose, float win_rate){
         return prefix + ": " + win +"승/" + lose + "패 " + win_rate+ "%\n";
     }
@@ -346,10 +355,10 @@ public class LolTemplate {
         }
         if("riotname".equals(type)){
             for(LeagueStatsVO vo : list){
-                builder.append(i++ +". " + makeStats(vo.getRiot_name(), vo.getTotal_count() ,vo.getWin(), vo.getLose(), vo.getWin_rate(), vo.getKda()));
+                // builder.append(i++ +". " + makeStats(vo.getRiot_name(), vo.getTotal_count() ,vo.getWin(), vo.getLose(), vo.getWin_rate(), vo.getKda()));
+                builder.append(i++ +". " + hideStats(vo.getRiot_name(), vo.getWin(), vo.getWin_rate(), vo.getKda()));
             }
         }
         return builder.toString();
     }
 }
-
