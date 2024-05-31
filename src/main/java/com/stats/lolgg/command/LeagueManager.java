@@ -1,5 +1,8 @@
 package com.stats.lolgg.command;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -84,8 +87,17 @@ public class LeagueManager {
 
     /* !통계 챔피언 */
     public EmbedBuilder getChampStats(){
-        List<LeagueStatsVO> records = leagueService.findChampStats();
-        List<LeagueStatsVO> lastMonthRecords = leagueService.findChampStatsLastMonth();
+        // 서버의 현재 시간
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul")); 
+        LocalDateTime previousMonth = now.minus(1, ChronoUnit.MONTHS);
+        
+        int month = now.getMonthValue();
+        int year = now.getYear();
+        int lastmonth = previousMonth.getMonthValue();
+        int lastyear = previousMonth.getMonthValue();
+
+        List<LeagueStatsVO> records = leagueService.findChampStats(year, month);
+        List<LeagueStatsVO> lastMonthRecords = leagueService.findChampStats(lastyear, lastmonth);
 
         Map<String, List<LeagueStatsVO>> resultMap = new HashMap<>();
         resultMap.put("thisMonth", records);
@@ -99,9 +111,13 @@ public class LeagueManager {
         return template.makeChampRateTemplate(resultMap);
     }
 
-    /* !통계 games*/
+    /* !통계 게임 */
     public EmbedBuilder getGamesStats(){
-        List<LeagueStatsVO> leagueGames = leagueService.groupLeagueByRiotName();
+        // 서버의 현재 시간
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul")); 
+        int month = now.getMonthValue();
+        int year = now.getYear();
+        List<LeagueStatsVO> leagueGames = leagueService.groupLeagueByRiotName(year, month);
 
         Map<String, List<LeagueStatsVO>> resultMap = new HashMap<>();
         resultMap.put("leagueGames", leagueGames);
@@ -130,5 +146,24 @@ public class LeagueManager {
         } 
         LolTemplate template = new LolTemplate();
         return template.makeRecordLine(records, realPostion);
+    }
+
+    /* !클랜통계 {year-month} 비밀통계 */
+    public String getClanStats(String dates){
+
+        String[] date = dates.split("-");
+        int year = Integer.parseInt(date[0]);
+        int month = Integer.parseInt(date[1]);
+        // 서버의 현재 시간
+        List<LeagueStatsVO> leagueGames = leagueService.groupLeagueByRiotName(year, month);
+
+        Map<String, List<LeagueStatsVO>> resultMap = new HashMap<>();
+        resultMap.put("leagueGames", leagueGames);
+
+        if(leagueGames.isEmpty()){
+            return null;
+        }
+        LolTemplate template = new LolTemplate();
+        return template.makeClanStatstemplate(resultMap, year, month);
     }
 }

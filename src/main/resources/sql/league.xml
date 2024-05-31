@@ -13,11 +13,10 @@
         ]]>
     </sql>
 
-    <!-- 저번달 조회 -->
-    <sql id="last_month">
+    <sql id="select_month">
         <![CDATA[
-        AND GAME_DATE >= DATE_TRUNC('month', CURRENT_TIMESTAMP - INTERVAL '1 month')
-        AND GAME_DATE < DATE_TRUNC('month', CURRENT_TIMESTAMP)
+        AND EXTRACT(YEAR FROM GAME_DATE) = #{year}
+        AND EXTRACT(MONTH FROM GAME_DATE) = #{month}
         ]]>
     </sql>
 
@@ -144,8 +143,8 @@
         ORDER BY TOTAL_COUNT DESC, WIN_RATE DESC
     </select>
 
-    <!-- !통계(이번달)-->
-    <select id="findChampStats" resultType="com.stats.lolgg.model.LeagueStatsVO">
+    <!-- !통계 챔피언-->
+    <select id="findChampStats" parameterType="int" resultType="com.stats.lolgg.model.LeagueStatsVO">
         SELECT 
             CHAMP_NAME,
             COUNT(CHAMP_NAME) AS TOTAL_COUNT,
@@ -154,25 +153,11 @@
             ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
         FROM LEAGUE 
         WHERE DELETE_YN = 'N'
-        <include refid="where_month"></include>
+        <include refid="select_month"></include>
         GROUP BY CHAMP_NAME
         HAVING COUNT(CHAMP_NAME) <![CDATA[ >= ]]> 10
     </select>
 
-    <!-- !통계(저번달) -->
-    <select id="findChampStatsLastMonth" resultType="com.stats.lolgg.model.LeagueStatsVO">
-        SELECT 
-            CHAMP_NAME,
-            COUNT(CHAMP_NAME) AS TOTAL_COUNT,
-            COUNT(CASE WHEN game_result = '승' THEN 1 END) AS win,
-            COUNT(CASE WHEN game_result = '패' THEN 1 END) AS lose,
-            ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2) AS win_rate
-        FROM LEAGUE 
-        WHERE DELETE_YN = 'N'
-        <include refid="last_month"></include>
-        GROUP BY CHAMP_NAME
-        HAVING COUNT(CHAMP_NAME) <![CDATA[ >= ]]> 10
-    </select>
 
     <!-- !통계 블루vs레드승률 -->
     <select id="findTeamWinRate" resultType="com.stats.lolgg.model.LeagueStatsVO">
@@ -188,8 +173,8 @@
         GROUP BY GAME_TEAM
     </select>
 
-    <!-- !통계 이번달 판수 -->
-    <select id="groupLeagueByRiotName" resultType="com.stats.lolgg.model.LeagueStatsVO">
+    <!-- !통계 게임 -->
+    <select id="groupLeagueByRiotName" parameterType="int" resultType="com.stats.lolgg.model.LeagueStatsVO">
         SELECT 
             RIOT_NAME,
             COUNT(RIOT_NAME) AS TOTAL_COUNT,
@@ -202,7 +187,7 @@
             END AS KDA
         FROM LEAGUE 
         WHERE DELETE_YN = 'N'
-        <include refid="where_month"></include>
+        <include refid="select_month"></include>
         GROUP BY RIOT_NAME
         ORDER BY TOTAL_COUNT DESC 
     </select>
