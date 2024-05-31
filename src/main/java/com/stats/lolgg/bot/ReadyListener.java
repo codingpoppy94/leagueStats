@@ -207,6 +207,22 @@ public class ReadyListener extends ListenerAdapter {
                 }
 
                 /* 
+                * !클랜통계 {year-month}
+                */
+                if (message[0].equalsIgnoreCase("!클랜통계")) {
+                    String templateMessage = null;
+                    if(message.length > 1) {
+                        templateMessage = leagueManager.getClanStats(message[1]);
+                        
+                        if(templateMessage == null){
+                            sendMessage(channel, "not found data");
+                        } else {
+                            sendMessage(channel, templateMessage);
+                        }
+                    }
+                }
+
+                /* 
                  * !라인 {position}
                  */
                 if (message[0].equalsIgnoreCase("!라인")) {

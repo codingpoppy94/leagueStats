@@ -212,6 +212,33 @@ public class LolTemplate {
         return embed;
     }
 
+    /* !클랜 통계 */
+    public String makeClanStatstemplate(Map<String, List<LeagueStatsVO>> recordsMap, int year, int month){
+        StringBuilder builder = new StringBuilder();
+
+        String stringYear = Integer.toString(year);
+        String stringMonth =Integer.toString(month);
+
+        String header = stringYear + "년 " +stringMonth+ "월 클랜통계";
+
+        builder.append(header);
+        builder.append("\n");
+
+        List<LeagueStatsVO> records = recordsMap.get("leagueGames");
+
+        // 판수 정렬
+        // List<LeagueStatsVO> leagueGames = records.stream()
+        // .sorted(Comparator.comparingInt(LeagueStatsVO::getTotal_count).reversed())
+        // .collect(Collectors.toList());
+        // embed.addField("판수",makeStatsList(leagueGames,"riotname"),true);
+
+        int i=1;
+        for(LeagueStatsVO record : records ){
+            builder.append(i++ + ". " + record.getRiot_name() + " " + record.getTotal_count() + "판 \n");
+        }
+        return builder.toString();
+    }
+
     private void makeField(List<LeagueStatsVO> records,EmbedBuilder embed, String month){
         // 픽률 높음
         List<LeagueStatsVO> pickList =
