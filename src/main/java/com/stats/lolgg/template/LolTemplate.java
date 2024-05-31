@@ -184,7 +184,7 @@ public class LolTemplate {
     }
 
     /* !통계 games */
-    public EmbedBuilder makeGamesTeamplte(Map<String, List<LeagueStatsVO>> recordsMap){
+    public EmbedBuilder makeGamesTemplate(Map<String, List<LeagueStatsVO>> recordsMap){
         EmbedBuilder embed = new EmbedBuilder();
 
         List<LeagueStatsVO> records = recordsMap.get("leagueGames");
@@ -213,7 +213,7 @@ public class LolTemplate {
     }
 
     /* !클랜 통계 */
-    public String makeClanStatstemplate(Map<String, List<LeagueStatsVO>> recordsMap, int year, int month){
+    public String makeClanStatsTemplate(Map<String, List<LeagueStatsVO>> recordsMap, int year, int month){
         StringBuilder builder = new StringBuilder();
 
         String stringYear = Integer.toString(year);
