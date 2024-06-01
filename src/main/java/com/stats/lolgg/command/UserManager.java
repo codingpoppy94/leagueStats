@@ -72,33 +72,33 @@ public class UserManager {
                 return "error";
             }
 
-            if(memberIndex.length() > 1) {
-                // 다중
-                int start = selectMember[0];
-                int end = selectMember[1];
-                int count = end - start;
-
-                if(end +1 > this.userList.size()) {
-                    return "error";
-                }
-
-                for(int i=0; i<= count; i++){  
-                    Member deleteMember = this.userList.get(start);
-                    this.removeUser(deleteMember);
-                }
-                return this.sendUserList();
-                
-            } else {
-                if(selectMember[0] >= 0){
+            if(memberIndex.length() >= 1) {
+                //!취소 단일선택
+                if(selectMember[1] == 9999){
                     int min = selectMember[0];
                     if(min + 1 <= this.userList.size()){
                         Member deleteMember = this.userList.get(min);
                         this.removeUser(deleteMember);
                         return this.sendUserList();
                     }
+                } else {
+                    // !취소 범위선택
+                    int start = selectMember[0];
+                    int end = selectMember[1];
+                    int count = end - start;
+    
+                    if(end +1 > this.userList.size()) {
+                        return "error";
+                    }
+    
+                    for(int i=0; i<= count; i++){  
+                        Member deleteMember = this.userList.get(start);
+                        this.removeUser(deleteMember);
+                    }
+                    return this.sendUserList();
                 }
             }
-            
+            // !취소 만 입력
         }  else {
             Member user = event.getMember();
             boolean removed = this.removeUser(user);
@@ -149,38 +149,40 @@ public class UserManager {
             mentionMessage = originMessage.substring(originMessage.indexOf(message[2]));
         } 
 
-        if(memberIndex.length() > 1){
-            // 다중 선택 
-            int min = selectMember[0];
-            int max = selectMember[1];
-
-            if (this.userList.isEmpty()) {
-                return "대기자 확인";
+        if(memberIndex.length() >= 1){
+            // !ㅁㅅ 단일선택
+            if(selectMember[1] == 9999){
+                int mentionCount = selectMember[0];
+                if (this.userList.size() < mentionCount+1){
+                    return "error";
+                }
+                // 한명 선택
+                Member mentionMember = this.userList.get(mentionCount);
+                return mentionMember.getAsMention() + mentionMessage;
+            // !ㅁㅅ 다중선택
+            } else {
+                int min = selectMember[0];
+                int max = selectMember[1];
+                if (this.userList.isEmpty()) {
+                    return "대기자 확인";
+                }
+    
+                if (max+1 > this.userList.size()) {
+                    return "대기 인원을 확인하세요.";
+                }
+    
+                StringBuilder messageBuilder = new StringBuilder();
+    
+                for(int i=min; i<= max; i++){  
+                    Member mentionMember = userList.get(i);
+                    messageBuilder.append(mentionMember.getAsMention()).append(" ");
+    
+                }
+                messageBuilder.append(mentionMessage);
+                return messageBuilder.toString();
             }
-
-            if (max+1 > this.userList.size()) {
-                return "대기 인원을 확인하세요.";
-            }
-
-            StringBuilder messageBuilder = new StringBuilder();
-
-            for(int i=min; i<= max; i++){  
-                Member mentionMember = userList.get(i);
-                messageBuilder.append(mentionMember.getAsMention()).append(" ");
-
-            }
-            messageBuilder.append(mentionMessage);
-            return messageBuilder.toString();
-        } else {
-            int mentionCount = selectMember[0];
-            if (this.userList.size() < mentionCount+1){
-                return "error";
-            }
-            // 한명 선택
-            Member mentionMember = this.userList.get(mentionCount);
-            return mentionMember.getAsMention() + mentionMessage;
-        }
-
+        } 
+        return "error";
     }
 
     public String sendUserList() {
@@ -189,7 +191,7 @@ public class UserManager {
         for (int i = 0; i < userList.size(); i++) {
             String riotName = userList.get(i).getNickname();
             int index = riotName.indexOf("/");
-            if(index != -1 ){
+            if(index != -1) {
                 riotName = riotName.substring(0, index);
             }
             userListString.append((i + 1) + "." + riotName + " ");
@@ -268,6 +270,7 @@ public class UserManager {
             String numberReg = "\\d{1,2}";
             if(memberIndex.matches(numberReg)){
                 result[0] = Integer.parseInt(memberIndex) - 1;
+                result[1] = 9999;
                 return result;
             }
             if(memberIndex.matches(mulitReg)){
@@ -289,7 +292,7 @@ public class UserManager {
 
     private boolean checkAuth(List<Role> roles){
         for (Role role : roles) {
-            if("난민디코관리자".equals(role.getName())){
+            if("디코관리자".equals(role.getName())){
                 if(role.getPermissions().contains(Permission.ADMINISTRATOR)){
                     return true;
                 } 
