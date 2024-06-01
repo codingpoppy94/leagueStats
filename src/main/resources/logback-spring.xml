@@ -11,15 +11,16 @@
 
     <appender name="RollingFile"
         class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/spring-boot-logger.log</file>
+        <file>${LOGS}/mumu.log</file>
         <encoder
             class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{HH:mm:ss.SSS} %-34.-34thread %10.10X{jda.shard} %-15.-15logger{0} %-6level %msg%n</Pattern>
+            <charset>UTF-8</charset>
         </encoder>
 
         <rollingPolicy
             class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOGS}/archived/logger-%d{yyyy-MM-dd}.log
+            <fileNamePattern>${LOGS}/archived/mumu-%d{yyyy-MM-dd}.log
             </fileNamePattern>
             <!-- rollover daily and when the file reaches 10 MegaBytes -->
             <!-- <fileNamePattern>${LOGS}/archived/spring-boot-logger-%d{yyyy-MM-dd}.%i.log

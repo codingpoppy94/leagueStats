@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 import com.stats.lolgg.service.LeagueService;
@@ -74,13 +75,18 @@ public class LeagueController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/replay")
+    @PostMapping("/parseFromApi")
     public String getReplayFile(@RequestBody List<MultipartFile> files) throws Exception {
         for(MultipartFile file : files ){
             // String fileName = file.getOriginalFilename();
             // System.out.println(fileName);
+
+            String fileNameWithExt = file.getOriginalFilename();
+            String createUser = "api";
+            byte[] bytes = replayService.changeByteArray(file.getInputStream());
+            JsonNode statsArray = replayService.parseReplayData(bytes);
             
-            replayService.saveAll(file);
+            replayService.saveFromApi(statsArray, fileNameWithExt, createUser);
         }
         return "성공";
     }
