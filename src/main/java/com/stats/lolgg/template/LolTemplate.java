@@ -56,11 +56,11 @@ public class LolTemplate {
             if(record.getTotal_count() ==  maxTotalCount ) {
                 allStatStr += ":thumbsup: ";
             }
-            allStatStr += hideStats(record.getPosition(), record.getWin(), record.getWin_rate(),9999);
+            allStatStr += hideStats(record.getPosition(), record.getWin(), record.getWin_rate(), record.getKda());
         }
         allTotal = allWin + allLose;
         allWinLate = Math.round((float) allWin * 100 / allTotal * 100) / 100.0f;
-        String allStatStrHeader = hideStats("통합 전적", allWin, allWinLate,9999);
+        String allStatStrHeader = hideStats("통합 전적", allWin, allWinLate, 9999);
 
         //최근전적
         String matchStr = "";
