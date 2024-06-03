@@ -56,7 +56,7 @@ public class LolTemplate {
             if(record.getTotal_count() ==  maxTotalCount ) {
                 allStatStr += ":thumbsup: ";
             }
-            allStatStr += makeStats(record.getPosition(), record.getTotal_count(), record.getWin(), record.getLose(), record.getWin_rate(),9999);
+            allStatStr += makeStats(record.getPosition(), record.getTotal_count(), record.getWin(), record.getLose(), record.getWin_rate(), record.getKda());
         }
         allTotal = allWin + allLose;
         allWinLate = Math.round((float) allWin * 100 / allTotal * 100) / 100.0f;
