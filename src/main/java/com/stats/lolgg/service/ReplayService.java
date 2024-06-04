@@ -13,13 +13,9 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stats.lolgg.mapper.LeagueMapper;
 import com.stats.lolgg.model.ChampEnum;
 import com.stats.lolgg.model.LeagueVO;
@@ -32,9 +28,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ReplayService {
-
-    @Value("${api.replay-url}")
-    private String replayUrl;
 
     private static final Logger logger = LoggerFactory.getLogger(ReplayService.class);
 
@@ -51,16 +44,11 @@ public class ReplayService {
     }
 
     /**
-     * Replay 데이터 파싱 후 저장
+     * Replay 데이터 저장
      * @param file
      * @throws Exception
      */
-    public void save(String fileUrl, String fileNameWithExt, String createUser) throws Exception{
-        String fileName = validateFile(fileNameWithExt);
-
-        // 파싱 데이터
-        JsonNode statsArray = getParseData(fileUrl);
-        
+    public void save(JsonNode statsArray, String fileName, String createUser) throws Exception{
         // 데이터 저장
         leagueMapper.insertLeague(setData(statsArray, fileName, createUser));
         saveReplayFileLog(fileName);
@@ -79,23 +67,23 @@ public class ReplayService {
         saveReplayFileLog(fileName);
     }
 
-    // 리플 파싱 데이터 가져오기
-    private JsonNode getParseData(String fileUrl) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonBody = objectMapper.createObjectNode().put("fileUrl", fileUrl);
+    // // 리플 파싱 데이터 가져오기
+    // private JsonNode getParseData(String fileUrl) {
+    //     ObjectMapper objectMapper = new ObjectMapper();
+    //     JsonNode jsonBody = objectMapper.createObjectNode().put("fileUrl", fileUrl);
 
-        RestClient restClient = RestClient.create();
-        JsonNode result = restClient.post()
-        .uri(replayUrl)
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON)
-        .body(jsonBody)
-        .retrieve()
-        .body(JsonNode.class);
-        // logger.info(result.toPrettyString());
+    //     RestClient restClient = RestClient.create();
+    //     JsonNode result = restClient.post()
+    //     .uri(replayUrl)
+    //     .contentType(MediaType.APPLICATION_JSON)
+    //     .accept(MediaType.APPLICATION_JSON)
+    //     .body(jsonBody)
+    //     .retrieve()
+    //     .body(JsonNode.class);
+    //     // logger.info(result.toPrettyString());
 
-        return result;
-    }
+    //     return result;
+    // }
 
     // replay 파일 이름 로그 저장
     private void saveReplayFileLog(String fileName) throws IOException{
@@ -207,18 +195,18 @@ public class ReplayService {
     }
 
     // 파일명, 중복파일 검증
-    private String validateFile(String fileNameWithExt){
+    public String validateFile(String fileNameWithExt){
         String fileRegExp = "^[a-zA-Z0-9]*_\\d{4}_\\d{4}.rofl$";
 
         if(!fileNameWithExt.matches(fileRegExp)){
-            throw new IllegalArgumentException(":red_circle:등록실패: 잘못된 리플 파일 형식");
+            throw new IllegalArgumentException(":red_circle:등록실패: " +fileNameWithExt+ " 잘못된 리플 파일 형식");
         }
 
         int index = fileNameWithExt.lastIndexOf('.');
         String fileName = fileNameWithExt.substring(0, index).toLowerCase();
 
         if(this.findReplayName(fileName) > 1) {
-            throw new IllegalArgumentException(":red_circle:등록실패: 중복된 리플 파일 등록");
+            throw new IllegalArgumentException(":red_circle:등록실패: "+fileNameWithExt+ " 중복된 리플 파일 등록");
         }
         return fileName;
     }
