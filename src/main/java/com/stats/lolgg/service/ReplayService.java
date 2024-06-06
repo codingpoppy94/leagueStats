@@ -3,11 +3,6 @@ package com.stats.lolgg.service;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,13 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stats.lolgg.mapper.LeagueMapper;
 import com.stats.lolgg.model.ChampEnum;
 import com.stats.lolgg.model.LeagueVO;
@@ -51,16 +44,11 @@ public class ReplayService {
     }
 
     /**
-     * Replay 데이터 파싱 후 저장
+     * Replay 데이터 저장
      * @param file
      * @throws Exception
      */
-    public void save(String fileUrl, String fileNameWithExt, String createUser) throws Exception{
-        String fileName = validateFile(fileNameWithExt);
-
-        // 파싱 데이터
-        JsonNode statsArray = parseReplay(fileUrl);
-        
+    public void save(JsonNode statsArray, String fileName, String createUser) throws Exception{
         // 데이터 저장
         leagueMapper.insertLeague(setData(statsArray, fileName, createUser));
         saveReplayFileLog(fileName);
@@ -79,6 +67,23 @@ public class ReplayService {
         saveReplayFileLog(fileName);
     }
 
+    // // 리플 파싱 데이터 가져오기
+    // private JsonNode getParseData(String fileUrl) {
+    //     ObjectMapper objectMapper = new ObjectMapper();
+    //     JsonNode jsonBody = objectMapper.createObjectNode().put("fileUrl", fileUrl);
+
+    //     RestClient restClient = RestClient.create();
+    //     JsonNode result = restClient.post()
+    //     .uri(replayUrl)
+    //     .contentType(MediaType.APPLICATION_JSON)
+    //     .accept(MediaType.APPLICATION_JSON)
+    //     .body(jsonBody)
+    //     .retrieve()
+    //     .body(JsonNode.class);
+    //     // logger.info(result.toPrettyString());
+
+    //     return result;
+    // }
 
     // replay 파일 이름 로그 저장
     private void saveReplayFileLog(String fileName) throws IOException{
@@ -190,114 +195,19 @@ public class ReplayService {
     }
 
     // 파일명, 중복파일 검증
-    private String validateFile(String fileNameWithExt){
+    public String validateFile(String fileNameWithExt){
         String fileRegExp = "^[a-zA-Z0-9]*_\\d{4}_\\d{4}.rofl$";
 
         if(!fileNameWithExt.matches(fileRegExp)){
-            throw new IllegalArgumentException(":red_circle:등록실패: 잘못된 리플 파일 형식");
+            throw new IllegalArgumentException(":red_circle:등록실패: " +fileNameWithExt+ " 잘못된 리플 파일 형식");
         }
 
         int index = fileNameWithExt.lastIndexOf('.');
         String fileName = fileNameWithExt.substring(0, index).toLowerCase();
 
         if(this.findReplayName(fileName) > 1) {
-            throw new IllegalArgumentException(":red_circle:등록실패: 중복된 리플 파일 등록");
+            throw new IllegalArgumentException(":red_circle:등록실패: "+fileNameWithExt+ " 중복된 리플 파일 등록");
         }
         return fileName;
-    }
-
-    private JsonNode parseReplay(String fileUrl) throws Exception{
-        byte[] bytes = getInputStreamDiscordFile(fileUrl);
-        try {
-            return parseReplayData(bytes);
-        } finally {
-            
-        }
-    }
-
-    // 리플레이 파일 데이터 파싱
-    public JsonNode parseReplayData(byte[] byteArrays) throws Exception{
-        String startIndex = "{\"gameLength\":";
-        String endIndex = "\\\"}]\"}";
-        int bytesToRead = 65536; 
-
-        if(byteArrays == null || byteArrays.length == 0){
-            throw new Exception("파싱 데이터가 없습니다");
-        }
-
-        try {
-            // 파일 열기
-            int fileSize = byteArrays.length;
-
-            long startPosition = Math.max(fileSize - bytesToRead, 0);
-            int actualBytesToRead = (int) Math.min(bytesToRead, fileSize);
-
-            byte[] bytes = new byte[actualBytesToRead];
-
-            System.arraycopy(byteArrays, (int) startPosition, bytes, 0, actualBytesToRead);
-
-            String data = new String(bytes, "UTF-8");
-
-            StringBuilder hexData = new StringBuilder();
-
-            for (int i = 0; i < data.length(); i++) {
-                hexData.append(data.charAt(i));
-
-                if (hexData.toString().endsWith(startIndex)) {
-                    hexData.setLength(0);
-                    hexData.append(startIndex);
-                }
-                if (hexData.toString().endsWith(endIndex)) {
-                    break;
-                }
-            }
-            
-            String StringData = hexData.toString().replace("\\"+"\"", "\"");
-            StringData = StringData.replace("\"[", "[").replace("]\"", "]");
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(StringData);
-            JsonNode statsArray = rootNode.get("statsJson");
-
-            return statsArray;
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception("파싱에러");
-        }
-    }
-
-    // 디스코드에 올린 파일 데이터 가져오기
-    private byte[] getInputStreamDiscordFile(String fileUrl) throws IOException, InterruptedException {
-        // HttpClient 생성
-        HttpClient httpClient = HttpClient.newHttpClient();
-
-        // HTTP 요청 생성
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(fileUrl))
-            .build();
-
-        HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
-
-        return changeByteArray(response.body());
-    }
-
-    public byte[] changeByteArray(InputStream inputStream) {
-        int nRead;
-        byte[] data = new byte[1024]; 
-        try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
-            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-                // 읽은 데이터의 각 바이트를 로그로 출력
-                // for (int i = 0; i < nRead; i++) {
-                    // System.out.printf("%02X ", data[i]);
-                // }
-                buffer.write(data, 0, nRead);
-            }
-                // 버퍼 플러시
-            buffer.flush();
-            return buffer.toByteArray();
-        } catch (Exception e) {
-            logger.info(e.getMessage());
-            return null;
-        }
     }
 }

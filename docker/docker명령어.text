@@ -1,0 +1,11 @@
+// buildx
+docker buildx build --platform linux/arm64 -t codingpoppy94/lolgg:1.0 .
+
+// dockerhub image push
+docker push codingpoppy94/lolgg:1.0 
+
+// pull
+docker pull codingpoppy94/lolgg:1.0
+
+// run
+docker run -d --name trcgg -p 8080:8080 codingpoppy94/lolgg:1.0 

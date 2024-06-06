@@ -31,7 +31,6 @@
             </timeBasedFileNamingAndTriggeringPolicy> -->
         </rollingPolicy>
     </appender>
-    
     <logger name="jdbc" level="off"/>
     <logger name="jdbc.sqlonly" level="off"/>
     <logger name="jdbc.sqltiming" level="debug"/>

@@ -52,12 +52,8 @@ public class LeagueService {
         return leagueMapper.findChampMaster(champ_name);
     }
 
-    public List<LeagueStatsVO> findChampStats(){
-        return leagueMapper.findChampStats();
-    }
-
-    public List<LeagueStatsVO> findChampStatsLastMonth(){
-        return leagueMapper.findChampStatsLastMonth();
+    public List<LeagueStatsVO> findChampStats(int year,int month){
+        return leagueMapper.findChampStats(year, month);
     }
 
     public List<LeagueStatsVO> findRecordWithTeam(String riot_name){
@@ -72,8 +68,8 @@ public class LeagueService {
         return leagueMapper.findRecordLine(position);
     }
 
-    public List<LeagueStatsVO> groupLeagueByRiotName(){
-        return leagueMapper.groupLeagueByRiotName();
+    public List<LeagueStatsVO> groupLeagueByRiotName(int year,int month){
+        return leagueMapper.groupLeagueByRiotName(year, month);
     }
 
     /* insert */

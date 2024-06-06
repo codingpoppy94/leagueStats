@@ -39,13 +39,13 @@ public class ReadyListener extends ListenerAdapter {
         //파일관련
         Message fileMessage = event.getMessage();
         for(Attachment attachment : fileMessage.getAttachments()){
-            String fileName = attachment.getFileName();
+            String fileNameWithExt = attachment.getFileName();
             // int Size = attachment.getSize();
             String fileRegExp = ".rofl";
-            if(fileName.contains(fileRegExp)){
+            if(fileNameWithExt.contains(fileRegExp)){
                 String fileUrl = attachment.getUrl();
                 try {
-                    String resultMessage = replayManager.saveFile(fileUrl,fileName,event);
+                    String resultMessage = replayManager.saveFile(fileUrl,fileNameWithExt,event);
                     sendMessage(channel, resultMessage);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -197,6 +197,22 @@ public class ReadyListener extends ListenerAdapter {
                         if("게임".equals(message[1])){
                             templateMessage = leagueManager.getGamesStats();
                         }
+                        
+                        if(templateMessage == null){
+                            sendMessage(channel, "not found data");
+                        } else {
+                            sendMessage(channel, templateMessage);
+                        }
+                    }
+                }
+
+                /* 
+                * !클랜통계 {year-month}
+                */
+                if (message[0].equalsIgnoreCase("!클랜통계")) {
+                    String templateMessage = null;
+                    if(message.length > 1) {
+                        templateMessage = leagueManager.getClanStats(message[1]);
                         
                         if(templateMessage == null){
                             sendMessage(channel, "not found data");

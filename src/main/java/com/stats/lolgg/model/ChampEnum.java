@@ -156,6 +156,7 @@ public enum ChampEnum {
     VI("Vi", "바이"),
     VIEGO("Viego", "비에고"),
     VIKTOR("Viktor", "빅토르"),
+    VLADIMIR("Vladimir","블라디미르"),
     VOLIBEAR("Volibear", "볼리베어"),
     WARWICK("Warwick", "워윅"),
     XAYAH("Xayah", "자야"),

@@ -1,5 +1,7 @@
 package com.stats.lolgg.controller;
 
+
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 import com.stats.lolgg.service.LeagueService;
+import com.stats.lolgg.service.ParseService;
 import com.stats.lolgg.service.ReplayService;
 
 import lombok.RequiredArgsConstructor;
@@ -32,6 +35,8 @@ public class LeagueController {
     private final LeagueService leagueService;
 
     private final ReplayService replayService;
+
+    private final ParseService parseService;
 
     /**
      * 전체 조회
@@ -68,25 +73,24 @@ public class LeagueController {
         return leagueService.findChampMaster(champ_name);
     }
 
-    // 파일올리면 바로 저장되게 변경
-    /**
-     * Replay 데이터 파싱>저장
-     * @param files
-     * @return
-     * @throws Exception
-     */
+    // 14.11 패치 이후
     @PostMapping("/parseFromApi")
-    public String getReplayFile(@RequestBody List<MultipartFile> files) throws Exception {
-        for(MultipartFile file : files ){
-            // String fileName = file.getOriginalFilename();
-            // System.out.println(fileName);
+    public String multiParse(@RequestBody List<MultipartFile> files) throws IOException, Exception {
+        for(MultipartFile file : files) {
+            byte[] bytes = parseService.changeByteArray(file.getInputStream());
+            JsonNode jsonNode = parseService.parseReplayData(bytes);
+            replayService.saveFromApi(jsonNode, file.getOriginalFilename(), "api");
+        }
+        return "성공";
+    }
 
-            String fileNameWithExt = file.getOriginalFilename();
-            String createUser = "api";
-            byte[] bytes = replayService.changeByteArray(file.getInputStream());
-            JsonNode statsArray = replayService.parseReplayData(bytes);
-            
-            replayService.saveFromApi(statsArray, fileNameWithExt, createUser);
+    // 14.10 패치 이전
+    @PostMapping("/parseFromApiBefore")
+    public String parseFromApiBefore(@RequestBody List<MultipartFile> files) throws IOException, Exception {
+        for(MultipartFile file : files) {
+            byte[] bytes = parseService.changeByteArray(file.getInputStream());
+            JsonNode jsonNode = parseService.parseReplayDataBefore(bytes);
+            replayService.saveFromApi(jsonNode, file.getOriginalFilename(), "api");
         }
         return "성공";
     }
