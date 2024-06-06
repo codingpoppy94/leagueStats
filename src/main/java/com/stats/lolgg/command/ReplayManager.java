@@ -24,7 +24,7 @@ public class ReplayManager {
     private final ParseService parseService;
 
     // 리플 저장 및 데이터 저장
-    public String saveFile(String fileUrl, String fileNameWithExt, MessageReceivedEvent event) throws Exception{
+    public String saveFile(String fileUrl, String fileNameWithExt, MessageReceivedEvent event) throws Exception {
 
         String fileName = replayService.validateFile(fileNameWithExt);
         
@@ -36,10 +36,6 @@ public class ReplayManager {
         JsonNode statsArray = parseService.parseReplay(fileUrl);
         
         replayService.save(statsArray, fileName, createUser);
-        return ":green_circle:등록완료: "+fileNameWithExt+" 반영 완료";
-    }
-
-        replayService.save(fileUrl, fileNameWithExt, createUser);
         return ":green_circle:등록완료: "+fileNameWithExt+" 반영 완료";
     }
 }
