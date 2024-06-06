@@ -137,8 +137,13 @@ select
 	(
 		select * from league 
 		where riot_name = '잘생긴정현이'
-		order by game_date desc
-		limit 30
+    AND (
+        (EXTRACT(YEAR FROM GAME_DATE) = EXTRACT(YEAR FROM CURRENT_DATE)
+        AND EXTRACT(MONTH FROM GAME_DATE) = EXTRACT(MONTH FROM CURRENT_DATE))
+        OR
+        (EXTRACT(YEAR FROM GAME_DATE) = EXTRACT(YEAR FROM CURRENT_DATE - INTERVAL '1 month')
+        AND EXTRACT(MONTH FROM GAME_DATE) = EXTRACT(MONTH FROM CURRENT_DATE - INTERVAL '1 month'))
+        )
 	) B
 	on A.game_team = B.game_team 
   and A.game_id = B.game_id 
