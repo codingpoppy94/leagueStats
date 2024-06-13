@@ -11,9 +11,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.stats.lolgg.model.ChampMasterVO;
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 import com.stats.lolgg.service.LeagueService;
+import com.stats.lolgg.template.ChampMasterTemplate;
 import com.stats.lolgg.template.LolTemplate;
 
 import lombok.RequiredArgsConstructor;
@@ -51,12 +53,12 @@ public class LeagueManager {
         
         List<LeagueStatsVO> teamRecord = leagueService.findRecordWithTeam(riotName);
 
-        List<LeagueStatsVO> goodTeam = teamRecord.stream().filter(t -> t.getWin_rate() >= 50).collect(Collectors.toList());
-        List<LeagueStatsVO> badTeam = teamRecord.stream().filter(t -> t.getWin_rate() < 45).collect(Collectors.toList());
+        List<LeagueStatsVO> goodTeam = teamRecord.stream().filter(t -> t.getWin_rate() >= 52).collect(Collectors.toList());
+        List<LeagueStatsVO> badTeam = teamRecord.stream().filter(t -> t.getWin_rate() <= 48).collect(Collectors.toList());
         Collections.reverse(badTeam);
 
-        List<LeagueStatsVO> easyRivals = otherTeamRecord.stream().filter(t -> t.getWin_rate() >= 50).collect(Collectors.toList());
-        List<LeagueStatsVO> hardRivals = otherTeamRecord.stream().filter(t -> t.getWin_rate() < 45).collect(Collectors.toList());
+        List<LeagueStatsVO> easyRivals = otherTeamRecord.stream().filter(t -> t.getWin_rate() >= 52).collect(Collectors.toList());
+        List<LeagueStatsVO> hardRivals = otherTeamRecord.stream().filter(t -> t.getWin_rate() <= 48).collect(Collectors.toList());
         Collections.reverse(hardRivals);
 
         map.put("riotName",riotName);
@@ -76,13 +78,13 @@ public class LeagueManager {
 
     /* !장인 {riot_champ} */
     public EmbedBuilder getChampMaster(String champName){
-        List<LeagueStatsVO> records = leagueService.findChampMaster(champName);
+        List<ChampMasterVO> records = leagueService.findChampMaster(champName);
         if(records.isEmpty()){
             return null;
         }
-        LolTemplate template = new LolTemplate();
+        ChampMasterTemplate champMasterTemplate = new ChampMasterTemplate();
 
-        return template.makeChampMasterTemplate(records, champName);
+        return champMasterTemplate.build(records, champName);
     }
 
     /* !통계 챔피언 */
@@ -94,7 +96,7 @@ public class LeagueManager {
         int month = now.getMonthValue();
         int year = now.getYear();
         int lastmonth = previousMonth.getMonthValue();
-        int lastyear = previousMonth.getMonthValue();
+        int lastyear = previousMonth.getYear();
 
         List<LeagueStatsVO> records = leagueService.findChampStats(year, month);
         List<LeagueStatsVO> lastMonthRecords = leagueService.findChampStats(lastyear, lastmonth);
