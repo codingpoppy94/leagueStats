@@ -139,7 +139,7 @@
     </select>
 
     <!-- 장인 -->
-    <select id="findChampMaster" parameterType="String" resultType="com.stats.lolgg.model.LeagueStatsVO">
+    <select id="findChampMaster" parameterType="String" resultType="com.stats.lolgg.model.ChampMasterVO">
         SELECT 
             RIOT_NAME, 
             COUNT(RIOT_NAME) AS TOTAL_COUNT,
@@ -150,8 +150,8 @@
         WHERE CHAMP_NAME = #{champ_name}
         AND DELETE_YN = 'N'
         GROUP BY RIOT_NAME 
-        HAVING (ROUND(COUNT(CASE WHEN game_result = '승' THEN 1 END)::numeric / COUNT(*)*100,2)) <![CDATA[ >= ]]> 55
-        ORDER BY TOTAL_COUNT DESC, WIN_RATE DESC
+        HAVING COUNT(RIOT_NAME) <![CDATA[ >= ]]> 5
+        ORDER BY TOTAL_COUNT DESC
     </select>
 
     <!-- !통계 챔피언-->

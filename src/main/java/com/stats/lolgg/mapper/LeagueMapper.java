@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.stats.lolgg.model.ChampMasterVO;
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 
@@ -20,7 +21,7 @@ public interface LeagueMapper {
     List<LeagueStatsVO> findRecord(String riot_name);
     LeagueStatsVO findRecordMonth(String riot_name);
     List<LeagueStatsVO> findMostPick(String riot_name);
-    List<LeagueStatsVO> findChampMaster(String champ_name);
+    List<ChampMasterVO> findChampMaster(String champ_name);
     List<LeagueStatsVO> findChampStats(int year,int month);
     List<LeagueStatsVO> findRecordWithTeam(String riot_name);
     List<LeagueStatsVO> findRecordOtherTeam(String riot_name);
