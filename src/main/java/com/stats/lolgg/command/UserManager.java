@@ -190,9 +190,13 @@ public class UserManager {
         userListString.append("```대기자: ");
         for (int i = 0; i < userList.size(); i++) {
             String riotName = userList.get(i).getNickname();
-            int index = riotName.indexOf("/");
-            if(index != -1) {
-                riotName = riotName.substring(0, index);
+            if(riotName != null) {
+                int index = riotName.indexOf("/");
+                if(index != -1 ){
+                    riotName = riotName.substring(0, index);
+                }
+            } else {
+                riotName = "별명설정필요";
             }
             userListString.append((i + 1) + "." + riotName + " ");
         }

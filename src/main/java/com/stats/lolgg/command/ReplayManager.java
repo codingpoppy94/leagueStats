@@ -7,8 +7,6 @@ import com.stats.lolgg.service.ParseService;
 import com.stats.lolgg.service.ReplayService;
 
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  * Replay 파싱 - 저장 Manager
@@ -24,14 +22,16 @@ public class ReplayManager {
     private final ParseService parseService;
 
     // 리플 저장 및 데이터 저장
-    public String saveFile(String fileUrl, String fileNameWithExt, MessageReceivedEvent event) throws Exception {
+    public String saveFile(String fileUrl, String fileNameWithExt, String createUser) throws Exception{
 
         String fileName = replayService.validateFile(fileNameWithExt);
         
-        Member member = event.getMember();
-        String createUser = member.getNickname();
-        int index = createUser.indexOf("/");
-        createUser = createUser.substring(0, index);
+        if(createUser != null){
+            int index = createUser.indexOf("/");
+            createUser = createUser.substring(0, index);
+        } else {
+            throw new Exception("별명 설정 해주세요");
+        }
 
         JsonNode statsArray = parseService.parseReplay(fileUrl);
         
