@@ -158,14 +158,15 @@ public class ReadyListener extends ListenerAdapter {
                             riotName = nickName.substring(0, index);
                             riotName = riotName.replaceAll("\\s+", "").replaceAll("й", "n");
                             templateMessage = leagueManager.getRecord(riotName);
-                            if(templateMessage == null) {
-                                sendMessage(channel, "not found data");
-                            } else {
-                                sendMessage(channel, templateMessage);
-                            }
                         } else {
-                            sendMessage(channel, "별명설정 오류");
+                            templateMessage = null;
+                            sendMessage(channel, "별명설정필요");
                         }
+                    }
+                    if(templateMessage == null) {
+                        sendMessage(channel, "not found data");
+                    } else {
+                        sendMessage(channel, templateMessage);
                     }
                 }
 
