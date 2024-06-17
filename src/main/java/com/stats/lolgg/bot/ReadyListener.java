@@ -11,6 +11,7 @@ import com.stats.lolgg.command.UserManager;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
@@ -41,15 +42,15 @@ public class ReadyListener extends ListenerAdapter {
         for(Attachment attachment : fileMessage.getAttachments()){
             String fileNameWithExt = attachment.getFileName();
             // int Size = attachment.getSize();
+            Member member = event.getMember();
             String fileRegExp = ".rofl";
             if(fileNameWithExt.contains(fileRegExp)){
                 String fileUrl = attachment.getUrl();
                 try {
-                    String resultMessage = replayManager.saveFile(fileUrl,fileNameWithExt,event);
+                    String resultMessage = replayManager.saveFile(fileUrl,fileNameWithExt,member.getNickname());
                     sendMessage(channel, resultMessage);
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    // e.getMessage();
+                    log.info(e.getMessage());
                     sendMessage(channel, e.getMessage());
                 }
             }   
@@ -152,16 +153,19 @@ public class ReadyListener extends ListenerAdapter {
                     } else {
                         // 자기꺼 호출
                         String nickName = event.getMember().getNickname();
-                        int index = nickName.lastIndexOf("/");
-                        riotName = nickName.substring(0, index);
-                        riotName = riotName.replaceAll("\\s+", "").replaceAll("й", "n");
-
-                        templateMessage = leagueManager.getRecord(riotName);
-                    }
-                    if(templateMessage == null) {
-                        sendMessage(channel, "not found data");
-                    } else {
-                        sendMessage(channel, templateMessage);
+                        if(nickName != null) {
+                            int index = nickName.lastIndexOf("/");
+                            riotName = nickName.substring(0, index);
+                            riotName = riotName.replaceAll("\\s+", "").replaceAll("й", "n");
+                            templateMessage = leagueManager.getRecord(riotName);
+                            if(templateMessage == null) {
+                                sendMessage(channel, "not found data");
+                            } else {
+                                sendMessage(channel, templateMessage);
+                            }
+                        } else {
+                            sendMessage(channel, "별명설정 오류");
+                        }
                     }
                 }
 
