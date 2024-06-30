@@ -53,8 +53,15 @@ public class LeagueManager {
         
         List<LeagueStatsVO> teamRecord = leagueService.findRecordWithTeam(riotName);
 
+        
         List<LeagueStatsVO> goodTeam = teamRecord.stream().filter(t -> t.getWin_rate() >= 52).collect(Collectors.toList());
+        if(goodTeam.size() >= 10 ){
+            goodTeam = goodTeam.stream().filter(t -> t.getTotal_count() >= 10).collect(Collectors.toList());
+        }
         List<LeagueStatsVO> badTeam = teamRecord.stream().filter(t -> t.getWin_rate() <= 48).collect(Collectors.toList());
+        if(badTeam.size() >= 10 ){
+            badTeam = badTeam.stream().filter(t -> t.getTotal_count() >= 10).collect(Collectors.toList());
+        }
         Collections.reverse(badTeam);
 
         List<LeagueStatsVO> easyRivals = otherTeamRecord.stream().filter(t -> t.getWin_rate() >= 52).collect(Collectors.toList());

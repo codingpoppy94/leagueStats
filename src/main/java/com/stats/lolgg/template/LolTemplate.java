@@ -294,8 +294,8 @@ public class LolTemplate {
             }else {
                 content += i++ +". ";
             }
-            content +=record.getRiot_name()+ TemplateUtils.makeStats("",record.getTotal_count(), record.getWin(), record.getLose(), record.getWin_rate(), record.getKda());
-            // content +=record.getRiot_name()+TemplateUtils.hideStats("", record.getWin(), record.getWin_rate(), record.getKda());
+            // content +=record.getRiot_name()+ TemplateUtils.makeStats("",record.getTotal_count(), record.getWin(), record.getLose(), record.getWin_rate(), record.getKda());
+            content +=record.getRiot_name()+TemplateUtils.hideStats("", record.getWin(), record.getWin_rate(), record.getKda());
         }
         embed.setTitle(header);
         embed.setDescription(content);
@@ -315,7 +315,7 @@ public class LolTemplate {
         // sb.append("`!ㅁㅅ {x} {x~y}` x번 멘션, x~y범위 멘션 \n\n");
         sb.append("※통계명령어 \n");
         sb.append("`!전적  !전적 {name}` 자신의 전적, name의 전적 검색 \n");
-        sb.append("`!장인 {champ}` 승률55%이상 장인 목록 \n");
+        sb.append("`!장인 {champ}` 픽률-승률 장인 목록 \n");
         sb.append("`!통계 게임|챔프` 게임,챔프 통계 \n");
         sb.append("`!라인 {탑|정글|미드|원딜|서폿}` {라인}별 승률\n\n");
         sb.append("※관리자명령어 (디코관리자 권한 필요) \n");
