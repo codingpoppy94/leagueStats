@@ -21,14 +21,14 @@ public class ScheduleManager {
     private final UserManager userManager;
     private final JDA jda;
 
-    // // 매 오전 6시 마다
-    // @Scheduled(cron="0 0 6 * * *")
-    // public void clearUser(){
-    //     userManager.userClear();
-    //     String channelId = "1238766857289203773";
-    //     TextChannel channel = jda.getTextChannelById(channelId);
-    //     channel.sendMessage("```오전 6시 초기화 완료```").queue();
-    // }
+    // 매 오전 17시 마다
+    @Scheduled(cron="0 0 17 * * *")
+    public void clearUser(){
+        userManager.userClear();
+        String channelId = "860047810845736970";
+        TextChannel channel = jda.getTextChannelById(channelId);
+        channel.sendMessage("```19:30 시작합니다. 시작 5분전에 대기해주세요.```").queue();
+    }
 
     // // 매 오후 7시 체크 
     // @Scheduled(cron="0 0 19 * * *")
