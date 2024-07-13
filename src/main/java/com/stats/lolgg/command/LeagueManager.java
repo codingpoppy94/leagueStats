@@ -11,11 +11,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.stats.lolgg.model.ChampMasterVO;
+import com.stats.lolgg.model.ChampMasterDTO;
+import com.stats.lolgg.model.LeagueSearchDTO;
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 import com.stats.lolgg.service.LeagueService;
 import com.stats.lolgg.template.ChampMasterTemplate;
+import com.stats.lolgg.template.LeagueSearchTemplate;
 import com.stats.lolgg.template.LolTemplate;
 
 import lombok.RequiredArgsConstructor;
@@ -83,9 +85,21 @@ public class LeagueManager {
         return template.makeRecordTemplate(map);
     }
 
+    /* !검색 {game_id} */
+    public EmbedBuilder getLeagueSearch(String gameId){
+        List<LeagueSearchDTO> records = leagueService.findRecordByGameId(gameId);
+        if(records.isEmpty()){
+            return null;
+        }
+        LeagueSearchTemplate template = new LeagueSearchTemplate();
+
+        return template.build(records);
+    }
+
+
     /* !장인 {riot_champ} */
     public EmbedBuilder getChampMaster(String champName){
-        List<ChampMasterVO> records = leagueService.findChampMaster(champName);
+        List<ChampMasterDTO> records = leagueService.findChampMaster(champName);
         if(records.isEmpty()){
             return null;
         }

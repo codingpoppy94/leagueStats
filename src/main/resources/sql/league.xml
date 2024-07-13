@@ -30,7 +30,6 @@
     <!-- 전체 조회 (조건 없음) -->
     <select id="findAll" resultType="com.stats.lolgg.model.LeagueVO">
         SELECT 
-            ID, 
             GAME_ID, 
             RIOT_NAME, 
             CHAMP_NAME, 
@@ -45,6 +44,33 @@
             DELETE_YN
         FROM LEAGUE
 
+    </select>
+
+    <!-- !검색 -->
+    <select id="findRecordByGameId" parameterType="String" resultType="com.stats.lolgg.model.LeagueSearchDTO">
+        SELECT 
+            GAME_ID, 
+            RIOT_NAME, 
+            CHAMP_NAME, 
+            POSITION, 
+            KILL, 
+            DEATH, 
+            ASSIST, 
+            GAME_RESULT, 
+            GAME_TEAM,
+            TOTAL_DAMAGE_CHAMPIONS,
+            VISION_BOUGHT
+        FROM LEAGUE
+        WHERE LOWER(GAME_ID) = LOWER(#{game_id})
+        AND DELETE_YN = 'N'
+        ORDER BY GAME_TEAM,
+            CASE POSITION
+            WHEN 'TOP' THEN 1
+            WHEN 'JUG' THEN 2
+            WHEN 'MID' THEN 3
+            WHEN 'ADC' THEN 4
+            WHEN 'SUP' THEN 5
+        END
     </select>
 
     <!-- 최근 TOP 10 조회 (riot_name) -->
@@ -135,7 +161,7 @@
     </select>
 
     <!-- 장인 -->
-    <select id="findChampMaster" parameterType="String" resultType="com.stats.lolgg.model.ChampMasterVO">
+    <select id="findChampMaster" parameterType="String" resultType="com.stats.lolgg.model.ChampMasterDTO">
         SELECT 
             RIOT_NAME, 
             COUNT(RIOT_NAME) AS TOTAL_COUNT,

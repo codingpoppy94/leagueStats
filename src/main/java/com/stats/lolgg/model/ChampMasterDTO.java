@@ -8,7 +8,7 @@ import lombok.Data;
  * @version 1.0
  */
 @Data
-public class ChampMasterVO {
+public class ChampMasterDTO {
     private String riot_name;
     private String champ_name;
     private int total_count;
