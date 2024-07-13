@@ -85,7 +85,7 @@ public class LeagueManager {
         return template.makeRecordTemplate(map);
     }
 
-    /* !검색 {game_id} */
+    /* !결과 {game_id} */
     public EmbedBuilder getLeagueSearch(String gameId){
         List<LeagueSearchDTO> records = leagueService.findRecordByGameId(gameId);
         if(records.isEmpty()){

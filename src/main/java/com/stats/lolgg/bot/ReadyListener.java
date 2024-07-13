@@ -171,9 +171,9 @@ public class ReadyListener extends ListenerAdapter {
                 }
 
                 /* 
-                * !검색 
+                * !결과 
                 */
-                if (message[0].equalsIgnoreCase("!검색")) {
+                if (message[0].equalsIgnoreCase("!결과")) {
                     EmbedBuilder templateMessage;
                     if(message.length > 1) {
                         int commandIndex = originMessage.indexOf(message[1]);
