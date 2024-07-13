@@ -6,7 +6,8 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.stats.lolgg.mapper.LeagueMapper;
-import com.stats.lolgg.model.ChampMasterVO;
+import com.stats.lolgg.model.ChampMasterDTO;
+import com.stats.lolgg.model.LeagueSearchDTO;
 import com.stats.lolgg.model.LeagueStatsVO;
 import com.stats.lolgg.model.LeagueVO;
 
@@ -33,6 +34,10 @@ public class LeagueService {
         return leagueMapper.findAll();
     }
 
+    public List<LeagueSearchDTO> findRecordByGameId(String game_id){
+        return leagueMapper.findRecordByGameId(game_id);
+    }
+
     public List<LeagueVO> findTopTen(String riot_name){
         return leagueMapper.findTopTen(riot_name);
     }
@@ -49,7 +54,7 @@ public class LeagueService {
         return leagueMapper.findMostPick(riot_name);
     }
 
-    public List<ChampMasterVO> findChampMaster(String champ_name){
+    public List<ChampMasterDTO> findChampMaster(String champ_name){
         return leagueMapper.findChampMaster(champ_name);
     }
 

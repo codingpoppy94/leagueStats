@@ -170,6 +170,25 @@ public class ReadyListener extends ListenerAdapter {
                     }
                 }
 
+                /* 
+                * !검색 
+                */
+                if (message[0].equalsIgnoreCase("!검색")) {
+                    EmbedBuilder templateMessage;
+                    if(message.length > 1) {
+                        int commandIndex = originMessage.indexOf(message[1]);
+                        String gameId = originMessage.substring(commandIndex);
+                        gameId = gameId.replaceAll("\\s+", "");
+                        templateMessage = leagueManager.getLeagueSearch(gameId);
+
+                        if(templateMessage == null){
+                            sendMessage(channel, "not found data");
+                        } else {
+                            sendMessage(channel, templateMessage);
+                        }
+                    }
+                }
+
                 
                 /* 
                 * !장인
