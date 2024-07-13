@@ -46,7 +46,7 @@
 
     </select>
 
-    <!-- !검색 -->
+    <!-- !결과 -->
     <select id="findRecordByGameId" parameterType="String" resultType="com.stats.lolgg.model.LeagueSearchDTO">
         SELECT 
             GAME_ID, 

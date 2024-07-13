@@ -315,7 +315,7 @@ public class LolTemplate {
         // sb.append("`!ㅁㅅ {x} {x~y}` x번 멘션, x~y범위 멘션 \n\n");
         sb.append("※통계명령어 \n");
         sb.append("`!전적 !전적 {name}` 자신의 전적, name의 전적 검색 \n");
-        sb.append("`!검색 {gameId}` 내전 게임 결과 검색 \n");
+        sb.append("`!결과 {gameId}` 내전 게임 결과 검색 \n");
         sb.append("`!장인 {champ}` 픽률-승률 장인 목록 \n");
         sb.append("`!통계 게임|챔프` 게임,챔프 통계 \n");
         sb.append("`!라인 {탑|정글|미드|원딜|서폿}` {라인}별 승률\n\n");
