@@ -172,7 +172,7 @@
         WHERE CHAMP_NAME = #{champ_name}
         AND DELETE_YN = 'N'
         GROUP BY RIOT_NAME 
-        HAVING COUNT(RIOT_NAME) <![CDATA[ >= ]]> 5
+        HAVING COUNT(RIOT_NAME) <![CDATA[ >= ]]> 10
         ORDER BY TOTAL_COUNT DESC
     </select>
 
@@ -188,7 +188,7 @@
         WHERE DELETE_YN = 'N'
         <include refid="select_month"></include>
         GROUP BY CHAMP_NAME
-        HAVING COUNT(CHAMP_NAME) <![CDATA[ >= ]]> 10
+        HAVING COUNT(CHAMP_NAME) <![CDATA[ >= ]]> 20
     </select>
 
 
@@ -302,8 +302,8 @@
         FROM LEAGUE  
         WHERE POSITION = #{position}
         AND DELETE_YN = 'N'
-        GROUP BY POSITION ,RIOT_NAME 
-        HAVING COUNT(RIOT_NAME) <![CDATA[ >= ]]>  20
+        GROUP BY POSITION, RIOT_NAME 
+        HAVING COUNT(RIOT_NAME) <![CDATA[ >= ]]> 50
         ORDER BY WIN_RATE DESC
         LIMIT 15    
     </select>
