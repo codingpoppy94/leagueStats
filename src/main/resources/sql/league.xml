@@ -76,7 +76,7 @@
     <!-- 최근 TOP 10 조회 (riot_name) -->
     <select id="findTopTen" parameterType="String" resultType="com.stats.lolgg.model.LeagueVO">
         SELECT 
-            GAME_ID
+            GAME_ID, 
             RIOT_NAME, 
             CHAMP_NAME, 
             POSITION, 
@@ -84,8 +84,9 @@
             DEATH, 
             ASSIST, 
             GAME_RESULT, 
-            GAME_TEAM, 
-            GAME_DATE
+            GAME_TEAM,
+            TOTAL_DAMAGE_CHAMPIONS,
+            VISION_BOUGHT
         FROM LEAGUE
         WHERE LOWER(RIOT_NAME) = LOWER(#{riot_name})
         AND DELETE_YN = 'N'
@@ -225,7 +226,7 @@
         ORDER BY TOTAL_COUNT DESC 
     </select>
 
-    <!-- 최근 30게임에서 같은 팀 시너지 -->
+    <!-- 최근 두달간 같은 팀 시너지 -->
     <select id="findRecordWithTeam" parameterType="String" resultType="com.stats.lolgg.model.LeagueStatsVO">
         SELECT 
             A.RIOT_NAME,

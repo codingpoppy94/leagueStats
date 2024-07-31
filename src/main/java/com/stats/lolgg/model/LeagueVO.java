@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 public class LeagueVO {
     
-    // private String id;
     private String game_id;
     private String riot_name;
     private String champ_name;
