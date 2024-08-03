@@ -8,4 +8,4 @@ docker push codingpoppy94/lolgg:1.0
 docker pull codingpoppy94/lolgg:1.0
 
 // run
-docker run -d --name trcgg -p 8080:8080 codingpoppy94/lolgg:1.0 
+docker run -d --name trcgg -p 24001:24001 codingpoppy94/lolgg:1.0 
