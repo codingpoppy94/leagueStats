@@ -210,4 +210,9 @@ public class ReplayService {
         }
         return fileName;
     }
+
+    // 리플 삭제
+    public int deleteLeagueByGameId(String gameId){
+        return leagueMapper.deleteLeagueByGameId(gameId);
+    }
 }

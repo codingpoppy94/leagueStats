@@ -319,10 +319,17 @@ public class LolTemplate {
         sb.append("`!장인 {champ}` 픽률-승률 장인 목록 \n");
         sb.append("`!통계 게임|챔프` 게임,챔프 통계 \n");
         sb.append("`!라인 {탑|정글|미드|원딜|서폿}` {라인}별 승률\n\n");
-        sb.append("※관리자명령어 (디코관리자 권한 필요) \n");
+        sb.append("※관리자명령어 \n");
+        sb.append("1. 닉네임 띄어쓰기X, 대소문자구분O \n");
+        sb.append("2. 운영진 권한 필요\n");
         sb.append("`!탈퇴 {name}` 탈퇴한 회원 추가, 전적검색제외 \n");
         sb.append("`!복귀 {name}` 탈퇴한 회원 복구, 전잭검색포함 \n");
+        sb.append("`!부캐목록` 등록된 모든 부캐닉/본캐닉 닉네임 목록 \n");
         sb.append("`!부캐저장 {부캐닉/본캐닉}` 부캐닉네임 등록, 데이터저장할때 부캐닉네임은 본캐닉네임으로 변경되서 저장 \n");
+        sb.append("`!부캐삭제 {부캐닉}` 등록된 부캐닉네임 삭제 \n"); 
+        sb.append("`!닉변 {oldName/newName}` 닉네임 변경 \n");
+        sb.append("`!drop {gameId}` {gameId} 리플레이 파일 데이터 삭제 \n");
+        
         sb.append("");
         builder.setTitle("doc");
         builder.setDescription(sb.toString());
