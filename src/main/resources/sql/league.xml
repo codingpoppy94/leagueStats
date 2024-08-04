@@ -436,5 +436,27 @@
         WHERE RIOT_NAME = #{sub_name}
     </update>
 
+    <!-- 부캐 닉네임 변경 -->
+    <update id="changeMappingRiotName" parameterType="java.util.HashMap" >
+        UPDATE MAPPING_NAME
+            SET MAIN_NAME = #{main_name},
+            UPDATE_DATE = CURRENT_TIMESTAMP
+        WHERE MAIN_NAME = #{sub_name}
+    </update>
+
+    <!-- DELETE -->
+
+    <!-- !drop 리플 삭제 -->
+    <delete id="deleteLeagueByGameId" parameterType="String">
+        DELETE FROM LEAGUE
+            WHERE GAME_ID = #{game_id}
+            
+    </delete>
+
+    <!-- !부캐삭제 -->
+    <delete id="deleteMappingSubName" parameterType="String" >
+        DELETE FROM MAPPING_NAME
+            WHERE SUB_NAME = #{riot_name}
+    </delete>
 
 </mapper>

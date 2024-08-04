@@ -78,6 +78,10 @@ public class LeagueService {
         return leagueMapper.groupLeagueByRiotName(year, month);
     }
 
+    public List<Map<String,Object>> findMappingName(){
+        return leagueMapper.findMappingName();
+    }
+
     /* insert */
 
     /* 
@@ -102,5 +106,15 @@ public class LeagueService {
     // 닉네임 변경
     public int changeRiotName(Map<String,Object> paramMap){
         return leagueMapper.changeRiotName(paramMap);
+    }
+
+    // 부캐매핑 닉네임 변경 
+    public int changeMappingRiotName(Map<String,Object> paramMap){
+        return leagueMapper.changeMappingRiotName(paramMap);
+    }
+
+    // 부캐 삭제
+    public int deleteMappingSubName(String riot_name){
+        return leagueMapper.deleteMappingSubName(riot_name);
     }
 }

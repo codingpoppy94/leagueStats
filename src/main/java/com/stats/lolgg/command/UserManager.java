@@ -10,9 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.stats.lolgg.service.LeagueService;
+import com.stats.lolgg.template.SubInfoTemplate;
 
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
@@ -253,6 +254,67 @@ public class UserManager {
                 leagueService.saveMappingName(paramMap);
                 leagueService.changeRiotName(paramMap);
                 return "등록 및 변경 완료";
+            } else {
+                return "권한 없음";
+            }
+        }
+        return "error";
+    }
+
+    // !부캐목록 
+    public EmbedBuilder getSubInfo(MessageReceivedEvent event){
+        List<Role> roles = Objects.requireNonNull(event.getMember()).getRoles();
+        if(checkAuth(roles)){
+            List<Map<String,Object>> results = leagueService.findMappingName();
+            if(results.isEmpty()){
+                return null;
+            } else {
+                SubInfoTemplate template = new SubInfoTemplate();
+                return template.build(results);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    // !부캐삭제
+    public String removeSubInfo(MessageReceivedEvent event,String originMessage){
+        String[] message = originMessage.split("\\s");
+        //권한체크
+        List<Role> roles = Objects.requireNonNull(event.getMember()).getRoles();
+        if(checkAuth(roles)){
+            int result = leagueService.deleteMappingSubName(message[1]);
+            if(result > 0) {
+                return "삭제 완료";
+            } else {
+                return "존재하지 않는 부캐 닉네임";
+            }
+        } else {
+            return "권한 없음";
+        }
+    }
+
+    // !닉변
+    public String changeUpdateRiotName(MessageReceivedEvent event,String originMessage){
+        String[] message = originMessage.split("\\s");
+        if(message.length > 1) {
+            String[] names = message[1].split("/");
+            Map<String,Object> paramMap = new HashMap<>();
+            String subName = names[0];
+            String mainName = names[1];
+            paramMap.put("sub_name", subName);
+            paramMap.put("main_name", mainName);
+
+            //권한체크
+            List<Role> roles = Objects.requireNonNull(event.getMember()).getRoles();
+            if(checkAuth(roles)){
+                int result = leagueService.changeRiotName(paramMap);
+                leagueService.changeMappingRiotName(paramMap);
+                if(result > 0){
+                    return "닉네임 변경 완료";
+                } else {
+                    return "변경된 닉네임 없음";
+                }
             } else {
                 return "권한 없음";
             }

@@ -300,6 +300,53 @@ public class ReadyListener extends ListenerAdapter {
                         sendMessage(channel, result);
                     }
                 }
+
+                /* 
+                * !부캐목록
+                * 
+                */
+                if (message[0].equalsIgnoreCase("!부캐목록")) {
+                    EmbedBuilder templateMessage;
+                    templateMessage = userManager.getSubInfo(event);
+
+                    if(templateMessage == null){
+                        sendMessage(channel, "no auth or no data");
+                    } else {
+                        sendMessage(channel, templateMessage);
+                    }
+                }
+                
+
+                /* 
+                * !부캐삭제 {riot_name}
+                * riot_name(sub_name)
+                */  
+                if(message[0].equalsIgnoreCase("!부캐삭제")){
+                    String result = userManager.removeSubInfo(event, originMessage);
+                    sendMessage(channel, result);
+                }
+
+                /* 
+                * !닉변
+                * sub_name,main_name
+                */
+                if(message[0].equalsIgnoreCase("!닉변")){
+                    String result = userManager.changeUpdateRiotName(event, originMessage);
+                    if("error".equals(result)){
+                        sendErrorMessage(channel);
+                    }else {
+                        sendMessage(channel, result);
+                    }
+                }
+
+                /* 
+                * !drop 경기 기록 삭제
+                * game_id
+                */  
+                if(message[0].equalsIgnoreCase("!drop")){
+                    String result = replayManager.deleteReplayData(event, originMessage);
+                    sendMessage(channel, result);
+                }
             }
         }
     }

@@ -17,6 +17,7 @@ public enum ChampEnum {
     APHELIOS("Aphelios", "아펠리오스"),
     ASHE("Ashe", "애쉬"),
     AURELION_SOL("AurelionSol", "아우렐리온솔"),
+    AURORA("Aurora", "오로라"), 
     AZIR("Azir", "아지르"),
     BARD("Bard", "바드"),
     BELVETH("Belveth", "벨베스"),
