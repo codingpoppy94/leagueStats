@@ -41,7 +41,7 @@ public class ParseService {
     public JsonNode parseReplayData(byte[] byteArrays) throws Exception{
         String startIndex = "{\"gameLength\":";
         String endIndex = "\\\"}]\"}";
-        int bytesToRead = 65536; 
+        int bytesToRead = 131072;
 
         if(byteArrays == null || byteArrays.length == 0){
             throw new Exception("파싱 데이터가 없습니다");
